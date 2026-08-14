@@ -1,0 +1,23 @@
+<header class="site-header">
+  <a class="brand" routerLink="/" [attr.aria-label]="i18n.t('brand.home')">
+    <img class="brand-logo" src="/brand/aroma-logo.svg" [attr.alt]="i18n.t('brand.alt')" />
+  </a>
+
+  <nav [attr.aria-label]="i18n.t('nav.label')">
+    <a routerLink="/menu">{{ i18n.t('nav.menu') }}</a>
+    <a routerLink="/visit">{{ i18n.t('nav.visit') }}</a>
+  </nav>
+
+  <fieldset class="language-switcher">
+    <legend>{{ i18n.t('language.select') }}</legend>
+    @for (language of i18n.alternateLanguages(); track language.code) {
+      @if (!$first) {
+        <span class="language-separator" aria-hidden="true">|</span>
+      }
+      <button
+        type="button"
+        (click)="i18n.setLanguage(language.code)"
+      >{{ language.label }}</button>
+    }
+  </fieldset>
+</header>

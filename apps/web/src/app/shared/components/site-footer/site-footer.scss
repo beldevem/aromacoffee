@@ -1,0 +1,84 @@
+.site-footer {
+  align-items: end;
+  background: var(--color-brand-green-deep);
+  color: var(--color-action-on);
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+  padding: 3rem 1.25rem calc(6rem + var(--safe-bottom));
+}
+
+.footer-brand img {
+  height: 4.5rem;
+  width: 4.5rem;
+}
+
+.footer-brand p {
+  color: var(--color-brand-cream);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin: 0.75rem 0 0;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-links a {
+  color: var(--color-brand-cream);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.social-link {
+  align-items: center;
+  border: 1px solid rgb(232 215 171 / 0.55);
+  border-radius: 50%;
+  color: var(--color-brand-cream);
+  display: inline-flex;
+  height: 2.75rem;
+  justify-content: center;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  width: 2.75rem;
+}
+
+.social-link:hover {
+  background: var(--color-brand-cream);
+  color: var(--color-brand-green-deep);
+  transform: translateY(-3px);
+}
+
+.social-link svg {
+  fill: currentColor;
+  height: 1.15rem;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  width: 1.15rem;
+}
+
+.social-link svg circle {
+  fill: none;
+}
+
+.social-link svg .social-dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+.site-footer small {
+  color: var(--color-brand-soft, var(--color-brand-cream));
+}
+
+@media (min-width: 48rem) {
+  .site-footer {
+    grid-template-columns: 1.5fr 1fr auto;
+    padding: 4rem 3rem;
+  }
+}

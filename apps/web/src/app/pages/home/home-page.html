@@ -1,0 +1,66 @@
+<app-site-header />
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-art" aria-hidden="true">
+      <span class="ring ring-large"></span>
+      <span class="ring ring-small"></span>
+      <span class="steam steam-one"></span>
+      <span class="steam steam-two"></span>
+      <span class="steam steam-three"></span>
+      <span class="hero-stamp">{{ i18n.t('hero.open') }}<br /><b>{{ i18n.t('hero.today') }}</b></span>
+    </div>
+    <p class="eyebrow">{{ i18n.t('hero.eyebrow') }}</p>
+    <h1 id="hero-title">{{ i18n.t('hero.title.before') }}<br /><em>{{ i18n.t('hero.title.accent') }}</em></h1>
+    <p class="hero-copy">{{ i18n.t('hero.copy') }}</p>
+    <div class="hero-actions">
+      <a class="button button-primary" routerLink="/reserve">{{ i18n.t('hero.reserve') }}</a>
+      <a class="button button-secondary" href="tel:+21600000000">{{ i18n.t('hero.call') }}</a>
+    </div>
+    <p class="hero-note"><span aria-hidden="true">&#10022;</span> {{ i18n.t('hero.note') }}</p>
+  </section>
+
+  <section class="menu-preview" id="menu" aria-labelledby="menu-title">
+    <div class="section-heading">
+      <p class="eyebrow">{{ i18n.t('menu.eyebrow') }}</p>
+      <h2 id="menu-title">{{ i18n.t('menu.title') }}</h2>
+      <a routerLink="/menu">{{ i18n.t('menu.full') }} <span aria-hidden="true">&#8594;</span></a>
+    </div>
+    <div class="menu-list">
+      <article class="menu-item">
+        <div>
+          <h3>Cappuccino</h3>
+          <p>{{ i18n.t('menu.cappuccino.description') }}</p>
+        </div>
+        <strong>5.5 DT</strong>
+      </article>
+      <article class="menu-item">
+        <div>
+          <h3>Frappuccino Pistache</h3>
+          <p>{{ i18n.t('menu.frappuccino.description') }}</p>
+        </div>
+        <strong>12 DT</strong>
+      </article>
+      <article class="menu-item">
+        <div>
+          <h3>Breakfast Classic</h3>
+          <p>{{ i18n.t('menu.breakfast.description') }}</p>
+        </div>
+        <strong>25 DT</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="visit" id="visit" aria-labelledby="visit-title">
+    <p class="eyebrow">{{ i18n.t('visit.eyebrow') }}</p>
+    <h2 id="visit-title">{{ i18n.t('visit.title') }}</h2>
+    <p>{{ i18n.t('visit.copy') }}</p>
+    <div class="visit-links">
+      <a class="text-link" href="https://www.google.com/maps/place/Aroma+Coffee+Shop/@33.689066,8.9810646,904m/data=!3m2!1e3!4b1!4m6!3m5!1s0x12566f30c26f6d61:0xa2d012a10b03c6a0!8m2!3d33.6890616!4d8.9859355!16s%2Fg%2F11zhfc3myr?hl=is&amp;entry=ttu&amp;g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">{{ i18n.t('visit.maps') }} <span aria-hidden="true">&#8599;</span></a>
+      <a class="text-link" href="https://www.google.com/maps/place/Aroma+Coffee+Shop/@33.689066,8.9810646,904m/data=!3m2!1e3!4b1!4m6!3m5!1s0x12566f30c26f6d61:0xa2d012a10b03c6a0!8m2!3d33.6890616!4d8.9859355!16s%2Fg%2F11zhfc3myr?hl=is&amp;entry=ttu&amp;g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">{{ i18n.t('visit.directions') }} <span aria-hidden="true">&#8594;</span></a>
+    </div>
+  </section>
+</main>
+
+<app-site-footer />
+<app-mobile-actions />

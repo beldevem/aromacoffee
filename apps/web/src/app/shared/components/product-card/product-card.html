@@ -1,0 +1,14 @@
+<a class="product-card" [routerLink]="['/product', item().slug]" [attr.data-testid]="'product-card-' + item().slug">
+  @if (badgeKey(); as badge) {
+    <span class="product-badge">{{ i18n.t(badge) }}</span>
+  }
+  <img [src]="imageUrl()" [alt]="productName()" loading="lazy" />
+  <span class="price-badge" aria-label="{{ displayPrice() }} DT">
+    <small>DT</small>
+    <strong>{{ displayPrice() }}</strong>
+  </span>
+  <span class="product-card-content">
+    <strong>{{ productName() }}</strong>
+    <small>{{ i18n.t('menu.view-product') }}</small>
+  </span>
+</a>

@@ -1,0 +1,296 @@
+main {
+  margin: 0 auto;
+  max-width: var(--content-max);
+}
+
+.hero {
+  background: var(--color-brand-green);
+  color: var(--color-action-on);
+  margin: 0 0 1rem;
+  overflow: hidden;
+  padding: 5rem 1.25rem 4.5rem;
+  position: relative;
+}
+
+.hero::after,
+.hero::before {
+  border: 1px solid rgb(232 215 171 / 0.45);
+  border-radius: 50%;
+  content: '';
+  height: 18rem;
+  position: absolute;
+  right: -7rem;
+  top: 0;
+  width: 18rem;
+}
+
+.hero::before {
+  animation: orbit 14s linear infinite;
+  border-color: rgb(201 170 112 / 0.55);
+  height: 25rem;
+  right: -10.5rem;
+  top: -3.5rem;
+  width: 25rem;
+}
+
+.hero-art {
+  height: 18rem;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 18rem;
+}
+
+.ring {
+  border: 1px solid var(--color-brand-cream);
+  border-radius: 50%;
+  display: block;
+  opacity: 0.65;
+  position: absolute;
+}
+
+.ring-large {
+  animation: ring-breathe 5s ease-in-out infinite;
+  height: 9rem;
+  right: 2rem;
+  top: 4rem;
+  width: 9rem;
+}
+
+.ring-small {
+  animation: ring-breathe 5s 1.2s ease-in-out infinite reverse;
+  border-style: dashed;
+  height: 5rem;
+  right: 4rem;
+  top: 6rem;
+  width: 5rem;
+}
+
+.steam {
+  animation: steam-rise 3.5s ease-in-out infinite;
+  border-left: 1px solid var(--color-brand-cream);
+  border-radius: 50%;
+  height: 4rem;
+  opacity: 0.7;
+  position: absolute;
+  top: 1.2rem;
+  transform: rotate(18deg);
+  width: 1.5rem;
+}
+
+.steam-one { right: 8.2rem; }
+.steam-two { animation-delay: 0.7s; right: 6.4rem; transform: rotate(-12deg); }
+.steam-three { animation-delay: 1.4s; right: 4.6rem; transform: rotate(12deg); }
+
+.hero-stamp {
+  animation: stamp-sway 4s ease-in-out infinite;
+  border: 1px solid var(--color-brand-gold);
+  border-radius: 50%;
+  color: var(--color-brand-gold);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  height: 4.4rem;
+  line-height: 0.9;
+  padding-top: 1.2rem;
+  position: absolute;
+  right: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  top: 11rem;
+  transform: rotate(12deg);
+  width: 4.4rem;
+}
+
+.hero-stamp b {
+  color: var(--color-brand-cream);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: lowercase;
+}
+
+.eyebrow {
+  color: var(--color-brand-gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+}
+
+.hero h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+.hero h1 {
+  animation: reveal-up 700ms ease-out both;
+  font-size: 3.25rem;
+  font-weight: 500;
+  line-height: 0.9;
+  margin: 0;
+  max-width: 11ch;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 em {
+  color: var(--color-brand-cream);
+  font-style: italic;
+}
+
+.hero-copy {
+  animation: reveal-up 700ms 160ms ease-out both;
+  font-size: 1.05rem;
+  margin: 1.75rem 0 2rem;
+  max-width: 29rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-actions {
+  animation: reveal-up 700ms 280ms ease-out both;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-note {
+  animation: reveal-up 700ms 420ms ease-out both;
+  color: var(--color-brand-cream);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-style: italic;
+  margin: 1.5rem 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-note span {
+  color: var(--color-brand-gold);
+  font-style: normal;
+  margin-right: 0.35rem;
+}
+
+.button {
+  align-items: center;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  font-weight: 700;
+  justify-content: center;
+  min-height: var(--tap-target);
+  padding: 0.7rem 1.1rem;
+  text-decoration: none;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.button:hover { transform: translateY(-3px); }
+.button:active { transform: translateY(0); }
+.button-primary { background: var(--color-brand-cream); color: var(--color-brand-green-deep); }
+.button-secondary { border: 1px solid rgb(255 254 250 / 0.65); }
+
+.menu-preview,
+.visit {
+  padding: 4rem 1.25rem;
+}
+
+.section-heading {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.section-heading .eyebrow { flex-basis: 100%; }
+.section-heading a,
+.text-link { color: var(--color-action); font-weight: 600; text-decoration: none; }
+
+h2 {
+  font-size: 2.8rem;
+  font-weight: 500;
+  line-height: 1;
+  margin: 0 0 1.5rem;
+}
+
+.menu-list { border-top: 1px solid var(--color-border); }
+
+.menu-item {
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.15rem 0;
+  transition: border-color 180ms ease, padding-inline 180ms ease;
+}
+
+.menu-item:hover { border-color: var(--color-brand-gold); padding-inline: 0.5rem; }
+.menu-item h3 { font-size: 1.45rem; font-weight: 600; margin: 0; }
+.menu-item p,
+.visit p { color: var(--color-text-muted); margin: 0.2rem 0 0; }
+.menu-item strong { color: var(--color-action); white-space: nowrap; }
+
+.visit { background: var(--color-brand-cream); }
+.visit h2 { margin-bottom: 0.75rem; }
+.visit p { margin-bottom: 1.25rem; }
+
+.visit-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(1.25rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(0.5rem) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(0.5rem) rotate(-360deg); }
+}
+
+@keyframes ring-breathe {
+  0%, 100% { opacity: 0.35; transform: scale(0.94); }
+  50% { opacity: 0.8; transform: scale(1.06); }
+}
+
+@keyframes steam-rise {
+  0%, 100% { opacity: 0.15; transform: translateY(0) rotate(18deg); }
+  50% { opacity: 0.75; transform: translateY(-0.8rem) rotate(-12deg); }
+}
+
+@keyframes stamp-sway {
+  0%, 100% { transform: rotate(12deg) translateY(0); }
+  50% { transform: rotate(7deg) translateY(-0.35rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (min-width: 48rem) {
+  .hero,
+  .menu-preview,
+  .visit {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+
+  .hero {
+    margin: 0 1rem 1rem;
+    padding-bottom: 7rem;
+    padding-top: 7rem;
+  }
+
+  .hero h1 { font-size: 5.5rem; }
+  .menu-preview,
+  .visit { padding-bottom: 6rem; padding-top: 6rem; }
+}

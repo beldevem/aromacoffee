@@ -1,0 +1,78 @@
+{
+  "language.select": "Choisir la langue",
+  "language.en": "EN",
+  "language.fr": "FR",
+  "language.ar": "AR",
+  "brand.home": "Accueil du coffee shop Aroma",
+  "brand.alt": "Aroma Coffee Shop",
+  "nav.label": "Navigation principale",
+  "nav.menu": "Menu",
+  "nav.visit": "Nous trouver",
+  "hero.eyebrow": "Fraîchement torréfié, préparé avec soin",
+  "hero.title.before": "Une table tranquille",
+  "hero.title.accent": "qui vous attend.",
+  "hero.copy": "Cafés, jus frais et assiettes généreuses pour les matins calmes et les longues conversations.",
+  "hero.reserve": "Réserver en ligne",
+  "hero.call": "Appeler le cafe",
+  "hero.note": "Prenez le temps",
+  "hero.open": "OUVERT",
+  "hero.today": "aujourd'hui",
+  "menu.eyebrow": "Un peu de tout",
+  "menu.title": "Les favoris du jour",
+  "menu.full": "Voir le menu complet",
+  "menu.cappuccino.description": "Espresso, lait chaud et mousse onctueuse",
+  "menu.frappuccino.description": "Café glacé, pistache et chantilly",
+  "menu.breakfast.description": "Café, viennoiserie, jus, yaourt, fruits et plus encore",
+  "visit.eyebrow": "Venez comme vous êtes",
+  "visit.title": "Rendez-vous chez Aroma.",
+  "visit.copy": "Horaires, itinéraire et la table qui vous attend.",
+  "visit.directions": "Voir l'itinéraire",
+  "visit.maps": "Ouvrir dans Google Maps",
+  "footer.tagline": "Fraîchement torréfié, préparé avec soin.",
+  "footer.call": "Appeler",
+  "social.label": "Réseaux sociaux",
+  "social.facebook": "Aroma sur Facebook",
+  "social.instagram": "Instagram",
+  "footer.copyright": "© 2026 Aroma Coffee Shop",
+  "actions.label": "Actions rapides",
+  "actions.reserve": "Reserver"
+  ,"menu.page.eyebrow": "Le menu Aroma"
+  ,"menu.page.title": "Une envie pour chaque moment."
+  ,"menu.page.copy": "Découvrez nos cafés, boissons fraîches, petits déjeuners, desserts et créations signature."
+  ,"menu.prices-note": "Tous les prix sont en DT"
+  ,"menu.page.ready": "Le menu complet arrive bientôt ici."
+  ,"menu.view-product": "Voir les détails"
+  ,"menu.search.label": "Rechercher dans le menu"
+  ,"menu.search.placeholder": "Café, petit déjeuner, dessert..."
+  ,"menu.search.empty": "Aucun article ne correspond à votre recherche."
+  ,"menu.filters.label": "Filtrer le menu par catégorie"
+  ,"menu.category.all": "Tout"
+  ,"menu.badge.most-ordered": "Le plus commandé"
+  ,"menu.badge.signature": "Signature"
+  ,"menu.badge.favorite": "Favori des clients"
+  ,"menu.badge.popular": "Populaire"
+  ,"menu.category.coffee.hot": "Cafés chauds"
+  ,"menu.category.coffee.cold": "Cafés glacés"
+  ,"menu.category.coffee.frappuccino": "Frappuccinos"
+  ,"menu.category.drinks.fresh-juices": "Jus frais pressés"
+  ,"menu.category.breakfast": "Petits déjeuners"
+  ,"menu.category.sweet-crepes": "Crêpes sucrées"
+  ,"menu.category.waffles-pancakes": "Gaufres & Pancakes"
+  ,"menu.category.savory-desserts": "Crêpes salées & Desserts"
+  ,"menu.category.evening-packs": "Packs soir"
+  ,"product.page.eyebrow": "Depuis le menu"
+  ,"product.page.title": "Dans les détails."
+  ,"product.page.copy": "Les détails, ingrédients et disponibilités de chaque produit seront affichés ici."
+  ,"product.page.unknown": "Article du menu"
+  ,"product.page.unknown-copy": "Cet article du menu n'est pas disponible pour le moment."
+  ,"visit.page.eyebrow": "Trouver Aroma"
+  ,"visit.page.title": "Venez vous installer."
+  ,"visit.page.copy": "Trouvez notre adresse, consultez la carte et préparez votre visite."
+  ,"reserve.page.eyebrow": "Votre table vous attend"
+  ,"reserve.page.title": "Réserver chez Aroma."
+  ,"reserve.page.copy": "Choisissez une heure et indiquez-nous le nombre de personnes."
+  ,"reserve.page.ready": "Les réservations en ligne arrivent bientôt."
+  ,"notFound.title": "Cette page s'est échappée."
+  ,"notFound.copy": "La page que vous cherchez n'existe pas ici."
+  ,"notFound.home": "Retour chez Aroma"
+}

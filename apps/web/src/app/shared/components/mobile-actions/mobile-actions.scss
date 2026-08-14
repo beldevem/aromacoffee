@@ -1,0 +1,32 @@
+.mobile-actions {
+  background: var(--color-brand-green-deep);
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.55rem 0 calc(0.55rem + var(--safe-bottom));
+  position: sticky;
+  z-index: 5;
+}
+
+.mobile-actions a {
+  align-items: center;
+  color: var(--color-action-on);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.72rem;
+  gap: 0.15rem;
+  min-height: var(--tap-target);
+  min-width: var(--tap-target);
+  text-decoration: none;
+}
+
+.mobile-actions span {
+  color: var(--color-brand-cream);
+  font-size: 1.1rem;
+}
+
+@media (min-width: 48rem) {
+  .mobile-actions {
+    display: none;
+  }
+}

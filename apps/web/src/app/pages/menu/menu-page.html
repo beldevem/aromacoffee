@@ -1,0 +1,57 @@
+<app-site-header />
+
+<main class="page-shell">
+  <p class="eyebrow">{{ i18n.t('menu.page.eyebrow') }}</p>
+  <h1>{{ i18n.t('menu.page.title') }}</h1>
+  <p class="page-intro">{{ i18n.t('menu.page.copy') }}</p>
+  <p class="price-note">{{ i18n.t('menu.prices-note') }}</p>
+
+  <div class="menu-tools">
+    <label class="search-box">
+      <span class="search-icon" aria-hidden="true">&#9906;</span>
+      <span class="sr-only">{{ i18n.t('menu.search.label') }}</span>
+      <input
+        type="search"
+        [value]="searchTerm()"
+        [placeholder]="i18n.t('menu.search.placeholder')"
+        (input)="searchTerm.set($any($event.target).value)"
+      />
+    </label>
+    <fieldset class="category-filters">
+      <legend>{{ i18n.t('menu.filters.label') }}</legend>
+      @for (categoryKey of categoryKeys; track categoryKey) {
+        <button
+          type="button"
+          [class.active]="activeCategory() === categoryKey"
+          (click)="activeCategory.set(categoryKey)"
+        >{{ i18n.t(categoryKey === 'all' ? 'menu.category.all' : 'menu.category.' + categoryKey) }}</button>
+      }
+    </fieldset>
+  </div>
+
+  <div class="menu-catalog">
+    @for (category of visibleCategories(); track category.key) {
+      <section class="menu-category" [attr.aria-labelledby]="category.key">
+        <div class="category-heading">
+          <img [src]="categoryImage(category.key)" [alt]="i18n.t('menu.category.' + category.key)" loading="lazy" />
+          <h2 [id]="category.key">{{ i18n.t('menu.category.' + category.key) }}</h2>
+        </div>
+        <div class="menu-items">
+          @for (item of category.items; track item.slug) {
+            <app-product-card
+              [item]="item"
+              [imageUrl]="itemImage(item.slug, category.key)"
+              [badgeKey]="badgeKey(item.slug)"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    @if (visibleCategories().length === 0) {
+      <p class="empty-state">{{ i18n.t('menu.search.empty') }}</p>
+    }
+  </div>
+</main>
+
+<app-site-footer />

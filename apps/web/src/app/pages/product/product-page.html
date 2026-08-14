@@ -1,0 +1,14 @@
+<app-site-header />
+
+<main class="page-shell">
+  <p class="eyebrow">{{ i18n.t('product.page.eyebrow') }}</p>
+  <h1>{{ productName() }}</h1>
+  <p class="page-intro">{{ productDescription() }}</p>
+  @if (product) {
+    <p class="product-price">{{ product.price }}</p>
+  } @else {
+    <p class="product-slug">{{ i18n.t('product.page.unknown-copy') }}</p>
+  }
+</main>
+
+<app-site-footer />

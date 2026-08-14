@@ -1,0 +1,13 @@
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Workspace and OS files
+.DS_Store
+Thumbs.db
+.idea/
+
+# Coverage and temporary output
+coverage/
+tmp/

@@ -1,0 +1,57 @@
+// Generated from docs/brand/design-tokens.json.
+// The source JSON is canonical; keep both files synchronized when tokens change.
+
+$color-brand-green: #50684e;
+$color-brand-green-deep: #354a36;
+$color-brand-green-soft: #71866c;
+$color-brand-cream: #e8d7ab;
+$color-brand-gold: #c9aa70;
+
+$color-neutral-ink: #1e211c;
+$color-neutral-ink-muted: #596057;
+$color-neutral-ivory: #f7f5ef;
+$color-neutral-paper: #fffefa;
+$color-neutral-line: #d8d8cc;
+
+$color-text: $color-neutral-ink;
+$color-text-muted: $color-neutral-ink-muted;
+$color-background: $color-neutral-ivory;
+$color-surface: $color-neutral-paper;
+$color-action: $color-brand-green;
+$color-action-hover: $color-brand-green-deep;
+$color-action-on: $color-neutral-paper;
+$color-highlight: $color-brand-cream;
+$color-border: $color-neutral-line;
+$color-focus: $color-brand-gold;
+$color-success: #376b4a;
+$color-warning: #8a5a16;
+$color-danger: #a43c35;
+
+$font-display: "Cormorant Garamond", Georgia, serif;
+$font-body: "Source Sans 3", system-ui, sans-serif;
+
+:root {
+  --color-brand-green: #{$color-brand-green};
+  --color-brand-green-deep: #{$color-brand-green-deep};
+  --color-brand-green-soft: #{$color-brand-green-soft};
+  --color-brand-cream: #{$color-brand-cream};
+  --color-brand-gold: #{$color-brand-gold};
+  --color-text: #{$color-text};
+  --color-text-muted: #{$color-text-muted};
+  --color-background: #{$color-background};
+  --color-surface: #{$color-surface};
+  --color-action: #{$color-action};
+  --color-action-hover: #{$color-action-hover};
+  --color-action-on: #{$color-action-on};
+  --color-highlight: #{$color-highlight};
+  --color-border: #{$color-border};
+  --color-focus: #{$color-focus};
+  --color-success: #{$color-success};
+  --color-warning: #{$color-warning};
+  --color-danger: #{$color-danger};
+  --font-display: #{$font-display};
+  --font-body: #{$font-body};
+  --content-max: 72rem;
+  --tap-target: 2.75rem;
+  --safe-bottom: env(safe-area-inset-bottom);
+}

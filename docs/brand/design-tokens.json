@@ -1,0 +1,87 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "name": "Aroma Coffee Shop",
+  "description": "Initial design tokens inferred from the supplied Aroma menu and logo artwork. Validate the hex values against the original brand source before production.",
+  "color": {
+    "brand": {
+      "green": { "value": "#50684E", "type": "color" },
+      "greenDeep": { "value": "#354A36", "type": "color" },
+      "greenSoft": { "value": "#71866C", "type": "color" },
+      "cream": { "value": "#E8D7AB", "type": "color" },
+      "gold": { "value": "#C9AA70", "type": "color" }
+    },
+    "neutral": {
+      "ink": { "value": "#1E211C", "type": "color" },
+      "inkMuted": { "value": "#596057", "type": "color" },
+      "ivory": { "value": "#F7F5EF", "type": "color" },
+      "paper": { "value": "#FFFEFA", "type": "color" },
+      "line": { "value": "#D8D8CC", "type": "color" }
+    },
+    "semantic": {
+      "text": { "value": "{color.neutral.ink}", "type": "color" },
+      "textMuted": { "value": "{color.neutral.inkMuted}", "type": "color" },
+      "background": { "value": "{color.neutral.ivory}", "type": "color" },
+      "surface": { "value": "{color.neutral.paper}", "type": "color" },
+      "action": { "value": "{color.brand.green}", "type": "color" },
+      "actionHover": { "value": "{color.brand.greenDeep}", "type": "color" },
+      "actionOn": { "value": "{color.neutral.paper}", "type": "color" },
+      "highlight": { "value": "{color.brand.cream}", "type": "color" },
+      "border": { "value": "{color.neutral.line}", "type": "color" },
+      "focus": { "value": "{color.brand.gold}", "type": "color" },
+      "success": { "value": "#376B4A", "type": "color" },
+      "warning": { "value": "#8A5A16", "type": "color" },
+      "danger": { "value": "#A43C35", "type": "color" }
+    }
+  },
+  "fontFamily": {
+    "display": { "value": "Cormorant Garamond", "type": "fontFamily", "description": "Warm editorial serif for headings and menu category names." },
+    "body": { "value": "Source Sans 3", "type": "fontFamily", "description": "Readable sans serif for UI, descriptions, and forms." },
+    "fallbackDisplay": { "value": "Georgia, serif", "type": "fontFamily" },
+    "fallbackBody": { "value": "system-ui, sans-serif", "type": "fontFamily" }
+  },
+  "fontSize": {
+    "xs": { "value": "0.75rem", "type": "dimension" },
+    "sm": { "value": "0.875rem", "type": "dimension" },
+    "md": { "value": "1rem", "type": "dimension" },
+    "lg": { "value": "1.125rem", "type": "dimension" },
+    "xl": { "value": "1.5rem", "type": "dimension" },
+    "2xl": { "value": "2rem", "type": "dimension" },
+    "3xl": { "value": "2.75rem", "type": "dimension" }
+  },
+  "fontWeight": {
+    "regular": { "value": 400, "type": "fontWeight" },
+    "medium": { "value": 500, "type": "fontWeight" },
+    "semibold": { "value": 600, "type": "fontWeight" },
+    "bold": { "value": 700, "type": "fontWeight" }
+  },
+  "space": {
+    "1": { "value": "0.25rem", "type": "dimension" },
+    "2": { "value": "0.5rem", "type": "dimension" },
+    "3": { "value": "0.75rem", "type": "dimension" },
+    "4": { "value": "1rem", "type": "dimension" },
+    "6": { "value": "1.5rem", "type": "dimension" },
+    "8": { "value": "2rem", "type": "dimension" },
+    "12": { "value": "3rem", "type": "dimension" },
+    "16": { "value": "4rem", "type": "dimension" }
+  },
+  "radius": {
+    "sm": { "value": "0.25rem", "type": "dimension" },
+    "md": { "value": "0.5rem", "type": "dimension" },
+    "lg": { "value": "1rem", "type": "dimension" },
+    "pill": { "value": "999px", "type": "dimension" }
+  },
+  "shadow": {
+    "sm": { "value": "0 1px 3px rgb(30 33 28 / 0.08)", "type": "shadow" },
+    "md": { "value": "0 8px 24px rgb(30 33 28 / 0.12)", "type": "shadow" }
+  },
+  "motion": {
+    "fast": { "value": "150ms", "type": "duration" },
+    "standard": { "value": "220ms", "type": "duration" },
+    "ease": { "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "type": "cubicBezier" }
+  },
+  "layout": {
+    "contentMax": { "value": "72rem", "type": "dimension" },
+    "tapTarget": { "value": "2.75rem", "type": "dimension", "description": "Minimum interactive target for mobile accessibility." },
+    "safeBottom": { "value": "env(safe-area-inset-bottom)", "type": "other" }
+  }
+}

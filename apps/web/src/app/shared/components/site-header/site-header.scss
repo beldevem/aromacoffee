@@ -1,0 +1,77 @@
+.site-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: var(--content-max);
+  padding: 1rem 1.25rem;
+}
+
+.brand {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.brand-logo {
+  display: block;
+  height: 3.5rem;
+  width: 3.5rem;
+}
+
+.site-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.site-header nav a {
+  color: var(--color-action);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.language-switcher {
+  border: 0;
+  display: flex;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.language-switcher legend {
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
+.language-switcher button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-height: 2.25rem;
+  min-width: 2.25rem;
+}
+
+.language-separator {
+  align-items: center;
+  color: var(--color-border);
+  display: inline-flex;
+}
+
+.language-switcher button:hover {
+  background: var(--color-brand-green);
+  color: var(--color-action-on);
+}
+
+@media (min-width: 48rem) {
+  .site-header {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}

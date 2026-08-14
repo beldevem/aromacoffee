@@ -1,0 +1,78 @@
+{
+  "language.select": "اختر اللغة",
+  "language.en": "EN",
+  "language.fr": "FR",
+  "language.ar": "AR",
+  "brand.home": "الصفحة الرئيسية لمقهى أروما",
+  "brand.alt": "مقهى أروما",
+  "nav.label": "التنقل الرئيسي",
+  "nav.menu": "القائمة",
+  "nav.visit": "زيارتنا",
+  "hero.eyebrow": "قهوة محمصة طازجة ومحضرة بعناية",
+  "hero.title.before": "طاولة هادئة",
+  "hero.title.accent": "بانتظارك.",
+  "hero.copy": "قهوة وعصائر طازجة وأطباق شهية لصباح هادئ وأحاديث طويلة.",
+  "hero.reserve": "احجز عبر الإنترنت",
+  "hero.call": "اتصل بالمقهى",
+  "hero.note": "خذ وقتك واستمتع",
+  "hero.open": "مفتوح",
+  "hero.today": "اليوم",
+  "menu.eyebrow": "شيء لكل ذوق",
+  "menu.title": "اختيارات اليوم",
+  "menu.full": "شاهد القائمة كاملة",
+  "menu.cappuccino.description": "إسبريسو وحليب ساخن ورغوة ناعمة",
+  "menu.frappuccino.description": "قهوة باردة وفستق وكريمة مخفوقة",
+  "menu.breakfast.description": "قهوة وفطيرة وعصير وياغورت وفواكه والمزيد",
+  "visit.eyebrow": "أهلاً بكم كما أنتم",
+  "visit.title": "نلتقي في أروما.",
+  "visit.copy": "أوقات العمل والطريق والطاولة التي تنتظركم.",
+  "visit.directions": "احصل على الاتجاهات",
+  "visit.maps": "افتح في خرائط Google",
+  "footer.tagline": "قهوة محمصة طازجة ومحضرة بعناية.",
+  "footer.call": "اتصل بنا",
+  "social.label": "وسائل التواصل الاجتماعي",
+  "social.facebook": "أروما على Facebook",
+  "social.instagram": "Instagram",
+  "footer.copyright": "© 2026 مقهى أروما",
+  "actions.label": "إجراءات سريعة",
+  "actions.reserve": "احجز"
+  ,"menu.page.eyebrow": "قائمة أروما"
+  ,"menu.page.title": "شيء يناسب كل مزاج."
+  ,"menu.page.copy": "اكتشفوا القهوة والمشروبات الطازجة والفطور والحلويات وإبداعاتنا الخاصة."
+  ,"menu.prices-note": "كل الأسعار بالدينار التونسي"
+  ,"menu.page.ready": "ستتوفر القائمة الكاملة هنا قريباً."
+  ,"menu.view-product": "عرض التفاصيل"
+  ,"menu.search.label": "البحث في القائمة"
+  ,"menu.search.placeholder": "قهوة، فطور، حلوى..."
+  ,"menu.search.empty": "لا توجد أصناف تطابق بحثكم."
+  ,"menu.filters.label": "تصفية القائمة حسب الفئة"
+  ,"menu.category.all": "الكل"
+  ,"menu.badge.most-ordered": "الأكثر طلباً"
+  ,"menu.badge.signature": "خاص بنا"
+  ,"menu.badge.favorite": "المفضل لدى الزوار"
+  ,"menu.badge.popular": "شائع"
+  ,"menu.category.coffee.hot": "القهوة الساخنة"
+  ,"menu.category.coffee.cold": "القهوة المثلجة"
+  ,"menu.category.coffee.frappuccino": "فرابوتشينو"
+  ,"menu.category.drinks.fresh-juices": "عصائر طازجة"
+  ,"menu.category.breakfast": "الفطور"
+  ,"menu.category.sweet-crepes": "كريب حلو"
+  ,"menu.category.waffles-pancakes": "وافل وبان كيك"
+  ,"menu.category.savory-desserts": "كريب مالح وحلويات"
+  ,"menu.category.evening-packs": "باقات المساء"
+  ,"product.page.eyebrow": "من القائمة"
+  ,"product.page.title": "نظرة أقرب."
+  ,"product.page.copy": "ستجدون هنا تفاصيل المنتجات ومكوناتها ومدى توفرها."
+  ,"product.page.unknown": "عنصر من القائمة"
+  ,"product.page.unknown-copy": "هذا العنصر غير متوفر حالياً."
+  ,"visit.page.eyebrow": "اعثروا على أروما"
+  ,"visit.page.title": "تعالوا واجلسوا معنا."
+  ,"visit.page.copy": "اعثروا على موقعنا وتصفحوا الخريطة وخططوا لزيارتكم."
+  ,"reserve.page.eyebrow": "طاولتكم بانتظاركم"
+  ,"reserve.page.title": "احجزوا في أروما."
+  ,"reserve.page.copy": "اختاروا الوقت وأخبرونا بعدد الضيوف."
+  ,"reserve.page.ready": "الحجوزات عبر الإنترنت ستتوفر قريباً."
+  ,"notFound.title": "هذه الصفحة تاهت."
+  ,"notFound.copy": "الصفحة التي تبحثون عنها غير موجودة هنا."
+  ,"notFound.home": "العودة إلى أروما"
+}
