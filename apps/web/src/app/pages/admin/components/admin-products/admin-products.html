@@ -1,0 +1,17 @@
+<section class="panel products-panel" aria-labelledby="products-title">
+  <div class="panel-heading">
+    <div>
+      <p class="admin-kicker">{{ i18n.t('admin.products.kicker') }}</p>
+      <h2 id="products-title">{{ i18n.t('admin.products.title') }}</h2>
+    </div>
+    @if (canManageProducts()) {
+      <button type="button" class="add-button">+ {{ i18n.t('admin.products.add') }}</button>
+    }
+  </div>
+  <div class="product-table" role="table" [attr.aria-label]="i18n.t('admin.products.title')">
+    <div class="product-table-head" role="row"><span>{{ i18n.t('admin.products.item') }}</span><span>{{ i18n.t('admin.products.category') }}</span><span>{{ i18n.t('admin.products.price') }}</span><span>{{ i18n.t('admin.products.state') }}</span></div>
+    @for (product of products; track product.name) {
+      <div class="product-table-row" role="row"><strong>{{ product.name }}</strong><span>{{ product.category }}</span><b>{{ product.price }}</b><em [class.draft]="product.state.includes('draft')">{{ i18n.t(product.state) }}</em></div>
+    }
+  </div>
+</section>

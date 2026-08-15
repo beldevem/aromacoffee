@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
+
+model User {
+  id           String     @id @default(uuid()) @db.Uuid
+  name         String
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  role         UserRole   @default(STAFF)
+  active       Boolean    @default(true)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  auditLogs    AuditLog[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model Category {
+  id          String    @id @default(uuid()) @db.Uuid
+  slug        String    @unique
+  name        String
+  nameFr      String    @map("name_fr")
+  nameAr      String    @map("name_ar")
+  description String?
+  sortOrder   Int       @default(0) @map("sort_order")
+  visible     Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  products    Product[]
+
+  @@index([visible, sortOrder])
+  @@map("categories")
+}
+
+model Flag {
+  id        String    @id @default(uuid()) @db.Uuid
+  slug      String    @unique
+  label     String
+  labelFr   String    @map("label_fr")
+  labelAr   String    @map("label_ar")
+  products  Product[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("flags")
+}
+
+model Product {
+  id              String        @id @default(uuid()) @db.Uuid
+  slug            String        @unique
+  name            String
+  nameFr          String        @map("name_fr")
+  nameAr          String        @map("name_ar")
+  description     String?
+  descriptionFr   String?       @map("description_fr")
+  descriptionAr   String?       @map("description_ar")
+  priceCents      Int           @map("price_cents")
+  promotion       Boolean       @default(false)
+  ogPrice         Int?          @map("og_price")
+  promoPrice      Int?          @map("promo_price")
+  currency        String        @default("TND")
+  imageUrl        String?       @map("image_url")
+  tags            String[]
+  allergens       String[]
+  prepTimeMinutes Int?          @map("prep_time_minutes")
+  status          ProductStatus @default(DRAFT)
+  sortOrder       Int           @default(0) @map("sort_order")
+  categoryId      String        @map("category_id") @db.Uuid
+  category        Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  flagId          String?       @map("flag_id") @db.Uuid
+  flag            Flag?         @relation(fields: [flagId], references: [id], onDelete: SetNull)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@index([categoryId, status, sortOrder])
+  @@index([status])
+  @@map("products")
+}
+
+model Reservation {
+  id           String            @id @default(uuid()) @db.Uuid
+  customerName String            @map("customer_name")
+  contactPhone String            @map("contact_phone")
+  contactEmail String?           @map("contact_email")
+  dateTime     DateTime          @map("date_time")
+  partySize    Int               @map("party_size")
+  location     String            @default("N/A")
+  createdBy    String            @default("customer") @map("created_by")
+  lastUpdatedBy String?          @map("last_updated_by")
+  notes        String?
+  status       ReservationStatus @default(PENDING)
+  source       String            @default("website")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  @@index([dateTime, status])
+  @@index([contactPhone])
+  @@map("reservations")
+}
+
+model OpeningHour {
+  id        String   @id @default(uuid()) @db.Uuid
+  dayOfWeek Int      @map("day_of_week")
+  opensAt   String?  @map("opens_at")
+  closesAt  String?  @map("closes_at")
+  isClosed  Boolean  @default(false) @map("is_closed")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([dayOfWeek])
+  @@map("opening_hours")
+}
+
+model BlockedDate {
+  id        String   @id @default(uuid()) @db.Uuid
+  date      DateTime @db.Date
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([date])
+  @@map("blocked_dates")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  action    String
+  entity    String
+  entityId  String   @map("entity_id")
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    String?  @map("user_id") @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([userId, createdAt])
+  @@map("audit_logs")
+}

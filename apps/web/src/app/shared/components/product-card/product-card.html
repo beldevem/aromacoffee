@@ -1,10 +1,15 @@
 <a class="product-card" [routerLink]="['/product', item().slug]" [attr.data-testid]="'product-card-' + item().slug">
   @if (badgeKey(); as badge) {
     <span class="product-badge">{{ i18n.t(badge) }}</span>
+  } @else if (item().isPromotion) {
+    <span class="product-badge promotion-badge">{{ i18n.t('menu.promotion') }}</span>
   }
   <img [src]="imageUrl()" [alt]="productName()" loading="lazy" decoding="async" />
-  <span class="price-badge" aria-label="{{ displayPrice() }} DT">
-    <strong>{{ displayPrice() }}</strong>
+  <span class="price-badge" [class.has-promotion]="item().isPromotion" [attr.aria-label]="item().isPromotion ? displayPrice(item().promotionPrice ?? item().price) + ' DT' : displayPrice(item().price) + ' DT'">
+    @if (item().isPromotion && item().originalPrice) {
+      <del>{{ displayPrice(item().originalPrice ?? item().price) }} DT</del>
+    }
+    <strong>{{ displayPrice(item().promotionPrice ?? item().price) }}</strong>
     <small>DT</small>
   </span>
   <span class="product-card-content">

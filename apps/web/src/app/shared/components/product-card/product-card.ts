@@ -20,7 +20,7 @@ export class ProductCard {
     return this.item().name[this.i18n.locale()];
   }
 
-  protected displayPrice(): string {
-    return this.item().price.replaceAll(' DT', '');
+  protected displayPrice(price: string): string {
+    return price.replaceAll(' DT', '');
   }
 }

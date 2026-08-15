@@ -1,0 +1,20 @@
+<section class="panel availability-panel" aria-labelledby="availability-title">
+  <div class="panel-heading">
+    <div>
+      <p class="admin-kicker">{{ i18n.t('admin.availability.kicker') }}</p>
+      <h2 id="availability-title">{{ i18n.t('admin.availability.title') }}</h2>
+    </div>
+    <button type="button" aria-label="{{ i18n.t('admin.changeDate') }}">&#128197;</button>
+  </div>
+  <div class="availability-day">{{ i18n.t('admin.availability.today') }}</div>
+  <div class="slot-list">
+    @for (slot of slots; track slot.time) {
+      <div class="slot-row">
+        <time>{{ slot.time }}</time>
+        <div class="slot-bar"><span [style.width.%]="(slot.booked / slot.capacity) * 100"></span></div>
+        <strong>{{ slot.capacity - slot.booked }}</strong>
+      </div>
+    }
+  </div>
+  <small class="slot-note">{{ i18n.t('admin.availability.remaining') }}</small>
+</section>

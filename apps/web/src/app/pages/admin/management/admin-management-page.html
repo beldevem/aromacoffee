@@ -1,0 +1,32 @@
+<div class="admin-shell">
+  <app-admin-sidebar />
+  <div class="admin-main">
+    <app-admin-topbar />
+    <main class="management-page">
+      <div class="page-heading"><div><p class="admin-kicker">{{ i18n.t('admin.management.kicker') }}</p><h1>{{ i18n.t(titleKey()) }}</h1></div><button class="add-button" type="button" (click)="beginCreate()">+ {{ i18n.t('admin.management.add') }}</button></div>
+      @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
+      @if (error()) { <p class="state-message error">{{ error() }}</p> }
+      @if (!loading() && !error()) {
+        <table class="management-table"><thead><tr><th>{{ i18n.t('admin.management.name') }}</th><th>{{ i18n.t('admin.management.details') }}</th><th>{{ i18n.t('admin.management.status') }}</th><th>{{ i18n.t('admin.products.actions') }}</th></tr></thead><tbody>
+          @for (row of rows(); track row['id']) {
+            <tr><td><strong>{{ row['name'] ?? row['labelFr'] ?? row['slug'] }}</strong><small>{{ row['email'] ?? row['slug'] ?? row['label'] }}</small></td><td>{{ isUsers() ? row['role'] : (row['nameFr'] ?? row['labelAr'] ?? row['_count']?.products + ' products') }}</td><td><em [class.inactive]="row['active'] === false || row['visible'] === false">{{ row['active'] === false || row['visible'] === false ? i18n.t('admin.management.inactive') : i18n.t('admin.management.active') }}</em></td><td><div class="row-actions"><button type="button" (click)="beginEdit(row)">{{ i18n.t('admin.products.edit') }}</button><button class="delete" type="button" (click)="remove(row)">{{ i18n.t('admin.products.delete') }}</button></div></td></tr>
+          } @empty { <tr><td colspan="4" class="state-message">{{ i18n.t('admin.products.empty') }}</td></tr> }
+        </tbody></table>
+      }
+    </main>
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-backdrop"><dialog class="management-dialog" open><form class="management-form" (submit)="$event.preventDefault(); save()">
+    <div class="form-heading"><h2>{{ editing() ? i18n.t('admin.products.editTitle') : i18n.t('admin.management.add') }}</h2><button type="button" (click)="closeForm()">&#10005;</button></div>
+    @if (isUsers()) {
+      <label>{{ i18n.t('admin.management.userName') }}<input name="name" [(ngModel)]="draft['name']" required /></label><label>{{ i18n.t('admin.management.email') }}<input name="email" type="email" [(ngModel)]="draft['email']" required /></label><label>{{ i18n.t('admin.management.password') }}@if (editing()) { <small>{{ i18n.t('admin.management.keepPassword') }}</small> }<input name="password" type="password" [(ngModel)]="draft['password']" [required]="!editing()" /></label><label>{{ i18n.t('admin.management.role') }}<select name="role" [(ngModel)]="draft['role']"><option value="ADMIN">{{ i18n.t('admin.management.roleAdmin') }}</option><option value="MANAGER">{{ i18n.t('admin.management.roleManager') }}</option><option value="STAFF">{{ i18n.t('admin.management.roleStaff') }}</option></select></label><label class="checkbox-control"><input name="active" type="checkbox" [(ngModel)]="draft['active']" />{{ i18n.t('admin.management.active') }}</label>
+    } @else if (isBadges()) {
+      <label>{{ i18n.t('admin.management.slug') }}<input name="slug" [(ngModel)]="draft['slug']" required /></label><label>{{ i18n.t('admin.management.englishLabel') }}<input name="label" [(ngModel)]="draft['label']" required /></label><label>{{ i18n.t('admin.management.frenchLabel') }}<input name="labelFr" [(ngModel)]="draft['labelFr']" required /></label><label>{{ i18n.t('admin.management.arabicLabel') }}<input name="labelAr" [(ngModel)]="draft['labelAr']" required /></label>
+    } @else {
+      <label>{{ i18n.t('admin.management.slug') }}<input name="slug" [(ngModel)]="draft['slug']" required /></label><label>{{ i18n.t('admin.management.englishName') }}<input name="name" [(ngModel)]="draft['name']" required /></label><label>{{ i18n.t('admin.management.frenchName') }}<input name="nameFr" [(ngModel)]="draft['nameFr']" required /></label><label>{{ i18n.t('admin.management.arabicName') }}<input name="nameAr" [(ngModel)]="draft['nameAr']" required /></label><label>{{ i18n.t('admin.management.sortOrder') }}<input name="sortOrder" type="number" [(ngModel)]="draft['sortOrder']" /></label><label class="checkbox-control"><input name="visible" type="checkbox" [(ngModel)]="draft['visible']" />{{ i18n.t('admin.management.visible') }}</label>
+    }
+    <div class="form-actions"><button type="button" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button><button class="save" type="submit" [disabled]="saving()">{{ i18n.t('admin.save') }}</button></div>
+  </form></dialog></div>
+}

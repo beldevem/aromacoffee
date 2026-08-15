@@ -1,0 +1,12 @@
+<header class="admin-topbar">
+  <div>
+    <p class="admin-kicker">{{ i18n.t('admin.kicker') }}</p>
+    <h1>{{ i18n.t('admin.title') }}</h1>
+  </div>
+  <div class="admin-topbar-actions">
+    <span class="status-dot"></span>
+    <span>{{ i18n.t('admin.openStatus') }}</span>
+    <span>{{ auth.user()?.name }}</span>
+    <button type="button" [attr.aria-label]="i18n.t('auth.logout')" (click)="auth.logout()">&#10140;</button>
+  </div>
+</header>

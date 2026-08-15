@@ -1,0 +1,20 @@
+<section class="panel" aria-labelledby="reservations-title">
+  <div class="panel-heading">
+    <div>
+      <p class="admin-kicker">{{ i18n.t('admin.reservations.kicker') }}</p>
+      <h2 id="reservations-title">{{ i18n.t('admin.reservations.title') }}</h2>
+    </div>
+    <a class="view-all" routerLink="/admin/reservations">{{ i18n.t('admin.viewAll') }}</a>
+  </div>
+  <div class="reservation-list">
+    @for (reservation of reservations(); track reservation.id) {
+      <article class="reservation-row">
+        <div class="avatar">{{ reservation.customerName.slice(0, 1) }}</div>
+        <div class="reservation-person"><strong>{{ reservation.customerName }}</strong><small>{{ reservation.contactPhone }} · {{ reservation.partySize }} {{ i18n.t('admin.guests') }} · {{ locationLabel(reservation.location) }}</small><small>{{ i18n.t('admin.reservations.createdBy') }} {{ reservation.createdBy }} · {{ i18n.t('admin.reservations.lastUpdatedBy') }} {{ reservation.lastUpdatedBy || reservation.createdBy }}</small></div>
+        <time>{{ reservation.dateTime | date:'HH:mm' }}</time>
+        <span class="status" [class.pending]="reservation.status === 'PENDING'">{{ i18n.t(statusKey(reservation.status)) }}</span>
+      </article>
+    }
+    @empty { <p class="empty-reservations">{{ i18n.t('admin.reservations.empty') }}</p> }
+  </div>
+</section>

@@ -49,6 +49,11 @@
   top: 0.75rem;
 }
 
+.promotion-badge {
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green-deep);
+}
+
 .price-badge {
   align-items: center;
   background: var(--color-brand-green-deep);
@@ -71,6 +76,18 @@
 .price-badge strong {
   display: block;
   line-height: 1;
+}
+
+.price-badge.has-promotion {
+  flex-wrap: wrap;
+}
+
+.price-badge del {
+  color: rgb(255 255 255 / 0.72);
+  font-size: 0.72rem;
+  line-height: 1;
+  text-decoration-thickness: 2px;
+  width: 100%;
 }
 
 .price-badge small {

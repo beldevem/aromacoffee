@@ -1,0 +1,56 @@
+<div class="admin-shell">
+  <app-admin-sidebar />
+  <div class="admin-main">
+    <app-admin-topbar />
+    <main class="reservations-page">
+      <div class="page-heading">
+        <div><p class="admin-kicker">{{ i18n.t('admin.reservations.kicker') }}</p><h1>{{ i18n.t('admin.reservations.pageTitle') }}</h1></div>
+        <button class="add-button" type="button" (click)="beginCreate()">+ {{ i18n.t('admin.reservations.add') }}</button>
+      </div>
+      <div class="reservations-toolbar">
+        <label for="reservation-status">{{ i18n.t('admin.reservations.filterStatus') }}<select id="reservation-status" [value]="statusFilter()" (change)="statusFilter.set($any($event.target).value)"><option value="ALL">{{ i18n.t('admin.products.all') }}</option>@for (status of ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED', 'NO_SHOW']; track status) { <option [value]="status">{{ statusLabel($any(status)) }}</option> }</select></label>
+        <span>{{ visibleReservations().length }} {{ i18n.t('admin.reservations.results') }}</span>
+      </div>
+      @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
+      @if (error()) { <p class="state-message error">{{ error() }}</p> }
+      @if (!loading() && !error()) {
+        <table class="reservation-table">
+          <thead><tr><th>{{ i18n.t('admin.reservations.customer') }}</th><th>{{ i18n.t('admin.reservations.date') }}</th><th>{{ i18n.t('reserve.form.location') }}</th><th>{{ i18n.t('admin.reservations.guests') }}</th><th>{{ i18n.t('admin.reservations.status') }}</th><th>{{ i18n.t('admin.products.actions') }}</th></tr></thead>
+          <tbody>
+            @for (reservation of visibleReservations(); track reservation.id) {
+              <tr>
+                <td><strong>{{ reservation.customerName }}</strong><small>{{ reservation.contactPhone }}@if (reservation.contactEmail) { · {{ reservation.contactEmail }} }</small></td>
+                <td>{{ reservation.dateTime | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ reservation.location === 'INDOOR' ? i18n.t('reserve.location.indoor') : reservation.location === 'OUTDOOR_TERRACE' ? i18n.t('reserve.location.terrace') : i18n.t('reserve.location.na') }}</td>
+                <td>{{ reservation.partySize }}</td>
+                <td><em [class.pending]="reservation.status === 'PENDING'" [class.cancelled]="reservation.status === 'CANCELLED'">{{ statusLabel(reservation.status) }}</em></td>
+                <td><div class="row-actions"><button type="button" (click)="beginEdit(reservation)">{{ i18n.t('admin.products.edit') }}</button><button class="delete" type="button" (click)="remove(reservation)">{{ i18n.t('admin.products.delete') }}</button></div></td>
+              </tr>
+            } @empty { <tr><td colspan="6" class="state-message">{{ i18n.t('admin.reservations.empty') }}</td></tr> }
+          </tbody>
+        </table>
+      }
+    </main>
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-backdrop">
+    <dialog class="reservation-dialog" open>
+      <form class="reservation-form" (submit)="$event.preventDefault(); save()" #reservationForm="ngForm">
+        <div class="form-heading"><h2>{{ editing() ? i18n.t('admin.reservations.editTitle') : i18n.t('admin.reservations.addTitle') }}</h2><button type="button" (click)="closeForm()">&#10005;</button></div>
+        <div class="form-grid">
+          <label>{{ i18n.t('admin.reservations.customer') }}<input name="customerName" [(ngModel)]="draft.customerName" required minlength="2" maxlength="80" #customerName="ngModel" />@if (customerName.invalid && (customerName.touched || reservationForm.submitted)) { <small class="field-error">{{ i18n.t('validation.required') }}</small> }</label>
+          <label>{{ i18n.t('admin.reservations.phone') }}<span class="phone-field"><span class="country-code">+216</span><input name="contactPhone" type="tel" inputmode="numeric" pattern="[24579][0-9]{7}" maxlength="8" placeholder="20 123 456" [(ngModel)]="draft.contactPhone" required #contactPhone="ngModel" /></span>@if (contactPhone.invalid && (contactPhone.touched || reservationForm.submitted)) { <small class="field-error">{{ contactPhone.errors?.['required'] ? i18n.t('validation.required') : i18n.t('validation.phone') }}</small> }</label>
+          <label>{{ i18n.t('admin.reservations.email') }}<input name="contactEmail" type="email" maxlength="120" [(ngModel)]="draft.contactEmail" #contactEmail="ngModel" />@if (contactEmail.invalid && contactEmail.touched) { <small class="field-error">{{ i18n.t('validation.email') }}</small> }</label>
+          <label>{{ i18n.t('admin.reservations.date') }}<input name="dateTime" type="datetime-local" [(ngModel)]="draft.dateTime" required /></label>
+          <label>{{ i18n.t('admin.reservations.guests') }}<input name="partySize" type="number" min="1" max="20" [(ngModel)]="draft.partySize" required /></label>
+          <label>{{ i18n.t('reserve.form.location') }}<select name="location" [(ngModel)]="draft.location" required><option value="INDOOR">{{ i18n.t('reserve.location.indoor') }}</option><option value="OUTDOOR_TERRACE">{{ i18n.t('reserve.location.terrace') }}</option><option value="N/A">{{ i18n.t('reserve.location.na') }}</option></select></label>
+          <label>{{ i18n.t('admin.reservations.status') }}<select name="status" [(ngModel)]="draft.status">@for (status of ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED', 'NO_SHOW']; track status) { <option [value]="status">{{ statusLabel($any(status)) }}</option> }</select></label>
+        </div>
+        <label>{{ i18n.t('admin.reservations.notes') }}<textarea name="notes" rows="3" [(ngModel)]="draft.notes"></textarea></label>
+        <div class="form-actions"><button type="button" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button><button class="save" type="submit" [disabled]="saving() || reservationForm.invalid">{{ i18n.t('admin.save') }}</button></div>
+      </form>
+    </dialog>
+  </div>
+}
