@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { TranslationService } from '../../core/i18n/translation.service';
+import { API_BASE_URL } from '../../core/api/api-base-url';
 import { SiteFooter } from '../../shared/components/site-footer/site-footer';
 import { SiteHeader } from '../../shared/components/site-header/site-header';
 
@@ -19,7 +20,7 @@ export class ReservePage {
   protected readonly submitted = signal(false);
   protected readonly error = signal('');
   protected draft = this.emptyDraft();
-  private readonly apiUrl = 'http://localhost:3000';
+  private readonly apiUrl = API_BASE_URL;
 
   protected submit(): void {
     this.submitting.set(true);

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AdminSidebar } from '../components/admin-sidebar/admin-sidebar';
 import { AdminTopbar } from '../components/admin-topbar/admin-topbar';
 import { TranslationService } from '../../../core/i18n/translation.service';
+import { API_BASE_URL } from '../../../core/api/api-base-url';
 
 type Resource = 'categories' | 'badges' | 'users';
 type Row = Record<string, any>;
@@ -28,7 +29,7 @@ export class AdminManagementPage implements OnInit {
   protected readonly saving = signal(false);
   protected readonly resource = signal<Resource>('categories');
   protected draft: Row = {};
-  private readonly baseUrl = 'http://localhost:3000';
+  private readonly baseUrl = API_BASE_URL;
 
   ngOnInit(): void {
     this.resource.set((this.route.snapshot.data['resource'] as Resource) ?? 'categories');

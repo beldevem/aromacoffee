@@ -3,6 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { TranslationService } from '../../../../core/i18n/translation.service';
+import { API_BASE_URL } from '../../../../core/api/api-base-url';
 
 type Reservation = {
   id: string;
@@ -29,7 +30,7 @@ export class AdminReservations implements OnInit {
   protected readonly reservations = signal<Reservation[]>([]);
 
   ngOnInit(): void {
-    this.http.get<Reservation[]>('http://localhost:3000/reservations').subscribe({
+    this.http.get<Reservation[]>(`${API_BASE_URL}/reservations`).subscribe({
       next: (items) => {
         const now = Date.now();
         this.reservations.set(items

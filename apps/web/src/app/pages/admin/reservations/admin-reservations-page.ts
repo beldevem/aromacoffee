@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AdminSidebar } from '../components/admin-sidebar/admin-sidebar';
 import { AdminTopbar } from '../components/admin-topbar/admin-topbar';
 import { TranslationService } from '../../../core/i18n/translation.service';
+import { API_BASE_URL } from '../../../core/api/api-base-url';
 
 type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
 type Reservation = { id: string; customerName: string; contactPhone: string; contactEmail?: string | null; dateTime: string; partySize: number; location: 'INDOOR' | 'OUTDOOR_TERRACE' | 'N/A'; notes?: string | null; status: ReservationStatus; source: string };
@@ -27,7 +28,7 @@ export class AdminReservationsPage implements OnInit {
   protected readonly statusFilter = signal<'ALL' | ReservationStatus>('ALL');
   protected readonly saving = signal(false);
   protected draft = this.emptyDraft();
-  private readonly baseUrl = 'http://localhost:3000';
+  private readonly baseUrl = API_BASE_URL;
 
   ngOnInit(): void { this.load(); }
 

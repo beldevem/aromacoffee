@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslationService } from '../../../../core/i18n/translation.service';
+import { API_BASE_URL } from '../../../../core/api/api-base-url';
 
 type DashboardStats = { todayReservations: number; pendingReservations: number; categories: number; publishedProducts: number };
 
@@ -16,7 +17,7 @@ export class AdminOverview implements OnInit {
   protected readonly stats = signal<DashboardStats | null>(null);
 
   ngOnInit(): void {
-    this.http.get<DashboardStats>('http://localhost:3000/dashboard/stats').subscribe({
+    this.http.get<DashboardStats>(`${API_BASE_URL}/dashboard/stats`).subscribe({
       next: (stats) => this.stats.set(stats),
       error: () => this.stats.set(null),
     });

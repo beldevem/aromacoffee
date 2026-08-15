@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { API_BASE_URL } from '../api/api-base-url';
 
 export type SessionUser = { id: string; name: string; email: string; role: 'ADMIN' | 'STAFF' | 'MANAGER'; active: boolean };
 
@@ -9,7 +10,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   readonly user = signal<SessionUser | null>(this.readUser());
-  private readonly baseUrl = 'http://localhost:3000';
+  private readonly baseUrl = API_BASE_URL;
 
   login(email: string, password: string) {
     return this.http.post<{ accessToken: string; user: SessionUser }>(`${this.baseUrl}/auth/login`, { email, password });

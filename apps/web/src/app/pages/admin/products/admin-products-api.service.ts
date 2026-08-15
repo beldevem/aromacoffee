@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { API_BASE_URL } from '../../../core/api/api-base-url';
 
 export interface ApiCategory {
   id: string;
@@ -64,7 +65,7 @@ export type ProductPayload = Omit<ApiProduct, 'id' | 'category' | 'currency' | '
 @Injectable({ providedIn: 'root' })
 export class AdminProductsApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:3000';
+  private readonly baseUrl = API_BASE_URL;
 
   list(search = ''): Observable<ProductListResponse> {
     let params = new HttpParams().set('limit', 100);
