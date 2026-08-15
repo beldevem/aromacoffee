@@ -68,7 +68,10 @@ h1 {
 }
 
 .event-card div {
+  background: var(--color-surface);
   padding: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .event-card h2 {
@@ -137,5 +140,21 @@ h1 {
 
   .events-cta {
     padding: 3rem;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .event-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .event-card img {
+    height: auto;
+    max-height: none;
+  }
+
+  .event-card div {
+    flex: 0 0 auto;
   }
 }
