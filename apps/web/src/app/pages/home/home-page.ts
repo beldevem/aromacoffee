@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslationService } from '../../core/i18n/translation.service';
-import { MobileActions } from '../../shared/components/mobile-actions/mobile-actions';
 import { SiteFooter } from '../../shared/components/site-footer/site-footer';
 import { SiteHeader } from '../../shared/components/site-header/site-header';
+import { PromotionalSection } from '../../shared/components/promotional-section/promotional-section';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [MobileActions, RouterLink, SiteFooter, SiteHeader],
+  imports: [PromotionalSection, RouterLink, SiteFooter, SiteHeader],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })

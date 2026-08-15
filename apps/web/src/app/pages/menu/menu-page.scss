@@ -42,6 +42,7 @@ h1 {
 }
 
 .menu-tools {
+  align-items: start;
   background: linear-gradient(145deg, rgb(255 255 255 / 0.88), rgb(247 245 239 / 0.92));
   border: 1px solid rgb(80 104 78 / 0.15);
   border-radius: 1rem;
@@ -54,6 +55,7 @@ h1 {
 
 .search-box {
   align-items: center;
+  align-self: start;
   background: rgb(255 255 255 / 0.94);
   border: 1px solid rgb(80 104 78 / 0.18);
   border-radius: 0.8rem;
@@ -279,6 +281,16 @@ h1 {
   font-weight: 600;
   padding: 1.25rem;
   text-align: center;
+}
+
+.menu-load-sentinel {
+  height: 1px;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.menu-load-sentinel.is-hidden {
+  display: none;
 }
 
 .sr-only {

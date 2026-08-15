@@ -1,3 +1,14 @@
+:host {
+  background: rgb(247 245 239 / 0.94);
+  box-shadow: 0 0.35rem 1.2rem rgb(30 33 28 / 0.08);
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  -webkit-backdrop-filter: blur(0.75rem);
+  backdrop-filter: blur(0.75rem);
+}
+
 .site-header {
   align-items: center;
   display: flex;
@@ -21,6 +32,26 @@
 .site-header nav {
   display: flex;
   gap: 1rem;
+}
+
+.menu-toggle {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0.35rem;
+  cursor: pointer;
+  display: none;
+  height: 2.75rem;
+  padding: 0.55rem;
+  width: 2.75rem;
+}
+
+.menu-toggle span {
+  background: var(--color-brand-green-deep);
+  display: block;
+  height: 2px;
+  margin: 0.25rem 0;
+  transition: transform 180ms ease;
+  width: 100%;
 }
 
 .site-header nav a {
@@ -73,5 +104,45 @@
   .site-header {
     padding-left: 3rem;
     padding-right: 3rem;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .site-header {
+    position: relative;
+  }
+
+  .menu-toggle {
+    display: block;
+    margin-left: auto;
+    margin-right: 0.5rem;
+  }
+
+  .site-header nav {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 0.75rem 1rem rgb(30 33 28 / 0.08);
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    left: 0;
+    padding: 0.5rem 1.25rem;
+    position: absolute;
+    right: 0;
+    top: 100%;
+  }
+
+  .site-header nav.is-open {
+    display: flex;
+  }
+
+  .site-header nav a {
+    border-bottom: 1px solid var(--color-border);
+    min-height: var(--tap-target);
+    padding: 0.75rem 0;
+  }
+
+  .site-header nav a:last-child {
+    border-bottom: 0;
   }
 }

@@ -8,6 +8,10 @@
   "nav.label": "التنقل الرئيسي",
   "nav.menu": "القائمة",
   "nav.visit": "زيارتنا",
+  "nav.events": "المناسبات",
+  "nav.gallery": "معرض الصور",
+  "nav.open-menu": "فتح القائمة",
+  "nav.close-menu": "إغلاق القائمة",
   "hero.eyebrow": "قهوة محمصة طازجة ومحضرة بعناية",
   "hero.title.before": "طاولة هادئة",
   "hero.title.accent": "بانتظارك.",
@@ -17,12 +21,52 @@
   "hero.note": "خذ وقتك واستمتع",
   "hero.open": "مفتوح",
   "hero.today": "اليوم",
-  "menu.eyebrow": "شيء لكل ذوق",
-  "menu.title": "اختيارات اليوم",
+  "promo.eyebrow": "لحظات جميلة بكل سهولة",
+  "promo.title": "باقاتنا. مناسباتكم.",
+  "promo.packs.eyebrow": "باقاتنا",
+  "promo.packs.title": "للمشاركة بسخاء.",
+  "promo.packs.copy": "باقات المساء ووجبات الفطور لتجتمعوا حول طاولة واحدة.",
+  "promo.packs.evening": "باقات المساء",
+  "promo.packs.breakfast": "باقات الفطور",
+  "promo.events.eyebrow": "مناسباتكم",
+  "promo.events.title": "احتفلوا بلحظاتكم في أروما.",
+  "promo.events.copy": "أعياد الميلاد وغداء العمل والندوات وكل مناسبة تستحق طاولة خاصة.",
+  "promo.events.cta": "اتصلوا للحجز",
+  "promo.events.images": "أماكن صور المناسبات",
+  "promo.events.birthday": "عيد ميلاد",
+  "promo.events.workDinner": "عشاء عمل",
+  "promo.events.seminar": "ندوة",
+  "promo.events.placeholder": "الصورة قريباً",
+  "events.eyebrow": "اجعلوها مناسبة مميزة",
+  "events.title": "مناسباتكم في أروما.",
+  "events.copy": "طاولة ترحب بكم وأطباق سخية ومساحة تتكيف مع مناسبتكم.",
+  "events.birthday.eyebrow": "نحتفل معاً",
+  "events.birthday.title": "عيد ميلاد",
+  "events.birthday.copy": "اجمعوا أحباءكم في أجواء دافئة مع القهوة والحلويات وطاولة لصنع الذكريات.",
+  "events.workDinner.eyebrow": "حول الطاولة",
+  "events.workDinner.title": "عشاء عمل",
+  "events.workDinner.copy": "أجواء مريحة لعشاء الفريق وحديث العملاء والأمسيات الأقل رسمية.",
+  "events.seminar.eyebrow": "اجتمعوا لهدف",
+  "events.seminar.title": "ندوة",
+  "events.seminar.copy": "نظموا ندوتكم في أجواء ترحب بكم مع المرطبات ومساحة للحوار والتركيز.",
+  "events.cta.title": "تخططون لمناسبة خاصة؟",
+  "events.cta.copy": "اتصلوا بنا وسنساعدكم في تجهيز الطاولة المناسبة لمناسبتكم.",
+  "events.cta.action": "اتصلوا للحجز",
+  "gallery.eyebrow": "أروما في صور",
+  "gallery.title": "لمحة من أجوائنا.",
+  "gallery.copy": "اكتشفوا القهوة والأطباق والأشخاص واللحظات التي تجعل أروما مكاناً يشبه البيت.",
+  "gallery.coffee": "قهوة أروما",
+  "gallery.packs": "باقات أروما",
+  "gallery.events": "مناسبات أروما",
+  "gallery.drinks": "مشروبات أروما",
+  "gallery.desserts": "حلويات أروما",
+  "gallery.facebook": "شاهدوا المزيد على Facebook",
+  "gallery.instagram": "شاهدوا المزيد على Instagram",
+  "gallery.previous": "الصورة السابقة",
+  "gallery.next": "الصورة التالية",
+  "gallery.chooseImage": "اختيار صورة من المعرض",
+  "gallery.image": "صورة من المعرض",
   "menu.full": "شاهد القائمة كاملة",
-  "menu.cappuccino.description": "إسبريسو وحليب ساخن ورغوة ناعمة",
-  "menu.frappuccino.description": "قهوة باردة وفستق وكريمة مخفوقة",
-  "menu.breakfast.description": "قهوة وفطيرة وعصير وياغورت وفواكه والمزيد",
   "visit.eyebrow": "أهلاً بكم كما أنتم",
   "visit.title": "نلتقي في أروما.",
   "visit.copy": "أوقات العمل والطريق والطاولة التي تنتظركم.",
@@ -30,6 +74,12 @@
   "visit.maps": "افتح في خرائط Google",
   "footer.tagline": "قهوة محمصة طازجة ومحضرة بعناية.",
   "footer.call": "اتصل بنا",
+  "footer.home": "الرئيسية",
+  "footer.navigation": "اكتشفوا",
+  "footer.contact": "اتصلوا بنا",
+  "footer.address": "مقهى أروما، طريق دوز، 4242 جنعورة، قبلي، تونس",
+  "footer.phone": "اتصلوا بالمقهى",
+  "footer.note": "خذوا وقتكم",
   "social.label": "وسائل التواصل الاجتماعي",
   "social.facebook": "أروما على Facebook",
   "social.instagram": "Instagram",
@@ -39,7 +89,6 @@
   ,"menu.page.eyebrow": "قائمة أروما"
   ,"menu.page.title": "شيء يناسب كل مزاج."
   ,"menu.page.copy": "اكتشفوا القهوة والمشروبات الطازجة والفطور والحلويات وإبداعاتنا الخاصة."
-  ,"menu.prices-note": "كل الأسعار بالدينار التونسي"
   ,"menu.page.ready": "ستتوفر القائمة الكاملة هنا قريباً."
   ,"menu.view-product": "عرض التفاصيل"
   ,"menu.search.label": "البحث في القائمة"
@@ -54,11 +103,18 @@
   ,"menu.category.coffee.hot": "القهوة الساخنة"
   ,"menu.category.coffee.cold": "القهوة المثلجة"
   ,"menu.category.coffee.frappuccino": "فرابوتشينو"
+  ,"menu.category.chocolates": "شوكولاتة فاخرة"
   ,"menu.category.drinks.fresh-juices": "عصائر طازجة"
+  ,"menu.category.milkshakes": "ميلك شيك"
+  ,"menu.category.smoothies": "سموثي"
+  ,"menu.category.mojitos": "موهيتو"
+  ,"menu.category.signature-cocktails": "كوكتيلات خاصة"
   ,"menu.category.breakfast": "الفطور"
+  ,"menu.category.omelettes": "أومليت"
   ,"menu.category.sweet-crepes": "كريب حلو"
   ,"menu.category.waffles-pancakes": "وافل وبان كيك"
   ,"menu.category.savory-desserts": "كريب مالح وحلويات"
+  ,"menu.category.jwajem-drinks": "جواجم ومشروبات"
   ,"menu.category.evening-packs": "باقات المساء"
   ,"product.page.eyebrow": "من القائمة"
   ,"product.page.title": "نظرة أقرب."

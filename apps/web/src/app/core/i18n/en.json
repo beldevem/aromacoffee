@@ -8,6 +8,10 @@
   "nav.label": "Main navigation",
   "nav.menu": "Menu",
   "nav.visit": "Visit",
+  "nav.events": "Events",
+  "nav.gallery": "Gallery",
+  "nav.open-menu": "Open menu",
+  "nav.close-menu": "Close menu",
   "hero.eyebrow": "Freshly roasted, brewed with care",
   "hero.title.before": "A quiet table",
   "hero.title.accent": "with your name on it.",
@@ -17,12 +21,52 @@
   "hero.note": "Made for lingering",
   "hero.open": "OPEN",
   "hero.today": "today",
-  "menu.eyebrow": "A little of everything",
-  "menu.title": "Today's favorites",
+  "promo.eyebrow": "Good moments, made easy",
+  "promo.title": "Our packs. Your occasions.",
+  "promo.packs.eyebrow": "Nos packs",
+  "promo.packs.title": "Share something generous.",
+  "promo.packs.copy": "Evening packs and breakfast spreads made for sharing around one table.",
+  "promo.packs.evening": "Evening packs",
+  "promo.packs.breakfast": "Breakfast packs",
+  "promo.events.eyebrow": "Vos événements",
+  "promo.events.title": "Bring the occasion to Aroma.",
+  "promo.events.copy": "Birthdays, work lunches, seminars, and the moments that deserve a table of their own.",
+  "promo.events.cta": "Call to reserve",
+  "promo.events.images": "Event image placeholders",
+  "promo.events.birthday": "Birthday",
+  "promo.events.workDinner": "Work dinner",
+  "promo.events.seminar": "Seminar",
+  "promo.events.placeholder": "Photo coming soon",
+  "events.eyebrow": "Make it a moment",
+  "events.title": "Your events at Aroma.",
+  "events.copy": "A welcoming table, generous plates, and a space that adapts to your occasion.",
+  "events.birthday.eyebrow": "Celebrate together",
+  "events.birthday.title": "Birthday",
+  "events.birthday.copy": "Bring your people together for a warm celebration with coffee, treats, and a table made for memories.",
+  "events.workDinner.eyebrow": "Around the table",
+  "events.workDinner.title": "Work dinner",
+  "events.workDinner.copy": "A relaxed setting for team dinners, client conversations, and evenings that feel less formal.",
+  "events.seminar.eyebrow": "Gather with purpose",
+  "events.seminar.title": "Seminar",
+  "events.seminar.copy": "Host your seminar in a welcoming atmosphere with refreshments and space for focused conversation.",
+  "events.cta.title": "Planning something special?",
+  "events.cta.copy": "Call us and we will help you prepare the right table for your occasion.",
+  "events.cta.action": "Call to reserve",
+  "gallery.eyebrow": "Aroma in pictures",
+  "gallery.title": "A taste of the atmosphere.",
+  "gallery.copy": "Discover the cups, plates, people, and moments that make Aroma feel like home.",
+  "gallery.coffee": "Aroma coffee",
+  "gallery.packs": "Aroma packs",
+  "gallery.events": "Aroma events",
+  "gallery.drinks": "Aroma drinks",
+  "gallery.desserts": "Aroma desserts",
+  "gallery.facebook": "See more on Facebook",
+  "gallery.instagram": "See more on Instagram",
+  "gallery.previous": "Previous image",
+  "gallery.next": "Next image",
+  "gallery.chooseImage": "Choose gallery image",
+  "gallery.image": "Gallery image",
   "menu.full": "See full menu",
-  "menu.cappuccino.description": "Espresso, steamed milk, soft foam",
-  "menu.frappuccino.description": "Cold coffee, pistache, whipped cream",
-  "menu.breakfast.description": "Coffee, pastry, juice, yoghurt, fruit, and more",
   "visit.eyebrow": "Come as you are",
   "visit.title": "Meet us at Aroma.",
   "visit.copy": "Opening hours, directions, and the table waiting for you.",
@@ -30,6 +74,12 @@
   "visit.maps": "Open in Google Maps",
   "footer.tagline": "Freshly roasted, brewed with care.",
   "footer.call": "Call",
+  "footer.home": "Home",
+  "footer.navigation": "Explore",
+  "footer.contact": "Contact",
+  "footer.address": "Aroma Coffee Shop, Douz Road, 4242 Janoura, Kebili, Tunisia",
+  "footer.phone": "Call the shop",
+  "footer.note": "Made for lingering",
   "social.label": "Social media",
   "social.facebook": "Aroma on Facebook",
   "social.instagram": "Instagram",
@@ -39,7 +89,6 @@
   ,"menu.page.eyebrow": "The Aroma menu"
   ,"menu.page.title": "Something for every mood."
   ,"menu.page.copy": "Explore coffee, fresh drinks, breakfasts, desserts, and our signature creations."
-  ,"menu.prices-note": "All prices are in DT"
   ,"menu.page.ready": "The full menu is coming together here."
   ,"menu.view-product": "View details"
   ,"menu.search.label": "Search menu"
@@ -54,11 +103,18 @@
   ,"menu.category.coffee.hot": "Hot Coffees"
   ,"menu.category.coffee.cold": "Iced Coffees"
   ,"menu.category.coffee.frappuccino": "Frappuccinos"
+  ,"menu.category.chocolates": "Gourmet Chocolates"
   ,"menu.category.drinks.fresh-juices": "Fresh Juices"
+  ,"menu.category.milkshakes": "Milkshakes"
+  ,"menu.category.smoothies": "Smoothies"
+  ,"menu.category.mojitos": "Mojitos"
+  ,"menu.category.signature-cocktails": "Signature Cocktails"
   ,"menu.category.breakfast": "Breakfasts"
+  ,"menu.category.omelettes": "Omelettes"
   ,"menu.category.sweet-crepes": "Sweet Crepes"
   ,"menu.category.waffles-pancakes": "Waffles & Pancakes"
   ,"menu.category.savory-desserts": "Savory Crepes & Desserts"
+  ,"menu.category.jwajem-drinks": "Jwajem & Drinks"
   ,"menu.category.evening-packs": "Evening Packs"
   ,"product.page.eyebrow": "From the menu"
   ,"product.page.title": "A closer look."

@@ -22,6 +22,16 @@ export const routes: Routes = [
 			import('./pages/visit/visit-page').then(({ VisitPage }) => VisitPage),
 	},
 	{
+		path: 'events',
+		loadComponent: () =>
+			import('./pages/events/events-page').then(({ EventsPage }) => EventsPage),
+	},
+	{
+		path: 'gallery',
+		loadComponent: () =>
+			import('./pages/gallery/gallery-page').then(({ GalleryPage }) => GalleryPage),
+	},
+	{
 		path: 'reserve',
 		loadComponent: () =>
 			import('./pages/reserve/reserve-page').then(({ ReservePage }) => ReservePage),

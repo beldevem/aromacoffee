@@ -1,0 +1,37 @@
+<app-site-header />
+
+<main class="gallery-page">
+  <header class="gallery-intro">
+    <p class="eyebrow">{{ i18n.t('gallery.eyebrow') }}</p>
+    <h1>{{ i18n.t('gallery.title') }}</h1>
+    <p>{{ i18n.t('gallery.copy') }}</p>
+  </header>
+
+  <section class="gallery-showcase" aria-live="polite" [attr.aria-label]="i18n.t('gallery.title')">
+    <img
+      [src]="gallerySlides[activeIndex()].src"
+      [alt]="gallerySlides[activeIndex()].label"
+      loading="lazy"
+      decoding="async"
+    />
+    <button
+      class="gallery-control gallery-previous"
+      type="button"
+      [attr.aria-label]="i18n.t('gallery.previous')"
+      (click)="previous()"
+    >&#8592;</button>
+    <button
+      class="gallery-control gallery-next"
+      type="button"
+      [attr.aria-label]="i18n.t('gallery.next')"
+      (click)="next()"
+    >&#8594;</button>
+  </section>
+
+  <div class="gallery-links">
+    <a href="https://www.facebook.com/aroma.coffee77/" target="_blank" rel="noopener noreferrer">{{ i18n.t('gallery.facebook') }}</a>
+    <a href="https://www.instagram.com/aromaacoffeeshopp/" target="_blank" rel="noopener noreferrer">{{ i18n.t('gallery.instagram') }}</a>
+  </div>
+</main>
+
+<app-site-footer />
