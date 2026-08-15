@@ -53,7 +53,7 @@
       <label>{{ i18n.t('admin.products.category') }}<select name="categoryId" [(ngModel)]="draft.categoryId" required>@for (category of categories; track category.id) { <option [value]="category.id">{{ category.nameFr }}</option> }</select></label>
       <label>{{ i18n.t('admin.products.state') }}<select name="status" [(ngModel)]="draft.status"><option value="PUBLISHED">{{ i18n.t('admin.product.published') }}</option><option value="DRAFT">{{ i18n.t('admin.product.draft') }}</option><option value="HIDDEN">{{ i18n.t('admin.product.hidden') }}</option></select></label>
       <label>{{ i18n.t('admin.products.flag') }}<select name="flagId" [(ngModel)]="draft.flagId"><option [ngValue]="undefined">{{ i18n.t('admin.products.noFlag') }}</option>@for (flag of flags; track flag.id) { <option [value]="flag.id">{{ flag.labelFr }}</option> }</select></label>
-      <label>{{ i18n.t('admin.products.image') }}<input type="file" accept="image/jpeg,image/png,image/webp" (change)="selectImage($event)" />@if (selectedImageName()) { <small class="selected-image">{{ selectedImageName() }}</small> }</label>
+      <label>{{ i18n.t('admin.products.image') }}<input type="file" accept="image/jpeg,image/png,image/webp" [required]="!editing()" (change)="selectImage($event)" />@if (selectedImageName()) { <small class="selected-image">{{ selectedImageName() }}</small> }</label>
       <div class="form-actions"><button type="button" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button><button class="save" type="submit" [disabled]="saving()">{{ i18n.t('admin.save') }}</button></div>
       </form>
     </dialog>

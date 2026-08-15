@@ -50,13 +50,13 @@ export class ProductsService {
   }
 
   async create(dto: CreateProductDto) {
-    const product = await this.prisma.product.create({ data: dto, include: { category: true, flag: true } });
+    const product = await this.prisma.product.create({ data: this.normalizePromotion(dto), include: { category: true, flag: true } });
     return this.toResponse(product);
   }
 
   async update(id: string, dto: UpdateProductDto) {
     await this.findOne(id);
-    const product = await this.prisma.product.update({ where: { id }, data: dto, include: { category: true, flag: true } });
+    const product = await this.prisma.product.update({ where: { id }, data: this.normalizePromotion(dto), include: { category: true, flag: true } });
     return this.toResponse(product);
   }
 
@@ -95,6 +95,15 @@ export class ProductsService {
     return {
       ...product,
       price: `${(product.promoPrice ?? product.priceCents) / 100} DT`,
+    };
+  }
+
+  private normalizePromotion<T extends { promotion?: boolean; promoPrice?: number | null; ogPrice?: number; priceCents?: number }>(dto: T): T {
+    if (dto.promotion !== false) return dto;
+    return {
+      ...dto,
+      promoPrice: null,
+      ...(dto.ogPrice !== undefined ? { priceCents: dto.ogPrice } : {}),
     };
   }
 }

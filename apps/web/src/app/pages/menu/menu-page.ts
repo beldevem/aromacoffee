@@ -72,18 +72,21 @@ export class MenuPage implements AfterViewInit, OnDestroy, OnInit {
       next: (catalog) => {
         const categories = catalog.map((category) => ({
           key: category.slug,
-          items: category.products.map((product): MenuItem => ({
-            slug: product.slug,
-            name: { en: product.name, fr: product.nameFr, ar: product.nameAr },
-            description: { en: product.description ?? product.name, fr: product.descriptionFr ?? product.nameFr, ar: product.descriptionAr ?? product.nameAr },
-            price: `${(product.promoPrice ?? product.priceCents) / 100} DT`,
-            isPromotion: product.promotion,
-            originalPrice: product.ogPrice ? `${product.ogPrice / 100} DT` : undefined,
-            promotionPrice: product.promoPrice ? `${product.promoPrice / 100} DT` : undefined,
-            badgeLabel: product.flag ? { en: product.flag.label, fr: product.flag.labelFr, ar: product.flag.labelAr } : undefined,
-            imageUrl: product.imageUrl ?? undefined,
-            status: 'PUBLISHED',
-          })),
+          items: category.products.map((product): MenuItem => {
+            const isPromotion = product.promotion && product.promoPrice != null && product.promoPrice < (product.ogPrice ?? product.priceCents);
+            return {
+              slug: product.slug,
+              name: { en: product.name, fr: product.nameFr, ar: product.nameAr },
+              description: { en: product.description ?? product.name, fr: product.descriptionFr ?? product.nameFr, ar: product.descriptionAr ?? product.nameAr },
+              price: `${(isPromotion ? (product.promoPrice ?? product.priceCents) : product.priceCents) / 100} DT`,
+              isPromotion,
+              originalPrice: isPromotion && product.ogPrice ? `${product.ogPrice / 100} DT` : undefined,
+              promotionPrice: isPromotion ? `${(product.promoPrice ?? product.priceCents) / 100} DT` : undefined,
+              badgeLabel: product.flag ? { en: product.flag.label, fr: product.flag.labelFr, ar: product.flag.labelAr } : undefined,
+              imageUrl: product.imageUrl ?? undefined,
+              status: 'PUBLISHED',
+            };
+          }),
         })).filter((category) => category.items.length > 0);
         if (categories.length > 0) {
           this.categoryLabels = Object.fromEntries(catalog.map((category) => [category.slug, { en: category.name, fr: category.nameFr, ar: category.nameAr }]));
