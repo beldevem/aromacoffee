@@ -26,7 +26,15 @@ export class ReservePage {
     this.submitting.set(true);
     this.submitted.set(false);
     this.error.set('');
-    const payload = { ...this.draft, contactPhone: `+216${this.draft.contactPhone.replace(/^\+216\s?/, '')}`, dateTime: new Date(this.draft.dateTime).toISOString(), source: 'website', status: 'PENDING' };
+    const payload = {
+      ...this.draft,
+      contactPhone: `+216${this.draft.contactPhone.replace(/^\+216\s?/, '').replace(/\s+/g, '')}`,
+      contactEmail: this.draft.contactEmail.trim() || undefined,
+      notes: this.draft.notes.trim() || undefined,
+      dateTime: new Date(this.draft.dateTime).toISOString(),
+      source: 'website',
+      status: 'PENDING',
+    };
     this.http.post(`${this.apiUrl}/reservations`, payload).subscribe({
       next: () => { this.submitted.set(true); this.submitting.set(false); this.draft = this.emptyDraft(); },
       error: () => { this.error.set(this.i18n.t('reserve.form.error')); this.submitting.set(false); },
