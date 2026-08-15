@@ -23,17 +23,17 @@
           type="button"
           [class.active]="activeCategory() === categoryKey"
           (click)="selectCategory(categoryKey)"
-        >{{ i18n.t(categoryKey === 'all' ? 'menu.category.all' : 'menu.category.' + categoryKey) }}</button>
+        >{{ categoryKey === 'all' ? i18n.t('menu.category.all') : categoryName(categoryKey) }}</button>
       }
     </fieldset>
   </div>
 
   <div class="menu-catalog">
     @for (category of visibleCategories(); track category.key) {
-      <section class="menu-category" [attr.aria-labelledby]="category.key">
+        <section class="menu-category" [attr.aria-labelledby]="category.key">
         <div class="category-heading">
-          <img [src]="categoryImage(category.key)" [alt]="i18n.t('menu.category.' + category.key)" loading="lazy" decoding="async" />
-          <h2 [id]="category.key">{{ i18n.t('menu.category.' + category.key) }}</h2>
+          <img [src]="categoryImage(category.key)" [alt]="categoryName(category.key)" loading="lazy" decoding="async" />
+          <h2 [id]="category.key">{{ categoryName(category.key) }}</h2>
         </div>
         <div class="menu-items">
           @for (item of category.items; track item.slug) {

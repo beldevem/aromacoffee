@@ -4,11 +4,17 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Roles } from '../auth/roles.decorator';
 import { UserRole } from '../generated/prisma/client';
+import { Public } from '../auth/public.decorator';
+import { PublicCatalogService } from './public-catalog.service';
 
 @Controller('categories')
 @Roles(UserRole.ADMIN)
 export class CategoriesController {
-  constructor(private readonly categories: CategoriesService) {}
+  constructor(private readonly categories: CategoriesService, private readonly catalog: PublicCatalogService) {}
+
+  @Public()
+  @Get('public/catalog')
+  findPublicCatalog() { return this.catalog.findCatalog(); }
 
   @Get()
   findAll() { return this.categories.findAll(); }

@@ -1,12 +1,27 @@
 import { isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, computed, ElementRef, inject, OnDestroy, PLATFORM_ID, signal, ViewChild } from '@angular/core';
-import { MENU_CATEGORIES } from '../../core/menu/menu-data';
+import { AfterViewInit, Component, computed, ElementRef, inject, OnDestroy, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { LocalizedText, MENU_CATEGORIES, MenuCategory, MenuItem } from '../../core/menu/menu-data';
 import { categoryImage, productImage } from '../../core/menu/menu-art';
 import { LOCAL_PRODUCT_IMAGES } from '../../core/menu/menu-images';
 import { TranslationService } from '../../core/i18n/translation.service';
 import { SiteFooter } from '../../shared/components/site-footer/site-footer';
 import { SiteHeader } from '../../shared/components/site-header/site-header';
 import { ProductCard } from '../../shared/components/product-card/product-card';
+import { API_BASE_URL } from '../../core/api/api-base-url';
+
+type CatalogResponse = Array<{
+  slug: string;
+  name: string;
+  nameFr: string;
+  nameAr: string;
+  products: Array<{
+    slug: string; name: string; nameFr: string; nameAr: string;
+    description?: string | null; descriptionFr?: string | null; descriptionAr?: string | null;
+    priceCents: number; promotion: boolean; ogPrice?: number | null; promoPrice?: number | null;
+    imageUrl?: string | null; flag?: { label: string; labelFr: string; labelAr: string } | null;
+  }>;
+}>;
 
 @Component({
   selector: 'app-menu-page',
@@ -15,9 +30,10 @@ import { ProductCard } from '../../shared/components/product-card/product-card';
   templateUrl: './menu-page.html',
   styleUrl: './menu-page.scss',
 })
-export class MenuPage implements AfterViewInit, OnDestroy {
+export class MenuPage implements AfterViewInit, OnDestroy, OnInit {
   protected readonly i18n = inject(TranslationService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly http = inject(HttpClient);
   private readonly initialCategoryCount = 3;
   private readonly categoryBatchSize = 3;
   private observer?: IntersectionObserver;
@@ -25,7 +41,7 @@ export class MenuPage implements AfterViewInit, OnDestroy {
   @ViewChild('loadMoreSentinel')
   private readonly loadMoreSentinel?: ElementRef<HTMLDivElement>;
 
-  protected readonly categories = MENU_CATEGORIES
+  protected categories: MenuCategory[] = MENU_CATEGORIES
     .map((category) => ({
       ...category,
       items: category.items.filter((item) => item.status === 'PUBLISHED'),
@@ -34,7 +50,8 @@ export class MenuPage implements AfterViewInit, OnDestroy {
   protected readonly searchTerm = signal('');
   protected readonly activeCategory = signal('all');
   protected readonly renderedCategoryCount = signal(this.initialCategoryCount);
-  protected readonly categoryKeys = ['all', ...this.categories.map((category) => category.key)];
+  protected categoryKeys = ['all', ...this.categories.map((category) => category.key)];
+  protected categoryLabels: Record<string, LocalizedText> = {};
   private readonly categorySearchTerms: Record<string, string[]> = {
     chocolates: ['chocolate', 'chocolat', 'dessert', 'desserts'],
     'drinks.fresh-juices': ['drink', 'drinks', 'boisson', 'boissons', 'juice', 'jus'],
@@ -49,6 +66,34 @@ export class MenuPage implements AfterViewInit, OnDestroy {
     'jwajem-drinks': ['drink', 'drinks', 'boisson', 'boissons'],
     'evening-packs': ['pack', 'packs', 'evening', 'soir'],
   };
+
+  ngOnInit(): void {
+    this.http.get<CatalogResponse>(`${API_BASE_URL}/categories/public/catalog`).subscribe({
+      next: (catalog) => {
+        const categories = catalog.map((category) => ({
+          key: category.slug,
+          items: category.products.map((product): MenuItem => ({
+            slug: product.slug,
+            name: { en: product.name, fr: product.nameFr, ar: product.nameAr },
+            description: { en: product.description ?? product.name, fr: product.descriptionFr ?? product.nameFr, ar: product.descriptionAr ?? product.nameAr },
+            price: `${(product.promoPrice ?? product.priceCents) / 100} DT`,
+            isPromotion: product.promotion,
+            originalPrice: product.ogPrice ? `${product.ogPrice / 100} DT` : undefined,
+            promotionPrice: product.promoPrice ? `${product.promoPrice / 100} DT` : undefined,
+            badgeLabel: product.flag ? { en: product.flag.label, fr: product.flag.labelFr, ar: product.flag.labelAr } : undefined,
+            imageUrl: product.imageUrl ?? undefined,
+            status: 'PUBLISHED',
+          })),
+        })).filter((category) => category.items.length > 0);
+        if (categories.length > 0) {
+          this.categoryLabels = Object.fromEntries(catalog.map((category) => [category.slug, { en: category.name, fr: category.nameFr, ar: category.nameAr }]));
+          this.categories = categories;
+          this.categoryKeys = ['all', ...categories.map((category) => category.key)];
+          this.resetCategoryWindow();
+        }
+      },
+    });
+  }
   protected readonly filteredCategories = computed(() => {
     const query = this.searchTerm().trim().toLocaleLowerCase();
     const selectedCategory = this.activeCategory();
@@ -129,8 +174,13 @@ export class MenuPage implements AfterViewInit, OnDestroy {
     return categoryImage(categoryKey);
   }
 
+  protected categoryName(categoryKey: string): string {
+    return this.categoryLabels[categoryKey]?.[this.i18n.locale()] ?? this.i18n.t(`menu.category.${categoryKey}`);
+  }
+
   protected itemImage(slug: string, categoryKey: string): string {
-    return LOCAL_PRODUCT_IMAGES[slug] ?? productImage(slug, categoryKey);
+    const item = this.categories.flatMap((category) => category.items).find((entry) => entry.slug === slug);
+    return item?.imageUrl ?? LOCAL_PRODUCT_IMAGES[slug] ?? productImage(slug, categoryKey);
   }
 
   protected badgeKey(slug: string): string | null {

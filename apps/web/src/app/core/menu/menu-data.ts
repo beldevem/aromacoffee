@@ -12,6 +12,8 @@ export interface MenuItem {
   isPromotion: boolean;
   originalPrice?: string;
   promotionPrice?: string;
+  badgeLabel?: LocalizedText;
+  imageUrl?: string;
   status: 'PUBLISHED' | 'DRAFT' | 'HIDDEN';
 }
 

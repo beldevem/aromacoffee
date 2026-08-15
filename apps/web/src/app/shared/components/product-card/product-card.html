@@ -1,6 +1,8 @@
 <a class="product-card" [routerLink]="['/product', item().slug]" [attr.data-testid]="'product-card-' + item().slug">
   @if (badgeKey(); as badge) {
     <span class="product-badge">{{ i18n.t(badge) }}</span>
+  } @else if (item().badgeLabel) {
+    <span class="product-badge">{{ item().badgeLabel?.[i18n.locale()] }}</span>
   } @else if (item().isPromotion) {
     <span class="product-badge promotion-badge">{{ i18n.t('menu.promotion') }}</span>
   }
