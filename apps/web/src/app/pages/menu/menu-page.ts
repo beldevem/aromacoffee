@@ -41,16 +41,16 @@ export class MenuPage implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild('loadMoreSentinel')
   private readonly loadMoreSentinel?: ElementRef<HTMLDivElement>;
 
-  protected categories: MenuCategory[] = MENU_CATEGORIES
+  protected readonly categories = signal<MenuCategory[]>(MENU_CATEGORIES
     .map((category) => ({
       ...category,
       items: category.items.filter((item) => item.status === 'PUBLISHED'),
     }))
-    .filter((category) => category.items.length > 0);
+    .filter((category) => category.items.length > 0));
   protected readonly searchTerm = signal('');
   protected readonly activeCategory = signal('all');
   protected readonly renderedCategoryCount = signal(this.initialCategoryCount);
-  protected categoryKeys = ['all', ...this.categories.map((category) => category.key)];
+  protected categoryKeys = ['all', ...this.categories().map((category) => category.key)];
   protected categoryLabels: Record<string, LocalizedText> = {};
   private readonly categorySearchTerms: Record<string, string[]> = {
     chocolates: ['chocolate', 'chocolat', 'dessert', 'desserts'],
@@ -90,7 +90,7 @@ export class MenuPage implements AfterViewInit, OnDestroy, OnInit {
         })).filter((category) => category.items.length > 0);
         if (categories.length > 0) {
           this.categoryLabels = Object.fromEntries(catalog.map((category) => [category.slug, { en: category.name, fr: category.nameFr, ar: category.nameAr }]));
-          this.categories = categories;
+          this.categories.set(categories);
           this.categoryKeys = ['all', ...categories.map((category) => category.key)];
           this.resetCategoryWindow();
         }
@@ -101,7 +101,7 @@ export class MenuPage implements AfterViewInit, OnDestroy, OnInit {
     const query = this.searchTerm().trim().toLocaleLowerCase();
     const selectedCategory = this.activeCategory();
 
-    return this.categories
+    return this.categories()
       .filter((category) => selectedCategory === 'all' || category.key === selectedCategory)
       .map((category) => ({
         ...category,
@@ -182,7 +182,7 @@ export class MenuPage implements AfterViewInit, OnDestroy, OnInit {
   }
 
   protected itemImage(slug: string, categoryKey: string): string {
-    const item = this.categories.flatMap((category) => category.items).find((entry) => entry.slug === slug);
+    const item = this.categories().flatMap((category) => category.items).find((entry) => entry.slug === slug);
     return item?.imageUrl ?? LOCAL_PRODUCT_IMAGES[slug] ?? productImage(slug, categoryKey);
   }
 
