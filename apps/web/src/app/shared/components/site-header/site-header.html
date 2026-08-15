@@ -3,9 +3,22 @@
     <img class="brand-logo" src="/brand/aroma-logo.svg" [attr.alt]="i18n.t('brand.alt')" />
   </a>
 
-  <nav [attr.aria-label]="i18n.t('nav.label')">
-    <a routerLink="/menu">{{ i18n.t('nav.menu') }}</a>
-    <a routerLink="/visit">{{ i18n.t('nav.visit') }}</a>
+  <button
+    class="menu-toggle"
+    type="button"
+    [attr.aria-label]="i18n.t(menuOpen() ? 'nav.close-menu' : 'nav.open-menu')"
+    [attr.aria-expanded]="menuOpen()"
+    (click)="toggleMenu()"
+  >
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav [class.is-open]="menuOpen()" [attr.aria-label]="i18n.t('nav.label')">
+    <a routerLink="/menu" (click)="closeMenu()">{{ i18n.t('nav.menu') }}</a>
+    <a routerLink="/visit" (click)="closeMenu()">{{ i18n.t('nav.visit') }}</a>
+    <a routerLink="/events" (click)="closeMenu()">{{ i18n.t('nav.events') }}</a>
+    <a routerLink="/gallery" (click)="closeMenu()">{{ i18n.t('nav.gallery') }}</a>
+    <a routerLink="/reserve" (click)="closeMenu()">{{ i18n.t('actions.reserve') }}</a>
   </nav>
 
   <fieldset class="language-switcher">

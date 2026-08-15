@@ -1,34 +1,59 @@
 <footer class="site-footer">
-  <div class="footer-brand">
-    <img src="/brand/aroma-logo.svg" [attr.alt]="i18n.t('brand.alt')" />
-    <p>{{ i18n.t('footer.tagline') }}</p>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="/brand/aroma-logo.svg" [attr.alt]="i18n.t('brand.alt')" />
+      <p>{{ i18n.t('footer.tagline') }}</p>
+    </div>
+
+    <nav class="footer-column footer-navigation" [attr.aria-label]="i18n.t('footer.navigation')">
+      <h2>{{ i18n.t('footer.navigation') }}</h2>
+      <a routerLink="/">{{ i18n.t('footer.home') }}</a>
+      <a routerLink="/menu">{{ i18n.t('nav.menu') }}</a>
+      <a routerLink="/visit">{{ i18n.t('nav.visit') }}</a>
+      <a routerLink="/events">{{ i18n.t('nav.events') }}</a>
+      <a routerLink="/gallery">{{ i18n.t('nav.gallery') }}</a>
+      <a routerLink="/reserve">{{ i18n.t('actions.reserve') }}</a>
+    </nav>
+
+    <div class="footer-column footer-contact">
+      <h2>{{ i18n.t('footer.contact') }}</h2>
+      <a
+        class="contact-link"
+        href="https://www.google.com/maps/place/Aroma+Coffee+Shop/@33.689066,8.9810646,904m/data=!3m2!1e3!4b1!4m6!3m5!1s0x12566f30c26f6d61:0xa2d012a10b03c6a0!8m2!3d33.6890616!4d8.9859355!16s%2Fg%2F11zhfc3myr"
+        target="_blank"
+        rel="noopener noreferrer"
+      >{{ i18n.t('footer.address') }}</a>
+      <a class="contact-link" href="tel:+21655264235">{{ i18n.t('footer.phone') }}</a>
+    </div>
+
+    <div class="footer-column footer-social">
+      <h2>{{ i18n.t('social.label') }}</h2>
+      <div class="social-links">
+        <a
+          class="social-link"
+          href="https://www.facebook.com/aroma.coffee77/"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="i18n.t('social.facebook')"
+          [attr.title]="i18n.t('social.facebook')"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3.3 0-5 1.9-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1Z" /></svg>
+        </a>
+        <a
+          class="social-link"
+          href="https://www.instagram.com/aromaacoffeeshopp/"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="i18n.t('social.instagram')"
+          [attr.title]="i18n.t('social.instagram')"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" class="social-dot" /></svg>
+        </a>
+      </div>
+    </div>
   </div>
-  <div class="footer-links">
-    <a routerLink="/menu">{{ i18n.t('nav.menu') }}</a>
-    <a routerLink="/visit">{{ i18n.t('nav.visit') }}</a>
-    <a href="tel:+21600000000">{{ i18n.t('footer.call') }}</a>
+  <div class="footer-bottom">
+    <small>{{ i18n.t('footer.copyright') }}</small>
+    <span>{{ i18n.t('footer.note') }}</span>
   </div>
-  <div class="social-links" [attr.aria-label]="i18n.t('social.label')">
-    <a
-      class="social-link"
-      href="https://www.facebook.com/aroma.coffee77/"
-      target="_blank"
-      rel="noopener noreferrer"
-      [attr.aria-label]="i18n.t('social.facebook')"
-      [attr.title]="i18n.t('social.facebook')"
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3.3 0-5 1.9-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1Z" /></svg>
-    </a>
-    <a
-      class="social-link"
-      href="https://www.instagram.com/aromaacoffeeshopp/"
-      target="_blank"
-      rel="noopener noreferrer"
-      [attr.aria-label]="i18n.t('social.instagram')"
-      [attr.title]="i18n.t('social.instagram')"
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" class="social-dot" /></svg>
-    </a>
-  </div>
-  <small>{{ i18n.t('footer.copyright') }}</small>
 </footer>

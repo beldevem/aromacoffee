@@ -4,7 +4,9 @@
   display: flex;
   justify-content: space-around;
   padding: 0.55rem 0 calc(0.55rem + var(--safe-bottom));
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   z-index: 5;
 }
 

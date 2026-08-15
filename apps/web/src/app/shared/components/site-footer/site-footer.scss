@@ -1,11 +1,24 @@
 .site-footer {
-  align-items: end;
   background: var(--color-brand-green-deep);
   color: var(--color-action-on);
+  padding: 3rem 1.25rem calc(5rem + var(--safe-bottom));
+}
+
+.footer-inner {
   display: grid;
-  gap: 2rem;
-  grid-template-columns: 1fr;
-  padding: 3rem 1.25rem calc(6rem + var(--safe-bottom));
+  gap: 2.5rem;
+  margin: 0 auto;
+  max-width: var(--content-max);
+}
+
+.footer-column h2 {
+  color: var(--color-brand-gold);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
 }
 
 .footer-brand img {
@@ -18,23 +31,39 @@
   font-family: var(--font-display);
   font-size: 1.2rem;
   margin: 0.75rem 0 0;
+  max-width: 18rem;
 }
 
-.footer-links {
+.footer-navigation,
+.footer-contact {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.65rem;
 }
 
-.footer-links a {
+.footer-navigation a,
+.contact-link {
   color: var(--color-brand-cream);
-  font-weight: 600;
+  font-size: 0.95rem;
   text-decoration: none;
+}
+
+.footer-navigation a:hover,
+.contact-link:hover {
+  color: #fff;
+}
+
+.contact-link {
+  line-height: 1.45;
+}
+
+.footer-social {
+  align-self: start;
 }
 
 .social-links {
   display: flex;
-  gap: 0.6rem;
+  gap: 0.65rem;
 }
 
 .social-link {
@@ -63,6 +92,7 @@
   width: 1.15rem;
 }
 
+.social-link svg rect,
 .social-link svg circle {
   fill: none;
 }
@@ -72,13 +102,31 @@
   stroke: none;
 }
 
-.site-footer small {
+.footer-bottom {
+  border-top: 1px solid rgb(232 215 171 / 0.2);
+  color: var(--color-brand-cream);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin: 2.5rem auto 0;
+  max-width: var(--content-max);
+  padding-top: 1.25rem;
+}
+
+.footer-bottom small,
+.footer-bottom span {
   color: var(--color-brand-soft, var(--color-brand-cream));
+  font-size: 0.75rem;
 }
 
 @media (min-width: 48rem) {
   .site-footer {
-    grid-template-columns: 1.5fr 1fr auto;
     padding: 4rem 3rem;
+  }
+
+  .footer-inner {
+    align-items: start;
+    grid-template-columns: 1.5fr 1fr 1.2fr auto;
   }
 }

@@ -1,0 +1,42 @@
+<section class="promotions" aria-labelledby="promotions-title">
+  <div class="promotion-heading">
+    <p class="eyebrow">{{ i18n.t('promo.eyebrow') }}</p>
+    <h2 id="promotions-title">{{ i18n.t('promo.title') }}</h2>
+  </div>
+
+  <div class="promotion-block packs-block">
+    <div class="promotion-copy">
+      <p class="eyebrow">{{ i18n.t('promo.packs.eyebrow') }}</p>
+      <h3>{{ i18n.t('promo.packs.title') }}</h3>
+      <p>{{ i18n.t('promo.packs.copy') }}</p>
+      <a class="promotion-link" href="/menu">{{ i18n.t('menu.full') }} <span aria-hidden="true">&#8594;</span></a>
+    </div>
+    <div class="promotion-images">
+      <img src="/images/Pack Duo.jpg" [alt]="i18n.t('promo.packs.evening')" loading="lazy" decoding="async" />
+      <img src="/images/Pack Friends.jpg" [alt]="i18n.t('promo.packs.breakfast')" loading="lazy" decoding="async" />
+    </div>
+  </div>
+
+  <div class="promotion-block events-block">
+    <div class="promotion-copy">
+      <p class="eyebrow">{{ i18n.t('promo.events.eyebrow') }}</p>
+      <h3>{{ i18n.t('promo.events.title') }}</h3>
+      <p>{{ i18n.t('promo.events.copy') }}</p>
+      <a class="promotion-cta" href="tel:+21655264235">{{ i18n.t('promo.events.cta') }}</a>
+    </div>
+    <div class="event-placeholders" aria-label="{{ i18n.t('promo.events.images') }}">
+      <div>
+        <img src="/images/birthday.jpg" [alt]="i18n.t('promo.events.birthday')" loading="lazy" decoding="async" />
+        <strong>{{ i18n.t('promo.events.birthday') }}</strong>
+      </div>
+      <div>
+        <img src="/images/workdinner.jpg" [alt]="i18n.t('promo.events.workDinner')" loading="lazy" decoding="async" />
+        <strong>{{ i18n.t('promo.events.workDinner') }}</strong>
+      </div>
+      <div>
+        <img src="/images/seminaire.jpg" [alt]="i18n.t('promo.events.seminar')" loading="lazy" decoding="async" />
+        <strong>{{ i18n.t('promo.events.seminar') }}</strong>
+      </div>
+    </div>
+  </div>
+</section>

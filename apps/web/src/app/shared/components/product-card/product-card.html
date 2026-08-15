@@ -2,10 +2,10 @@
   @if (badgeKey(); as badge) {
     <span class="product-badge">{{ i18n.t(badge) }}</span>
   }
-  <img [src]="imageUrl()" [alt]="productName()" loading="lazy" />
+  <img [src]="imageUrl()" [alt]="productName()" loading="lazy" decoding="async" />
   <span class="price-badge" aria-label="{{ displayPrice() }} DT">
-    <small>DT</small>
     <strong>{{ displayPrice() }}</strong>
+    <small>DT</small>
   </span>
   <span class="product-card-content">
     <strong>{{ productName() }}</strong>

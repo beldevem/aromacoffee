@@ -294,3 +294,37 @@ h2 {
   .menu-preview,
   .visit { padding-bottom: 6rem; padding-top: 6rem; }
 }
+
+@media (max-width: 47.99rem) {
+  .hero-art {
+    height: 13rem;
+    right: 0;
+    width: 12rem;
+  }
+
+  .hero::after {
+    height: 13rem;
+    right: -6rem;
+    width: 13rem;
+  }
+
+  .hero::before {
+    height: 17rem;
+    right: -8rem;
+    top: -2rem;
+    width: 17rem;
+  }
+
+  .hero-stamp {
+    font-size: 0.62rem;
+    height: 3.7rem;
+    padding-top: 1rem;
+    right: 0.25rem;
+    top: 8.2rem;
+    width: 3.7rem;
+  }
+
+  .hero-stamp b {
+    font-size: 0.82rem;
+  }
+}

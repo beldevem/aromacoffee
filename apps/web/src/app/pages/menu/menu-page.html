@@ -4,7 +4,6 @@
   <p class="eyebrow">{{ i18n.t('menu.page.eyebrow') }}</p>
   <h1>{{ i18n.t('menu.page.title') }}</h1>
   <p class="page-intro">{{ i18n.t('menu.page.copy') }}</p>
-  <p class="price-note">{{ i18n.t('menu.prices-note') }}</p>
 
   <div class="menu-tools">
     <label class="search-box">
@@ -14,7 +13,7 @@
         type="search"
         [value]="searchTerm()"
         [placeholder]="i18n.t('menu.search.placeholder')"
-        (input)="searchTerm.set($any($event.target).value)"
+        (input)="updateSearchTerm($any($event.target).value)"
       />
     </label>
     <fieldset class="category-filters">
@@ -23,7 +22,7 @@
         <button
           type="button"
           [class.active]="activeCategory() === categoryKey"
-          (click)="activeCategory.set(categoryKey)"
+          (click)="selectCategory(categoryKey)"
         >{{ i18n.t(categoryKey === 'all' ? 'menu.category.all' : 'menu.category.' + categoryKey) }}</button>
       }
     </fieldset>
@@ -33,7 +32,7 @@
     @for (category of visibleCategories(); track category.key) {
       <section class="menu-category" [attr.aria-labelledby]="category.key">
         <div class="category-heading">
-          <img [src]="categoryImage(category.key)" [alt]="i18n.t('menu.category.' + category.key)" loading="lazy" />
+          <img [src]="categoryImage(category.key)" [alt]="i18n.t('menu.category.' + category.key)" loading="lazy" decoding="async" />
           <h2 [id]="category.key">{{ i18n.t('menu.category.' + category.key) }}</h2>
         </div>
         <div class="menu-items">
@@ -51,6 +50,7 @@
     @if (visibleCategories().length === 0) {
       <p class="empty-state">{{ i18n.t('menu.search.empty') }}</p>
     }
+    <div #loadMoreSentinel class="menu-load-sentinel" [class.is-hidden]="!hasMoreCategories()" aria-hidden="true"></div>
   </div>
 </main>
 

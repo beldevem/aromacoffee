@@ -8,6 +8,10 @@
   "nav.label": "Navigation principale",
   "nav.menu": "Menu",
   "nav.visit": "Nous trouver",
+  "nav.events": "Événements",
+  "nav.gallery": "Galerie",
+  "nav.open-menu": "Ouvrir le menu",
+  "nav.close-menu": "Fermer le menu",
   "hero.eyebrow": "Fraîchement torréfié, préparé avec soin",
   "hero.title.before": "Une table tranquille",
   "hero.title.accent": "qui vous attend.",
@@ -17,12 +21,52 @@
   "hero.note": "Prenez le temps",
   "hero.open": "OUVERT",
   "hero.today": "aujourd'hui",
-  "menu.eyebrow": "Un peu de tout",
-  "menu.title": "Les favoris du jour",
+  "promo.eyebrow": "Les bons moments, simplement",
+  "promo.title": "Nos packs. Vos occasions.",
+  "promo.packs.eyebrow": "Nos packs",
+  "promo.packs.title": "À partager généreusement.",
+  "promo.packs.copy": "Packs soir et petits déjeuners pensés pour se retrouver autour d'une même table.",
+  "promo.packs.evening": "Packs soir",
+  "promo.packs.breakfast": "Packs petits déjeuners",
+  "promo.events.eyebrow": "Vos événements",
+  "promo.events.title": "Fêtez vos moments chez Aroma.",
+  "promo.events.copy": "Anniversaires, déjeuners de travail, séminaires et toutes les occasions qui méritent leur propre table.",
+  "promo.events.cta": "Appelez pour réserver",
+  "promo.events.images": "Emplacements des images d'événements",
+  "promo.events.birthday": "Anniversaire",
+  "promo.events.workDinner": "Dîner professionnel",
+  "promo.events.seminar": "Séminaire",
+  "promo.events.placeholder": "Photo à venir",
+  "events.eyebrow": "Faites-en un moment",
+  "events.title": "Vos événements chez Aroma.",
+  "events.copy": "Une table accueillante, des assiettes généreuses et un espace qui s'adapte à votre occasion.",
+  "events.birthday.eyebrow": "Célébrons ensemble",
+  "events.birthday.title": "Anniversaire",
+  "events.birthday.copy": "Réunissez vos proches autour d'un moment chaleureux avec cafés, douceurs et une table pleine de souvenirs.",
+  "events.workDinner.eyebrow": "Autour de la table",
+  "events.workDinner.title": "Dîner professionnel",
+  "events.workDinner.copy": "Un cadre détendu pour les dîners d'équipe, les échanges clients et les soirées moins formelles.",
+  "events.seminar.eyebrow": "Se réunir avec sens",
+  "events.seminar.title": "Séminaire",
+  "events.seminar.copy": "Organisez votre séminaire dans une atmosphère accueillante avec rafraîchissements et espace de discussion.",
+  "events.cta.title": "Vous préparez un moment spécial ?",
+  "events.cta.copy": "Appelez-nous et nous vous aiderons à préparer la table idéale pour votre occasion.",
+  "events.cta.action": "Appelez pour réserver",
+  "gallery.eyebrow": "Aroma en images",
+  "gallery.title": "Un peu de notre atmosphère.",
+  "gallery.copy": "Découvrez les cafés, les assiettes, les personnes et les moments qui font d'Aroma un lieu où l'on se sent bien.",
+  "gallery.coffee": "Café Aroma",
+  "gallery.packs": "Packs Aroma",
+  "gallery.events": "Événements Aroma",
+  "gallery.drinks": "Boissons Aroma",
+  "gallery.desserts": "Desserts Aroma",
+  "gallery.facebook": "Voir plus sur Facebook",
+  "gallery.instagram": "Voir plus sur Instagram",
+  "gallery.previous": "Image précédente",
+  "gallery.next": "Image suivante",
+  "gallery.chooseImage": "Choisir une image de la galerie",
+  "gallery.image": "Image de la galerie",
   "menu.full": "Voir le menu complet",
-  "menu.cappuccino.description": "Espresso, lait chaud et mousse onctueuse",
-  "menu.frappuccino.description": "Café glacé, pistache et chantilly",
-  "menu.breakfast.description": "Café, viennoiserie, jus, yaourt, fruits et plus encore",
   "visit.eyebrow": "Venez comme vous êtes",
   "visit.title": "Rendez-vous chez Aroma.",
   "visit.copy": "Horaires, itinéraire et la table qui vous attend.",
@@ -30,6 +74,12 @@
   "visit.maps": "Ouvrir dans Google Maps",
   "footer.tagline": "Fraîchement torréfié, préparé avec soin.",
   "footer.call": "Appeler",
+  "footer.home": "Accueil",
+  "footer.navigation": "Découvrir",
+  "footer.contact": "Contact",
+  "footer.address": "Aroma Coffee Shop, Route de Douz, 4242 Janoura, Kébili, Tunisie",
+  "footer.phone": "Appeler le café",
+  "footer.note": "Prenez le temps",
   "social.label": "Réseaux sociaux",
   "social.facebook": "Aroma sur Facebook",
   "social.instagram": "Instagram",
@@ -39,7 +89,6 @@
   ,"menu.page.eyebrow": "Le menu Aroma"
   ,"menu.page.title": "Une envie pour chaque moment."
   ,"menu.page.copy": "Découvrez nos cafés, boissons fraîches, petits déjeuners, desserts et créations signature."
-  ,"menu.prices-note": "Tous les prix sont en DT"
   ,"menu.page.ready": "Le menu complet arrive bientôt ici."
   ,"menu.view-product": "Voir les détails"
   ,"menu.search.label": "Rechercher dans le menu"
@@ -54,11 +103,18 @@
   ,"menu.category.coffee.hot": "Cafés chauds"
   ,"menu.category.coffee.cold": "Cafés glacés"
   ,"menu.category.coffee.frappuccino": "Frappuccinos"
+  ,"menu.category.chocolates": "Chocolats gourmands"
   ,"menu.category.drinks.fresh-juices": "Jus frais pressés"
+  ,"menu.category.milkshakes": "Milkshakes"
+  ,"menu.category.smoothies": "Smoothies"
+  ,"menu.category.mojitos": "Mojitos"
+  ,"menu.category.signature-cocktails": "Cocktails signature"
   ,"menu.category.breakfast": "Petits déjeuners"
+  ,"menu.category.omelettes": "Omelettes"
   ,"menu.category.sweet-crepes": "Crêpes sucrées"
   ,"menu.category.waffles-pancakes": "Gaufres & Pancakes"
   ,"menu.category.savory-desserts": "Crêpes salées & Desserts"
+  ,"menu.category.jwajem-drinks": "Jwajem & Boissons"
   ,"menu.category.evening-packs": "Packs soir"
   ,"product.page.eyebrow": "Depuis le menu"
   ,"product.page.title": "Dans les détails."
