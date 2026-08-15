@@ -109,7 +109,9 @@ export class AdminProductsPage implements OnInit {
     this.saving.set(true);
     const originalPrice = this.parsePriceCents(String(this.draft.ogPrice ?? 0));
     const promoPrice = this.draft.promotion ? this.parsePriceCents(String(this.draft.promoPrice ?? 0)) : null;
-    const payload = { ...this.draft, ogPrice: originalPrice, promoPrice, priceCents: promoPrice ?? originalPrice };
+    const payload = { ...this.draft };
+    if (payload.imageUrl?.startsWith('/')) delete payload.imageUrl;
+    Object.assign(payload, { ogPrice: originalPrice, promoPrice, priceCents: promoPrice ?? originalPrice });
     const request = this.editing()
       ? this.api.update(this.editing()!.id, payload)
       : this.api.create(payload);
