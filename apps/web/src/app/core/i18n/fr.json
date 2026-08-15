@@ -26,6 +26,7 @@
   "auth.submit": "Se connecter",
   "auth.loading": "Connexion...",
   "auth.loginError": "E-mail ou mot de passe incorrect.",
+  "auth.loginSuccess": "Connexion réussie.",
   "auth.logout": "Se déconnecter",
   "admin.kicker": "Espace Aroma",
   "admin.title": "Bonjour, responsable.",
@@ -64,7 +65,9 @@
   "admin.reservations.empty": "Aucune réservation trouvée.",
   "admin.reservations.loadError": "Impossible de charger les réservations.",
   "admin.reservations.saveError": "Impossible d'enregistrer la réservation.",
+  "admin.reservations.saveSuccess": "Réservation enregistrée avec succès.",
   "admin.reservations.deleteError": "Impossible de supprimer la réservation.",
+  "admin.reservations.deleteSuccess": "Réservation supprimée avec succès.",
   "admin.reservations.deleteConfirm": "Supprimer la réservation de",
   "admin.reservation.cancelled": "Annulée",
   "admin.reservation.completed": "Terminée",
@@ -104,7 +107,9 @@
   "admin.management.inactive": "Inactif",
   "admin.management.loadError": "Impossible de charger les données.",
   "admin.management.saveError": "Impossible d'enregistrer les données.",
+  "admin.management.saveSuccess": "Données enregistrées avec succès.",
   "admin.management.deleteError": "Impossible de supprimer les données.",
+  "admin.management.deleteSuccess": "Données supprimées avec succès.",
   "admin.management.deleteConfirm": "Supprimer",
   "admin.management.userName": "Nom",
   "admin.management.email": "E-mail",
@@ -134,7 +139,9 @@
   "admin.product.hidden": "Masqué",
   "admin.products.loadError": "Impossible de charger les produits.",
   "admin.products.saveError": "Impossible d'enregistrer le produit.",
+  "admin.products.saveSuccess": "Produit enregistré avec succès.",
   "admin.products.deleteError": "Impossible de supprimer le produit.",
+  "admin.products.deleteSuccess": "Produit supprimé avec succès.",
   "admin.products.deleteConfirm": "Supprimer",
   "admin.products.search": "Rechercher des produits...",
   "admin.products.results": "produits",
@@ -289,6 +296,12 @@
   ,"reserve.form.sending": "Envoi en cours..."
   ,"reserve.form.success": "Votre demande de réservation a bien été envoyée. Nous vous confirmerons votre table rapidement."
   ,"reserve.form.error": "Impossible d'envoyer votre demande. Veuillez réessayer."
+  ,"reserve.confirmation.kicker": "Demande reçue"
+  ,"reserve.confirmation.title": "Réservation réussie"
+  ,"reserve.confirmation.copy": "Votre demande de réservation a bien été reçue. Notre équipe vous la confirmera rapidement."
+  ,"reserve.confirmation.close": "Fermer"
+  ,"reserve.confirmation.menu": "Explorer le menu"
+  ,"reserve.confirmation.home": "Retour à l'accueil"
   ,"notFound.title": "Cette page s'est échappée."
   ,"notFound.copy": "La page que vous cherchez n'existe pas ici."
   ,"notFound.home": "Retour chez Aroma"

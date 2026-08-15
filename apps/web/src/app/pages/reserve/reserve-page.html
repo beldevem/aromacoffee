@@ -4,7 +4,7 @@
   <p class="eyebrow">{{ i18n.t('reserve.page.eyebrow') }}</p>
   <h1>{{ i18n.t('reserve.page.title') }}</h1>
   <p class="page-intro">{{ i18n.t('reserve.page.copy') }}</p>
-  <form class="reservation-form" (ngSubmit)="submit()" #reservationForm="ngForm">
+  <form class="reservation-form" (ngSubmit)="submit(reservationForm)" #reservationForm="ngForm">
     <div class="form-grid">
         <label>{{ i18n.t('reserve.form.name') }} <span class="required-mark" aria-hidden="true">*</span><input name="customerName" [(ngModel)]="draft.customerName" required minlength="2" maxlength="80" #customerName="ngModel" />@if (customerName.invalid && (customerName.touched || reservationForm.submitted)) { <small class="field-error">{{ customerName.errors?.['required'] ? i18n.t('validation.required') : i18n.t('validation.name') }}</small> }</label>
         <label>{{ i18n.t('reserve.form.phone') }} <span class="required-mark" aria-hidden="true">*</span><span class="phone-field"><span class="country-code">+216</span><input name="contactPhone" type="tel" inputmode="numeric" pattern="[24579][0-9]{7}" maxlength="8" placeholder="20 123 456" [(ngModel)]="draft.contactPhone" required #contactPhone="ngModel" /></span>@if (contactPhone.invalid && (contactPhone.touched || reservationForm.submitted)) { <small class="field-error">{{ contactPhone.errors?.['required'] ? i18n.t('validation.required') : i18n.t('validation.phone') }}</small> }</label>
@@ -15,9 +15,32 @@
     </div>
     <label>{{ i18n.t('reserve.form.notes') }}<textarea name="notes" rows="4" [(ngModel)]="draft.notes"></textarea></label>
     @if (error()) { <p class="form-message error">{{ error() }}</p> }
-    @if (submitted()) { <p class="form-message success">{{ i18n.t('reserve.form.success') }}</p> }
-    <button class="submit-button" type="submit" [disabled]="reservationForm.invalid || submitting()">{{ submitting() ? i18n.t('reserve.form.sending') : i18n.t('reserve.form.submit') }}</button>
+    <button class="submit-button" type="submit" [disabled]="reservationForm.invalid || submitting()">@if (submitting()) { <span class="loading-spinner" aria-hidden="true"></span> }{{ submitting() ? i18n.t('reserve.form.sending') : i18n.t('reserve.form.submit') }}</button>
   </form>
 </main>
 
 <app-site-footer />
+
+@if (confirmation(); as reservation) {
+  <div class="modal-backdrop" role="presentation">
+    <dialog class="confirmation-dialog" open aria-labelledby="reservation-confirmation-title">
+      <div class="confirmation-heading">
+        <div><p class="eyebrow">{{ i18n.t('reserve.confirmation.kicker') }}</p><h2 id="reservation-confirmation-title">{{ i18n.t('reserve.confirmation.title') }}</h2></div>
+        <button class="close-button" type="button" [attr.aria-label]="i18n.t('reserve.confirmation.close')" (click)="closeConfirmation()">&#10005;</button>
+      </div>
+      <p class="confirmation-copy">{{ i18n.t('reserve.confirmation.copy') }}</p>
+      <dl class="confirmation-details">
+        <div><dt>{{ i18n.t('reserve.form.name') }}</dt><dd>{{ reservation.customerName }}</dd></div>
+        <div><dt>{{ i18n.t('reserve.form.phone') }}</dt><dd>+216 {{ reservation.contactPhone }}</dd></div>
+        <div><dt>{{ i18n.t('reserve.form.date') }}</dt><dd>{{ confirmationDate(reservation.dateTime) }}</dd></div>
+        <div><dt>{{ i18n.t('reserve.form.guests') }}</dt><dd>{{ reservation.partySize }}</dd></div>
+        <div><dt>{{ i18n.t('reserve.form.location') }}</dt><dd>{{ locationLabel(reservation.location) }}</dd></div>
+        @if (reservation.notes.trim()) { <div><dt>{{ i18n.t('reserve.form.notes') }}</dt><dd>{{ reservation.notes }}</dd></div> }
+      </dl>
+      <div class="confirmation-actions">
+        <a class="submit-button" routerLink="/menu" (click)="closeConfirmation()">{{ i18n.t('reserve.confirmation.menu') }}</a>
+        <a class="secondary-button" routerLink="/" (click)="closeConfirmation()">{{ i18n.t('reserve.confirmation.home') }}</a>
+      </div>
+    </dialog>
+  </div>
+}

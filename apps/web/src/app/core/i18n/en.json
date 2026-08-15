@@ -26,6 +26,7 @@
   "auth.submit": "Sign in",
   "auth.loading": "Signing in...",
   "auth.loginError": "Incorrect email or password.",
+  "auth.loginSuccess": "Signed in successfully.",
   "auth.logout": "Sign out",
   "admin.kicker": "Aroma workspace",
   "admin.title": "Good morning, manager.",
@@ -64,7 +65,9 @@
   "admin.reservations.empty": "No reservations found.",
   "admin.reservations.loadError": "Could not load reservations.",
   "admin.reservations.saveError": "Could not save reservation.",
+  "admin.reservations.saveSuccess": "Reservation saved successfully.",
   "admin.reservations.deleteError": "Could not delete reservation.",
+  "admin.reservations.deleteSuccess": "Reservation deleted successfully.",
   "admin.reservations.deleteConfirm": "Delete reservation for",
   "admin.reservation.cancelled": "Cancelled",
   "admin.reservation.completed": "Completed",
@@ -104,7 +107,9 @@
   "admin.management.inactive": "Inactive",
   "admin.management.loadError": "Could not load records.",
   "admin.management.saveError": "Could not save record.",
+  "admin.management.saveSuccess": "Record saved successfully.",
   "admin.management.deleteError": "Could not delete record.",
+  "admin.management.deleteSuccess": "Record deleted successfully.",
   "admin.management.deleteConfirm": "Delete",
   "admin.management.userName": "Name",
   "admin.management.email": "Email",
@@ -134,7 +139,9 @@
   "admin.product.hidden": "Hidden",
   "admin.products.loadError": "Products could not be loaded.",
   "admin.products.saveError": "Product could not be saved.",
+  "admin.products.saveSuccess": "Product saved successfully.",
   "admin.products.deleteError": "Product could not be deleted.",
+  "admin.products.deleteSuccess": "Product deleted successfully.",
   "admin.products.deleteConfirm": "Delete",
   "admin.products.search": "Search products...",
   "admin.products.results": "products",
@@ -289,6 +296,12 @@
   ,"reserve.form.sending": "Sending..."
   ,"reserve.form.success": "Your reservation request was sent successfully. We will confirm your table shortly."
   ,"reserve.form.error": "We could not send your request. Please try again."
+  ,"reserve.confirmation.kicker": "Request received"
+  ,"reserve.confirmation.title": "Reservation successful"
+  ,"reserve.confirmation.copy": "Your reservation request has been received. Our staff will confirm your reservation soon."
+  ,"reserve.confirmation.close": "Close"
+  ,"reserve.confirmation.menu": "Explore menu"
+  ,"reserve.confirmation.home": "Back to home"
   ,"notFound.title": "This page wandered off."
   ,"notFound.copy": "The page you are looking for is not here."
   ,"notFound.home": "Back to Aroma"

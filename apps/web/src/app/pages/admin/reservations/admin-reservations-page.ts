@@ -6,6 +6,7 @@ import { AdminSidebar } from '../components/admin-sidebar/admin-sidebar';
 import { AdminTopbar } from '../components/admin-topbar/admin-topbar';
 import { TranslationService } from '../../../core/i18n/translation.service';
 import { API_BASE_URL } from '../../../core/api/api-base-url';
+import { ToastService } from '../../../core/notifications/toast.service';
 
 type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
 type Reservation = { id: string; customerName: string; contactPhone: string; contactEmail?: string | null; dateTime: string; partySize: number; location: 'INDOOR' | 'OUTDOOR_TERRACE' | 'N/A'; notes?: string | null; status: ReservationStatus; source: string };
@@ -19,6 +20,7 @@ type Reservation = { id: string; customerName: string; contactPhone: string; con
 })
 export class AdminReservationsPage implements OnInit {
   protected readonly i18n = inject(TranslationService);
+  private readonly toast = inject(ToastService);
   private readonly http = inject(HttpClient);
   protected readonly reservations = signal<Reservation[]>([]);
   protected readonly loading = signal(true);
@@ -64,16 +66,16 @@ export class AdminReservationsPage implements OnInit {
       ? this.http.patch(`${this.baseUrl}/reservations/${this.editing()!.id}`, payload)
       : this.http.post(`${this.baseUrl}/reservations`, payload);
     request.subscribe({
-      next: () => { this.formOpen.set(false); this.saving.set(false); this.load(); },
-      error: () => { this.error.set(this.i18n.t('admin.reservations.saveError')); this.saving.set(false); },
+      next: () => { this.formOpen.set(false); this.saving.set(false); this.toast.success(this.i18n.t('admin.reservations.saveSuccess')); this.load(); },
+      error: () => { this.error.set(this.i18n.t('admin.reservations.saveError')); this.toast.error(this.i18n.t('admin.reservations.saveError')); this.saving.set(false); },
     });
   }
 
   protected remove(reservation: Reservation): void {
     if (!confirm(`${this.i18n.t('admin.reservations.deleteConfirm')} ${reservation.customerName} ?`)) return;
     this.http.delete(`${this.baseUrl}/reservations/${reservation.id}`).subscribe({
-      next: () => this.load(),
-      error: () => this.error.set(this.i18n.t('admin.reservations.deleteError')),
+      next: () => { this.toast.success(this.i18n.t('admin.reservations.deleteSuccess')); this.load(); },
+      error: () => { this.error.set(this.i18n.t('admin.reservations.deleteError')); this.toast.error(this.i18n.t('admin.reservations.deleteError')); },
     });
   }
 

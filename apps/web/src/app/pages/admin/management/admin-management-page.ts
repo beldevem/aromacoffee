@@ -6,6 +6,7 @@ import { AdminSidebar } from '../components/admin-sidebar/admin-sidebar';
 import { AdminTopbar } from '../components/admin-topbar/admin-topbar';
 import { TranslationService } from '../../../core/i18n/translation.service';
 import { API_BASE_URL } from '../../../core/api/api-base-url';
+import { ToastService } from '../../../core/notifications/toast.service';
 
 type Resource = 'categories' | 'badges' | 'users';
 type Row = Record<string, any>;
@@ -19,6 +20,7 @@ type Row = Record<string, any>;
 })
 export class AdminManagementPage implements OnInit {
   protected readonly i18n = inject(TranslationService);
+  private readonly toast = inject(ToastService);
   private readonly http = inject(HttpClient);
   private readonly route = inject(ActivatedRoute);
   protected readonly rows = signal<Row[]>([]);
@@ -74,14 +76,14 @@ export class AdminManagementPage implements OnInit {
       ? this.http.patch(`${this.baseUrl}/${this.resource()}/${this.editing()!['id']}`, payload)
       : this.http.post(`${this.baseUrl}/${this.resource()}`, payload);
     request.subscribe({
-      next: () => { this.formOpen.set(false); this.saving.set(false); this.load(); },
-      error: () => { this.error.set(this.i18n.t('admin.management.saveError')); this.saving.set(false); },
+      next: () => { this.formOpen.set(false); this.saving.set(false); this.toast.success(this.i18n.t('admin.management.saveSuccess')); this.load(); },
+      error: () => { this.error.set(this.i18n.t('admin.management.saveError')); this.toast.error(this.i18n.t('admin.management.saveError')); this.saving.set(false); },
     });
   }
 
   protected remove(row: Row): void {
     if (!confirm(`${this.i18n.t('admin.management.deleteConfirm')} ${row['name'] ?? row['labelFr'] ?? row['slug']} ?`)) return;
-    this.http.delete(`${this.baseUrl}/${this.resource()}/${row['id']}`).subscribe({ next: () => this.load(), error: () => this.error.set(this.i18n.t('admin.management.deleteError')) });
+    this.http.delete(`${this.baseUrl}/${this.resource()}/${row['id']}`).subscribe({ next: () => { this.toast.success(this.i18n.t('admin.management.deleteSuccess')); this.load(); }, error: () => { this.error.set(this.i18n.t('admin.management.deleteError')); this.toast.error(this.i18n.t('admin.management.deleteError')); } });
   }
 
   protected closeForm(): void { this.formOpen.set(false); }

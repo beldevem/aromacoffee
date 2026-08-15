@@ -26,6 +26,7 @@
   "auth.submit": "تسجيل الدخول",
   "auth.loading": "جار تسجيل الدخول...",
   "auth.loginError": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "auth.loginSuccess": "تم تسجيل الدخول بنجاح.",
   "auth.logout": "تسجيل الخروج",
   "admin.kicker": "مساحة أروما",
   "admin.title": "صباح الخير، أيها المسؤول.",
@@ -64,7 +65,9 @@
   "admin.reservations.empty": "لم يتم العثور على حجوزات.",
   "admin.reservations.loadError": "تعذر تحميل الحجوزات.",
   "admin.reservations.saveError": "تعذر حفظ الحجز.",
+  "admin.reservations.saveSuccess": "تم حفظ الحجز بنجاح.",
   "admin.reservations.deleteError": "تعذر حذف الحجز.",
+  "admin.reservations.deleteSuccess": "تم حذف الحجز بنجاح.",
   "admin.reservations.deleteConfirm": "حذف حجز",
   "admin.reservation.cancelled": "ملغى",
   "admin.reservation.completed": "مكتمل",
@@ -104,7 +107,9 @@
   "admin.management.inactive": "غير نشط",
   "admin.management.loadError": "تعذر تحميل البيانات.",
   "admin.management.saveError": "تعذر حفظ البيانات.",
+  "admin.management.saveSuccess": "تم حفظ البيانات بنجاح.",
   "admin.management.deleteError": "تعذر حذف البيانات.",
+  "admin.management.deleteSuccess": "تم حذف البيانات بنجاح.",
   "admin.management.deleteConfirm": "حذف",
   "admin.management.userName": "الاسم",
   "admin.management.email": "البريد الإلكتروني",
@@ -134,7 +139,9 @@
   "admin.product.hidden": "مخفي",
   "admin.products.loadError": "تعذر تحميل المنتجات.",
   "admin.products.saveError": "تعذر حفظ المنتج.",
+  "admin.products.saveSuccess": "تم حفظ المنتج بنجاح.",
   "admin.products.deleteError": "تعذر حذف المنتج.",
+  "admin.products.deleteSuccess": "تم حذف المنتج بنجاح.",
   "admin.products.deleteConfirm": "حذف",
   "admin.products.search": "البحث عن المنتجات...",
   "admin.products.results": "منتجات",
@@ -289,6 +296,12 @@
   ,"reserve.form.sending": "جار الإرسال..."
   ,"reserve.form.success": "تم إرسال طلب الحجز بنجاح. سنؤكد طاولتكم قريباً."
   ,"reserve.form.error": "تعذر إرسال طلبكم. يرجى المحاولة مرة أخرى."
+  ,"reserve.confirmation.kicker": "تم استلام الطلب"
+  ,"reserve.confirmation.title": "تم الحجز بنجاح"
+  ,"reserve.confirmation.copy": "تم استلام طلب الحجز. سيقوم فريقنا بتأكيد الحجز قريباً."
+  ,"reserve.confirmation.close": "إغلاق"
+  ,"reserve.confirmation.menu": "استكشفوا القائمة"
+  ,"reserve.confirmation.home": "العودة إلى الرئيسية"
   ,"notFound.title": "هذه الصفحة تاهت."
   ,"notFound.copy": "الصفحة التي تبحثون عنها غير موجودة هنا."
   ,"notFound.home": "العودة إلى أروما"

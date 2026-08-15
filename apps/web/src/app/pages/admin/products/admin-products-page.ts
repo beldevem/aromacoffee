@@ -5,6 +5,7 @@ import { AdminSidebar } from '../components/admin-sidebar/admin-sidebar';
 import { AdminTopbar } from '../components/admin-topbar/admin-topbar';
 import { AdminProductsApiService, ApiFlag, ApiProduct, ProductPayload } from './admin-products-api.service';
 import { TranslationService } from '../../../core/i18n/translation.service';
+import { ToastService } from '../../../core/notifications/toast.service';
 
 @Component({
   selector: 'app-admin-products-page',
@@ -15,6 +16,7 @@ import { TranslationService } from '../../../core/i18n/translation.service';
 })
 export class AdminProductsPage implements OnInit {
   protected readonly i18n = inject(TranslationService);
+  private readonly toast = inject(ToastService);
   private readonly api = inject(AdminProductsApiService);
   protected readonly products = signal<ApiProduct[]>([]);
   protected readonly loading = signal(true);
@@ -87,8 +89,8 @@ export class AdminProductsPage implements OnInit {
       descriptionAr: product.descriptionAr ?? '',
       priceCents: product.priceCents,
       promotion: product.promotion,
-      ogPrice: product.ogPrice ?? product.priceCents,
-      promoPrice: product.promoPrice ?? null,
+      ogPrice: this.priceInDt(product.ogPrice ?? product.priceCents),
+      promoPrice: product.promoPrice === null || product.promoPrice === undefined ? null : this.priceInDt(product.promoPrice),
       flagId: product.flagId ?? undefined,
       imageUrl: product.imageUrl ?? undefined,
       status: product.status,
@@ -122,16 +124,19 @@ export class AdminProductsPage implements OnInit {
           next: () => {
             this.formOpen.set(false);
             this.saving.set(false);
+            this.toast.success(this.i18n.t('admin.products.saveSuccess'));
             this.loadProducts();
           },
           error: () => {
             this.error.set(this.i18n.t('admin.products.saveError'));
+            this.toast.error(this.i18n.t('admin.products.saveError'));
             this.saving.set(false);
           },
         });
       },
       error: () => {
         this.error.set(this.i18n.t('admin.products.saveError'));
+        this.toast.error(this.i18n.t('admin.products.saveError'));
         this.saving.set(false);
       },
     });
@@ -140,8 +145,8 @@ export class AdminProductsPage implements OnInit {
   protected remove(product: ApiProduct): void {
     if (!confirm(`${this.i18n.t('admin.products.deleteConfirm')} ${product.name}?`)) return;
     this.api.delete(product.id).subscribe({
-      next: () => this.loadProducts(),
-      error: () => this.error.set(this.i18n.t('admin.products.deleteError')),
+      next: () => { this.toast.success(this.i18n.t('admin.products.deleteSuccess')); this.loadProducts(); },
+      error: () => { this.error.set(this.i18n.t('admin.products.deleteError')); this.toast.error(this.i18n.t('admin.products.deleteError')); },
     });
   }
 
@@ -166,5 +171,9 @@ export class AdminProductsPage implements OnInit {
   private parsePriceCents(label: string): number {
     const value = /\d+(?:[.,]\d+)?/.exec(label)?.[0] ?? '0';
     return Math.round(Number(value.replace(',', '.')) * 100);
+  }
+
+  private priceInDt(priceCents: number): number {
+    return priceCents / 100;
   }
 }
