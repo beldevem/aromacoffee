@@ -12,8 +12,8 @@
       <a class="promotion-link" href="/menu">{{ i18n.t('menu.full') }} <span aria-hidden="true">&#8594;</span></a>
     </div>
     <div class="promotion-images">
-      <img src="/images/Pack Duo.jpg" [alt]="i18n.t('promo.packs.evening')" loading="lazy" decoding="async" />
-      <img src="/images/Pack Friends.jpg" [alt]="i18n.t('promo.packs.breakfast')" loading="lazy" decoding="async" />
+      <img src="/images/pack-duo.jpg" [alt]="i18n.t('promo.packs.evening')" loading="lazy" decoding="async" />
+      <img src="/images/pack-friends.jpg" [alt]="i18n.t('promo.packs.breakfast')" loading="lazy" decoding="async" />
     </div>
   </div>
 
@@ -22,7 +22,10 @@
       <p class="eyebrow">{{ i18n.t('promo.events.eyebrow') }}</p>
       <h3>{{ i18n.t('promo.events.title') }}</h3>
       <p>{{ i18n.t('promo.events.copy') }}</p>
-      <a class="promotion-cta" href="tel:+21655264235">{{ i18n.t('promo.events.cta') }}</a>
+      <div class="promotion-actions">
+        <a class="promotion-cta" href="tel:+21655264235">{{ i18n.t('promo.events.cta') }}</a>
+        <a class="promotion-cta promotion-cta-secondary" routerLink="/reserve">{{ i18n.t('hero.reserve') }}</a>
+      </div>
     </div>
     <div class="event-placeholders" aria-label="{{ i18n.t('promo.events.images') }}">
       <div>
