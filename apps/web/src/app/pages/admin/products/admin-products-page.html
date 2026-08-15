@@ -1,0 +1,61 @@
+<div class="admin-shell">
+  <app-admin-sidebar />
+  <div class="admin-main">
+    <app-admin-topbar />
+    <main class="products-page">
+      <div class="page-heading">
+        <div><p class="admin-kicker">{{ i18n.t('admin.products.kicker') }}</p><h1>{{ i18n.t('admin.products.title') }}</h1></div>
+        <button class="add-button" type="button" (click)="beginCreate()">+ {{ i18n.t('admin.products.add') }}</button>
+      </div>
+      <div class="products-toolbar">
+        <label class="search-label" for="admin-product-search">{{ i18n.t('admin.products.search') }}</label>
+        <input id="admin-product-search" type="search" [value]="search()" [placeholder]="i18n.t('admin.products.search')" (input)="search.set($any($event.target).value); loadProducts()" />
+        <label class="filter-control" for="admin-category-filter">{{ i18n.t('admin.products.category') }}
+          <select id="admin-category-filter" [value]="categoryFilter()" (change)="categoryFilter.set($any($event.target).value)"><option value="all">{{ i18n.t('admin.products.all') }}</option>@for (category of categories; track category.id) { <option [value]="category.id">{{ category.nameFr }}</option> }</select>
+        </label>
+        <label class="filter-control" for="admin-status-filter">{{ i18n.t('admin.products.state') }}
+          <select id="admin-status-filter" [value]="statusFilter()" (change)="statusFilter.set($any($event.target).value)"><option value="all">{{ i18n.t('admin.products.all') }}</option><option value="PUBLISHED">{{ i18n.t('admin.product.published') }}</option><option value="DRAFT">{{ i18n.t('admin.product.draft') }}</option><option value="HIDDEN">{{ i18n.t('admin.product.hidden') }}</option></select>
+        </label>
+        <label class="filter-control" for="admin-sort-filter">{{ i18n.t('admin.products.sort') }}
+          <select id="admin-sort-filter" [value]="sortBy()" (change)="sortBy.set($any($event.target).value)"><option value="name">{{ i18n.t('admin.products.sortName') }}</option><option value="category">{{ i18n.t('admin.products.sortCategory') }}</option><option value="status">{{ i18n.t('admin.products.sortStatus') }}</option></select>
+        </label>
+        <span>{{ visibleProducts().length }} {{ i18n.t('admin.products.results') }}</span>
+      </div>
+      @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
+      @if (error()) { <p class="state-message error">{{ error() }}</p> }
+      @if (!loading() && !error()) {
+        <table class="product-table">
+          <thead><tr><th>{{ i18n.t('admin.products.item') }}</th><th>{{ i18n.t('admin.products.category') }}</th><th>{{ i18n.t('admin.products.price') }}</th><th>{{ i18n.t('admin.products.state') }}</th><th>{{ i18n.t('admin.products.actions') }}</th></tr></thead>
+          <tbody>
+          @for (product of visibleProducts(); track product.id) {
+            <tr>
+              <td><strong>{{ product.nameFr }}</strong><small>{{ product.slug }}</small></td>
+              <td>{{ product.category.nameFr }}</td>
+              <td><b>{{ product.price }}</b></td>
+              <td><em [class.draft]="product.status !== 'PUBLISHED'">{{ i18n.t('admin.product.' + product.status.toLowerCase()) }}</em></td>
+              <td><div class="row-actions"><button type="button" (click)="beginEdit(product)">{{ i18n.t('admin.products.edit') }}</button><button class="delete" type="button" (click)="remove(product)">{{ i18n.t('admin.products.delete') }}</button></div></td>
+            </tr>
+          } @empty { <tr><td colspan="5" class="state-message">{{ i18n.t('admin.products.empty') }}</td></tr> }
+          </tbody>
+        </table>
+      }
+    </main>
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-backdrop">
+    <dialog class="product-dialog" open>
+      <form class="product-form" (submit)="$event.preventDefault(); save()">
+      <div class="form-heading"><h2>{{ editing() ? i18n.t('admin.products.editTitle') : i18n.t('admin.products.addTitle') }}</h2><button type="button" (click)="closeForm()">&#10005;</button></div>
+      <label>{{ i18n.t('admin.products.slug') }}<input name="slug" [(ngModel)]="draft.slug" required /></label>
+      <div class="form-grid"><label>{{ i18n.t('admin.products.name') }}<input name="name" [(ngModel)]="draft.name" required /></label><label>{{ i18n.t('admin.products.nameFr') }}<input name="nameFr" [(ngModel)]="draft.nameFr" required /></label><label>{{ i18n.t('admin.products.nameAr') }}<input name="nameAr" [(ngModel)]="draft.nameAr" required /></label><label>{{ i18n.t('admin.products.originalPrice') }}<input name="ogPrice" type="number" min="0" step="0.01" [(ngModel)]="draft.ogPrice" required /></label><label class="checkbox-control"><input name="promotion" type="checkbox" [(ngModel)]="draft.promotion" />{{ i18n.t('admin.products.promotion') }}</label>@if (draft.promotion) { <label>{{ i18n.t('admin.products.promoPrice') }}<input name="promoPrice" type="number" min="0" step="0.01" [(ngModel)]="draft.promoPrice" required /></label> }</div>
+      <label>{{ i18n.t('admin.products.category') }}<select name="categoryId" [(ngModel)]="draft.categoryId" required>@for (category of categories; track category.id) { <option [value]="category.id">{{ category.nameFr }}</option> }</select></label>
+      <label>{{ i18n.t('admin.products.state') }}<select name="status" [(ngModel)]="draft.status"><option value="PUBLISHED">{{ i18n.t('admin.product.published') }}</option><option value="DRAFT">{{ i18n.t('admin.product.draft') }}</option><option value="HIDDEN">{{ i18n.t('admin.product.hidden') }}</option></select></label>
+      <label>{{ i18n.t('admin.products.flag') }}<select name="flagId" [(ngModel)]="draft.flagId"><option [ngValue]="undefined">{{ i18n.t('admin.products.noFlag') }}</option>@for (flag of flags; track flag.id) { <option [value]="flag.id">{{ flag.labelFr }}</option> }</select></label>
+      <label>{{ i18n.t('admin.products.image') }}<input type="file" accept="image/jpeg,image/png,image/webp" (change)="selectImage($event)" />@if (selectedImageName()) { <small class="selected-image">{{ selectedImageName() }}</small> }</label>
+      <div class="form-actions"><button type="button" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button><button class="save" type="submit" [disabled]="saving()">{{ i18n.t('admin.save') }}</button></div>
+      </form>
+    </dialog>
+  </div>
+}

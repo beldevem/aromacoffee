@@ -1,0 +1,60 @@
+:host {
+  background: #f3f2ed;
+  color: #1e211c;
+  display: block;
+  min-height: 100vh;
+}
+
+.admin-shell {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  min-height: 100vh;
+}
+
+.admin-main {
+  min-width: 0;
+}
+
+.admin-content {
+  margin: 0 auto;
+  max-width: 96rem;
+  padding: 2rem clamp(1rem, 3vw, 3rem) 4rem;
+}
+
+.admin-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.admin-grid-primary {
+  grid-template-columns: minmax(0, 1.4fr) minmax(20rem, 0.8fr);
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 64rem) {
+  .admin-shell {
+    grid-template-columns: 13rem 1fr;
+  }
+}
+
+@media (max-width: 48rem) {
+  .admin-shell {
+    grid-template-columns: 10rem 1fr;
+  }
+}
+
+@media (max-width: 36rem) {
+  .admin-shell {
+    display: block;
+  }
+
+  .admin-main { min-width: 0; }
+
+  .admin-content {
+    padding-bottom: 2rem;
+  }
+
+  .admin-grid-primary {
+    grid-template-columns: 1fr;
+  }
+}

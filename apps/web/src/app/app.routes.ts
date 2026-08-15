@@ -1,6 +1,44 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
+import { adminOnlyGuard } from './core/auth/role.guard';
 
 export const routes: Routes = [
+	{ path: 'login', loadComponent: () => import('./pages/login/login-page').then(({ LoginPage }) => LoginPage) },
+	{
+		path: 'admin/products',
+		canActivate: [authGuard, adminOnlyGuard],
+		loadComponent: () =>
+			import('./pages/admin/products/admin-products-page').then(({ AdminProductsPage }) => AdminProductsPage),
+	},
+	{
+		path: 'admin/reservations',
+		canActivate: [authGuard],
+		loadComponent: () => import('./pages/admin/reservations/admin-reservations-page').then(({ AdminReservationsPage }) => AdminReservationsPage),
+	},
+	{
+		path: 'admin/categories',
+		canActivate: [authGuard, adminOnlyGuard],
+		data: { resource: 'categories' },
+		loadComponent: () => import('./pages/admin/management/admin-management-page').then(({ AdminManagementPage }) => AdminManagementPage),
+	},
+	{
+		path: 'admin/badges',
+		canActivate: [authGuard, adminOnlyGuard],
+		data: { resource: 'badges' },
+		loadComponent: () => import('./pages/admin/management/admin-management-page').then(({ AdminManagementPage }) => AdminManagementPage),
+	},
+	{
+		path: 'admin',
+		canActivate: [authGuard],
+		loadComponent: () =>
+			import('./pages/admin/admin-page').then(({ AdminPage }) => AdminPage),
+	},
+	{
+		path: 'admin/users',
+		canActivate: [authGuard, adminOnlyGuard],
+		data: { resource: 'users' },
+		loadComponent: () => import('./pages/admin/management/admin-management-page').then(({ AdminManagementPage }) => AdminManagementPage),
+	},
 	{
 		path: '',
 		loadComponent: () =>

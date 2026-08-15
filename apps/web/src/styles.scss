@@ -5,7 +5,7 @@
 }
 
 html {
-	scroll-behavior: smooth;
+	scroll-behavior: auto;
 }
 
 body {
@@ -19,6 +19,57 @@ body {
 
 a {
 	color: inherit;
+}
+
+.admin-shell {
+	display: grid;
+	grid-template-columns: 16rem minmax(0, 1fr);
+	min-height: 100vh;
+}
+
+.admin-main {
+	min-width: 0;
+}
+
+label:has(input[required]),
+label:has(select[required]),
+label:has(textarea[required]) {
+	--required-mark: ' *';
+	padding-inline-start: .7rem;
+	position: relative;
+}
+
+label:has(input[required])::before,
+label:has(select[required])::before,
+label:has(textarea[required])::before {
+	color: #a43c35;
+	content: var(--required-mark);
+	font-weight: 900;
+	inset-inline-start: 0;
+	position: absolute;
+	top: 0;
+}
+
+.field-error {
+	min-height: 1.25rem;
+}
+
+@media (max-width: 64rem) {
+	.admin-shell {
+		grid-template-columns: 13rem minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 48rem) {
+	.admin-shell {
+		grid-template-columns: 10rem minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 36rem) {
+	.admin-shell {
+		display: block;
+	}
 }
 
 button,

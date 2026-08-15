@@ -9,6 +9,10 @@ export interface MenuItem {
   name: LocalizedText;
   description: LocalizedText;
   price: string;
+  isPromotion: boolean;
+  originalPrice?: string;
+  promotionPrice?: string;
+  status: 'PUBLISHED' | 'DRAFT' | 'HIDDEN';
 }
 
 export interface MenuCategory {
@@ -23,11 +27,16 @@ const item = (
   ar: string,
   price: string,
   description = '',
+  promotion?: { originalPrice: string; promotionPrice: string },
 ): MenuItem => ({
   slug,
   name: { en, fr, ar },
   description: { en: description || en, fr: description || fr, ar: description || ar },
   price,
+  isPromotion: Boolean(promotion),
+  originalPrice: promotion?.originalPrice,
+  promotionPrice: promotion?.promotionPrice,
+  status: 'PUBLISHED',
 });
 
 export const MENU_CATEGORIES: MenuCategory[] = [
@@ -37,7 +46,7 @@ export const MENU_CATEGORIES: MenuCategory[] = [
       item('espresso', 'Espresso', 'Espresso', 'إسبريسو', '3 DT'),
       item('cafe-americain', 'Americano', 'Café Américain', 'قهوة أمريكية', '4 DT'),
       item('cafe-creme', 'Coffee Cream', 'Café Crème', 'قهوة كريمة', '4.5 DT'),
-      item('cappuccino', 'Cappuccino', 'Cappuccino', 'كابتشينو', '5.5 DT'),
+      item('cappuccino', 'Cappuccino', 'Cappuccino', 'كابتشينو', '9 DT', '', { originalPrice: '12 DT', promotionPrice: '9 DT' }),
       item('cafe-aromatise', 'Flavoured Coffee', 'Café Aromatisé', 'قهوة منكهة', '6.5 DT'),
     ],
   },

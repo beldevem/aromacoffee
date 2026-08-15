@@ -25,7 +25,12 @@ export class MenuPage implements AfterViewInit, OnDestroy {
   @ViewChild('loadMoreSentinel')
   private readonly loadMoreSentinel?: ElementRef<HTMLDivElement>;
 
-  protected readonly categories = MENU_CATEGORIES;
+  protected readonly categories = MENU_CATEGORIES
+    .map((category) => ({
+      ...category,
+      items: category.items.filter((item) => item.status === 'PUBLISHED'),
+    }))
+    .filter((category) => category.items.length > 0);
   protected readonly searchTerm = signal('');
   protected readonly activeCategory = signal('all');
   protected readonly renderedCategoryCount = signal(this.initialCategoryCount);
