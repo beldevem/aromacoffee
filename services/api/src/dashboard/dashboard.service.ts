@@ -26,9 +26,10 @@ export class DashboardService {
       this.prisma.order.count({ where: { status: 'PENDING' } }),
       this.prisma.order.count({ where: { status: 'PREPARING' } }),
       this.prisma.order.count({ where: { status: 'SERVED', createdAt: { gte: startOfDay, lt: endOfDay } } }),
+      // Revenue counts money actually collected, so it keys off payment time.
       this.prisma.order.aggregate({
         _sum: { totalCents: true },
-        where: { createdAt: { gte: startOfDay, lt: endOfDay }, status: 'SERVED' },
+        where: { paidAt: { gte: startOfDay, lt: endOfDay } },
       }),
     ]);
 

@@ -28,11 +28,23 @@ enum ProductStatus {
   HIDDEN
 }
 
+// Fulfilment only. Whether an order is paid is carried by paidAt/paidBy/paymentMethod,
+// because a counter order can be paid before it is made and a table order after.
 enum OrderStatus {
   PENDING
   PREPARING
   SERVED
   CANCELLED
+}
+
+enum OrderChannel {
+  QR
+  COUNTER
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
 }
 
 model User {
@@ -189,20 +201,32 @@ model RestaurantTable {
 }
 
 model Order {
-  id         String          @id @default(uuid()) @db.Uuid
-  reference  String          @unique
-  tableId    String          @map("table_id") @db.Uuid
-  table      RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
-  sessionId  String          @map("session_id")
-  status     OrderStatus     @default(PENDING)
-  totalCents Int             @map("total_cents")
-  note       String?
-  items      OrderItem[]
-  createdAt  DateTime        @default(now()) @map("created_at")
-  updatedAt  DateTime        @updatedAt @map("updated_at")
+  id            String           @id @default(uuid()) @db.Uuid
+  reference     String           @unique
+  // Null for takeaway and for counter orders that are not tied to a seat.
+  tableId       String?          @map("table_id") @db.Uuid
+  table         RestaurantTable? @relation(fields: [tableId], references: [id], onDelete: Restrict)
+  takeaway      Boolean          @default(false)
+  channel       OrderChannel     @default(QR)
+  // Scan id for QR orders, null when staff key the order in.
+  sessionId     String?          @map("session_id")
+  createdBy     String           @default("customer") @map("created_by")
+  validatedBy   String?          @map("validated_by")
+  validatedAt   DateTime?        @map("validated_at")
+  paidBy        String?          @map("paid_by")
+  paidAt        DateTime?        @map("paid_at")
+  paymentMethod PaymentMethod?   @map("payment_method")
+  status        OrderStatus      @default(PENDING)
+  totalCents    Int              @map("total_cents")
+  note          String?
+  items         OrderItem[]
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
 
   @@index([status, createdAt])
   @@index([tableId, createdAt])
+  @@index([channel, createdAt])
+  @@index([paidAt])
   @@map("orders")
 }
 

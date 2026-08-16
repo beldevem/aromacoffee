@@ -21,7 +21,11 @@ type Order = {
   status: OrderStatus;
   totalCents: number;
   createdAt: string;
-  table: { code: string; label: string };
+  createdBy: string;
+  paidAt?: string | null;
+  channel: 'QR' | 'COUNTER';
+  takeaway: boolean;
+  table: { code: string; label: string } | null;
   items: Array<{ id: string; nameFr: string; quantity: number }>;
 };
 
@@ -66,6 +70,15 @@ export class AdminOrdersPanel implements OnInit {
 
   protected summarise(order: Order): string {
     return order.items.map((item) => `${item.quantity} × ${item.nameFr}`).join(', ');
+  }
+
+  protected target(order: Order): string {
+    if (order.takeaway) return this.i18n.t('admin.orders.takeaway');
+    return order.table?.label ?? '—';
+  }
+
+  protected shortCode(order: Order): string {
+    return order.takeaway ? '↗' : order.table?.code ?? '—';
   }
 
   protected formatPrice(cents?: number): string {

@@ -8,7 +8,72 @@
           <p class="admin-kicker">{{ i18n.t('admin.orders.title') }}</p>
           <h1>{{ i18n.t('admin.orders.subtitle') }}</h1>
         </div>
-        <button class="refresh-button" type="button" (click)="load()">{{ i18n.t('admin.orders.refresh') }}</button>
+        <div class="heading-actions">
+          <button type="button" class="ghost" (click)="load()">{{ i18n.t('admin.orders.refresh') }}</button>
+          <button type="button" class="primary" (click)="openForm()">+ {{ i18n.t('admin.orders.new') }}</button>
+        </div>
+      </div>
+
+      @if (isAdmin()) {
+        <div class="summary-row">
+          <article class="summary-card">
+            <span>{{ i18n.t('admin.orders.summary.count') }}</span>
+            <strong>{{ summary()?.totalOrders ?? '—' }}</strong>
+          </article>
+          <article class="summary-card">
+            <span>{{ i18n.t('admin.orders.summary.total') }}</span>
+            <strong>{{ formatPrice(summary()?.totalCents) }}</strong>
+          </article>
+          <article class="summary-card paid">
+            <span>{{ i18n.t('admin.orders.summary.paid') }}</span>
+            <strong>{{ formatPrice(summary()?.paidCents) }}</strong>
+          </article>
+          <article class="summary-card">
+            <span>{{ i18n.t('admin.orders.summary.unpaid') }}</span>
+            <strong>{{ formatPrice((summary()?.totalCents ?? 0) - (summary()?.paidCents ?? 0)) }}</strong>
+          </article>
+        </div>
+      }
+
+      <div class="filters">
+        <label>
+          {{ i18n.t('admin.orders.filter.status') }}
+          <select [value]="statusFilter()" (change)="setStatusFilter($any($event.target).value)">
+            <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ i18n.t(statusKey(status)) }}@if (isAdmin()) { ({{ statusCount(status) }}) }</option>
+            }
+          </select>
+        </label>
+        <label>
+          {{ i18n.t('admin.orders.table') }}
+          <select [value]="tableFilter()" (change)="setTableFilter($any($event.target).value)">
+            <option value="">{{ i18n.t('admin.orders.filter.allTables') }}</option>
+            @for (table of tables(); track table.id) {
+              <option [value]="table.id">{{ table.label }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          {{ i18n.t('admin.orders.filter.payment') }}
+          <select [value]="paidFilter()" (change)="setPaidFilter($any($event.target).value)">
+            <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
+            <option value="true">{{ i18n.t('admin.orders.paid') }}</option>
+            <option value="false">{{ i18n.t('admin.orders.unpaid') }}</option>
+          </select>
+        </label>
+        <label>
+          {{ i18n.t('admin.orders.filter.createdBy') }}
+          <select [value]="channelFilter()" (change)="setChannelFilter($any($event.target).value)">
+            <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
+            @for (channel of channels; track channel) {
+              <option [value]="channel">{{ i18n.t(channelKey(channel)) }}</option>
+            }
+          </select>
+        </label>
+        <button type="button" class="chip" [class.active]="todayOnly()" (click)="toggleToday()">
+          {{ todayOnly() ? i18n.t('admin.orders.filter.today') : i18n.t('admin.orders.filter.allTime') }}
+        </button>
       </div>
 
       @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
@@ -19,23 +84,52 @@
           @for (order of orders(); track order.id) {
             <li class="order-card" [attr.data-status]="order.status">
               <header>
-                <div>
-                  <strong>{{ order.table.label }}</strong>
-                  <small>{{ i18n.t('admin.orders.reference') }} {{ order.reference }} &middot; {{ formatTime(order.createdAt) }}</small>
+                <div class="order-head">
+                  <strong>{{ orderTarget(order) }} · {{ order.reference }}</strong>
+                  <small>{{ order.createdAt | date:'dd/MM HH:mm' }} · {{ i18n.t(channelKey(order.channel)) }}</small>
                 </div>
-                <select [value]="order.status" (change)="setStatus(order, $any($event.target).value)">
-                  @for (status of statuses; track status) {
-                    <option [value]="status">{{ i18n.t(statusKey(status)) }}</option>
-                  }
-                </select>
+                <div class="badges">
+                  <span class="status-pill">{{ i18n.t(statusKey(order.status)) }}</span>
+                  <span class="pay-pill" [class.paid]="isPaid(order)">
+                    {{ isPaid(order) ? i18n.t('admin.orders.paid') : i18n.t('admin.orders.unpaid') }}
+                  </span>
+                </div>
               </header>
+
               <ul class="order-lines">
                 @for (item of order.items; track item.id) {
                   <li><span>{{ item.quantity }} &times; {{ item.nameFr }}</span><span>{{ formatPrice(item.lineTotalCents) }}</span></li>
                 }
               </ul>
+
               @if (order.note) { <p class="note">{{ order.note }}</p> }
-              <p class="total"><span>{{ i18n.t('admin.orders.total') }}</span><strong>{{ formatPrice(order.totalCents) }}</strong></p>
+
+              <dl class="trace">
+                <div><dt>{{ i18n.t('admin.orders.createdBy') }}</dt><dd>{{ origin(order) }}</dd></div>
+                <div><dt>{{ i18n.t('admin.orders.validatedBy') }}</dt><dd>{{ order.validatedBy || '—' }}</dd></div>
+                <div><dt>{{ i18n.t('admin.orders.paidBy') }}</dt><dd>{{ order.paidBy || '—' }}</dd></div>
+                @if (order.paymentMethod) {
+                  <div><dt>{{ i18n.t('admin.orders.paymentMethod') }}</dt><dd>{{ i18n.t(paymentKey(order.paymentMethod)) }}</dd></div>
+                }
+              </dl>
+
+              <footer>
+                <strong class="amount">{{ formatPrice(order.totalCents) }}</strong>
+                <div class="card-actions">
+                  <select [value]="order.status" (change)="setStatus(order, $any($event.target).value)">
+                    @for (status of statuses; track status) {
+                      <option [value]="status">{{ i18n.t(statusKey(status)) }}</option>
+                    }
+                  </select>
+                  @if (!isPaid(order) && order.status !== 'CANCELLED') {
+                    <button type="button" class="pay" (click)="markPaid(order, 'CASH')">{{ i18n.t('admin.orders.payCash') }}</button>
+                    <button type="button" class="pay" (click)="markPaid(order, 'CARD')">{{ i18n.t('admin.orders.payCard') }}</button>
+                  }
+                  @if (isPaid(order)) {
+                    <button type="button" class="receipt-button" (click)="printReceipt(order)">{{ i18n.t('admin.orders.receipt') }}</button>
+                  }
+                </div>
+              </footer>
             </li>
           } @empty {
             <li class="state-message">{{ i18n.t('admin.orders.empty') }}</li>
@@ -45,3 +139,146 @@
     </main>
   </div>
 </div>
+
+@if (formOpen()) {
+  <div class="modal-backdrop">
+    <dialog class="order-dialog" open>
+      <div class="form-heading">
+        <h2>{{ i18n.t('admin.orders.new') }}</h2>
+        <button type="button" (click)="closeForm()">&#10005;</button>
+      </div>
+
+      <div class="dialog-body">
+        <div class="picker">
+          <input
+            type="search"
+            [value]="productSearch()"
+            (input)="productSearch.set($any($event.target).value)"
+            [attr.placeholder]="i18n.t('admin.orders.searchProduct')"
+          />
+          <ul class="product-list">
+            @for (product of filteredProducts(); track product.id) {
+              <li>
+                <button type="button" (click)="addLine(product)">
+                  <span>{{ product.nameFr }}</span>
+                  <strong>{{ formatPrice(product.priceCents) }}</strong>
+                </button>
+              </li>
+            } @empty {
+              <li class="state-message">{{ i18n.t('order.empty') }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="draft">
+          <label class="field">
+            {{ i18n.t('admin.orders.table') }}
+            <select [(ngModel)]="draftTableId" [disabled]="draftTakeaway">
+              <option value="">{{ i18n.t('admin.orders.selectTable') }}</option>
+              @for (table of tables(); track table.id) {
+                <option [value]="table.id">{{ table.label }}</option>
+              }
+            </select>
+          </label>
+          <label class="checkbox"><input type="checkbox" [(ngModel)]="draftTakeaway" />{{ i18n.t('admin.orders.takeaway') }}</label>
+
+          <ul class="draft-lines">
+            @for (line of draft(); track line.productId) {
+              <li>
+                <span class="draft-name">{{ line.nameFr }}</span>
+                <div class="stepper">
+                  <button type="button" (click)="setLineQuantity(line.productId, line.quantity - 1)" aria-label="-">&minus;</button>
+                  <span>{{ line.quantity }}</span>
+                  <button type="button" (click)="setLineQuantity(line.productId, line.quantity + 1)" aria-label="+">+</button>
+                </div>
+                <strong>{{ formatPrice(line.unitPriceCents * line.quantity) }}</strong>
+              </li>
+            } @empty {
+              <li class="state-message">{{ i18n.t('order.cart.empty') }}</li>
+            }
+          </ul>
+
+          <label class="field">
+            {{ i18n.t('order.cart.note') }}
+            <textarea rows="2" maxlength="300" [(ngModel)]="draftNote"></textarea>
+          </label>
+
+          <label class="checkbox"><input type="checkbox" [(ngModel)]="draftMarkPaid" />{{ i18n.t('admin.orders.markPaid') }}</label>
+          @if (draftMarkPaid) {
+            <label class="field">
+              {{ i18n.t('admin.orders.paymentMethod') }}
+              <select [(ngModel)]="draftPaymentMethod">
+                @for (method of paymentMethods; track method) {
+                  <option [value]="method">{{ i18n.t(paymentKey(method)) }}</option>
+                }
+              </select>
+            </label>
+          }
+
+          <p class="draft-total"><span>{{ i18n.t('order.cart.total') }}</span><strong>{{ formatPrice(draftTotal()) }}</strong></p>
+
+          <div class="form-actions">
+            <button type="button" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button>
+            <button type="button" class="save" [disabled]="draft().length === 0 || saving()" (click)="submitOrder()">
+              {{ i18n.t('admin.save') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </div>
+}
+
+@if (receipt(); as order) {
+  <div class="receipt">
+    <header class="receipt-head">
+      <h1>Aroma Coffee Shop</h1>
+      <p class="receipt-tagline">{{ i18n.t('footer.tagline') }}</p>
+      <p class="receipt-contact">
+        {{ i18n.t('footer.address') }}<br />
+        {{ phone }}
+      </p>
+    </header>
+
+    <p class="receipt-meta">
+      {{ i18n.t('admin.orders.receipt') }} <strong>{{ order.reference }}</strong><br />
+      {{ order.paidAt || order.createdAt | date:'dd/MM/yyyy HH:mm' }}<br />
+      {{ orderTarget(order) }}
+    </p>
+
+    <table class="receipt-lines">
+      <tbody>
+        @for (item of order.items; track item.id) {
+          <tr>
+            <td>{{ item.quantity }} &times; {{ item.nameFr }}</td>
+            <td class="right">{{ formatPrice(item.lineTotalCents) }}</td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>{{ i18n.t('order.cart.total') }}</th>
+          <th class="right">{{ formatPrice(order.totalCents) }}</th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <p class="receipt-meta">
+      @if (order.paymentMethod) { {{ i18n.t(paymentKey(order.paymentMethod)) }}<br /> }
+      {{ i18n.t('admin.orders.servedBy') }} {{ order.paidBy || order.validatedBy || order.createdBy }}
+    </p>
+
+    <div class="receipt-qr">
+      @if (receiptQr()) {
+        <img [src]="receiptQr()" [alt]="i18n.t('receipt.qrAlt')" />
+      }
+      <p class="receipt-qr-copy">
+        <strong>{{ i18n.t('receipt.scanTitle') }}</strong><br />
+        {{ i18n.t('receipt.scanCopy') }}<br />
+        {{ receiptDomain() }}
+      </p>
+    </div>
+
+    <p class="receipt-thanks">{{ i18n.t('admin.orders.thanks') }}</p>
+  </div>
+}

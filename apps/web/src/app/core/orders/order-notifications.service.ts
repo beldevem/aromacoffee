@@ -7,7 +7,10 @@ export interface NewOrderNotification {
   reference: string;
   totalCents: number;
   createdAt: string;
-  table: { code: string; label: string };
+  createdBy: string;
+  channel: 'QR' | 'COUNTER';
+  takeaway: boolean;
+  table: { code: string; label: string } | null;
   items: Array<{ nameFr: string; quantity: number }>;
 }
 

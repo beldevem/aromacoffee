@@ -28,6 +28,11 @@ export class AdminOrderAlerts implements OnInit, OnDestroy {
     return order.items.map((item) => `${item.quantity} × ${item.nameFr}`).join(', ');
   }
 
+  protected target(order: NewOrderNotification): string {
+    if (order.takeaway) return this.i18n.t('admin.orders.takeaway');
+    return order.table?.label ?? '—';
+  }
+
   protected formatPrice(cents: number): string {
     return `${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 1)} DT`;
   }

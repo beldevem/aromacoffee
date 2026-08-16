@@ -5,7 +5,7 @@
         <svg viewBox="0 0 24 24"><path d="M6 2h12l2 5H4z"/><path d="M5 7v13a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7"/></svg>
       </div>
       <div class="alert-body">
-        <strong>{{ i18n.t('admin.alerts.newOrder') }} · {{ order.table.label }}</strong>
+        <strong>{{ i18n.t('admin.alerts.newOrder') }} · {{ target(order) }}</strong>
         <small>{{ summarise(order) }}</small>
         <span class="alert-total">{{ formatPrice(order.totalCents) }} · {{ order.reference }}</span>
         <a routerLink="/admin/orders" (click)="alerts.dismiss(order.id)">{{ i18n.t('admin.alerts.view') }}</a>

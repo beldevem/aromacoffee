@@ -76,3 +76,10 @@ button,
 a {
 	-webkit-tap-highlight-color: transparent;
 }
+
+@media print {
+  /* Global chrome that component stylesheets cannot reach because it lives in app.html. */
+  app-mobile-actions {
+    display: none !important;
+  }
+}

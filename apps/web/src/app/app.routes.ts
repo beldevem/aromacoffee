@@ -28,6 +28,11 @@ export const routes: Routes = [
 		loadComponent: () => import('./pages/admin/management/admin-management-page').then(({ AdminManagementPage }) => AdminManagementPage),
 	},
 	{
+		path: 'admin/cash',
+		canActivate: [authGuard, adminOnlyGuard],
+		loadComponent: () => import('./pages/admin/cash/admin-cash-page').then(({ AdminCashPage }) => AdminCashPage),
+	},
+	{
 		path: 'admin/tables',
 		canActivate: [authGuard, adminOnlyGuard],
 		loadComponent: () => import('./pages/admin/tables/admin-tables-page').then(({ AdminTablesPage }) => AdminTablesPage),
@@ -39,7 +44,7 @@ export const routes: Routes = [
 	},
 	{
 		path: 'admin',
-		canActivate: [authGuard],
+		canActivate: [authGuard, adminOnlyGuard],
 		loadComponent: () =>
 			import('./pages/admin/admin-page').then(({ AdminPage }) => AdminPage),
 	},

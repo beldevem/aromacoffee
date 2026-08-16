@@ -10,7 +10,8 @@ import { UserRole } from '../generated/prisma/client';
 export class TablesController {
   constructor(private readonly tables: TablesService) {}
 
-  @Get() findAll() { return this.tables.findAll(); }
+  // Staff need the table list to attach counter orders, but not the management actions.
+  @Get() @Roles(UserRole.ADMIN, UserRole.STAFF) findAll() { return this.tables.findAll(); }
   @Get(':id') findOne(@Param('id') id: string) { return this.tables.findOne(id); }
   @Post() create(@Body() dto: CreateTableDto) { return this.tables.create(dto); }
   @Patch(':id') update(@Param('id') id: string, @Body() dto: UpdateTableDto) { return this.tables.update(id, dto); }

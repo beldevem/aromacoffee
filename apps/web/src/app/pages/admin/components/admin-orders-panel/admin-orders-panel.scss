@@ -108,7 +108,8 @@
   color: #50684e;
 
   &[data-status='PENDING'] { background: #f6ecd6; color: #7a5c14; }
-  &[data-status='PREPARING'] { background: #e4edf4; color: #29536b; }
+  &[data-status='PREPARING'] { background: #e6e0f7; color: #4b3b8f; }
+  &[data-status='SERVED'] { background: #d9e8f4; color: #1f5a80; }
   &[data-status='CANCELLED'] { background: #f6e2dc; color: #a53d24; }
 }
 

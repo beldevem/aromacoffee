@@ -1,97 +1,432 @@
 .orders-page {
-  padding: 1.5rem;
-  display: grid;
-  gap: 1.25rem;
   align-content: start;
+  display: grid;
+  gap: 1.1rem;
+  padding: 1.5rem;
 }
 
 .page-heading {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  align-items: center;
   justify-content: space-between;
 
-  h1 { margin: 0; font-size: 1.25rem; color: #2c3a2b; }
+  h1 { color: #2c3a2b; font-size: 1.25rem; margin: 0; }
 }
 
-.refresh-button {
-  padding: 0.55rem 1rem;
-  border: 1px solid rgb(80 104 78 / 35%);
-  border-radius: 0.6rem;
-  background: transparent;
-  color: #50684e;
-  cursor: pointer;
+.heading-actions {
+  display: flex;
+  gap: 0.5rem;
+
+  button { border-radius: 0.6rem; cursor: pointer; font-size: 0.9rem; padding: 0.55rem 1rem; }
+  .ghost { background: transparent; border: 1px solid rgb(80 104 78 / 35%); color: #50684e; }
+  .primary { background: #50684e; border: none; color: #fffefa; }
 }
 
-.order-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.summary-row {
   display: grid;
-  gap: 0.9rem;
-  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
 }
 
-.order-card {
-  display: grid;
-  gap: 0.6rem;
-  padding: 1rem;
-  border-radius: 0.9rem;
+.summary-card {
   background: #fffefa;
-  border-inline-start: 4px solid rgb(80 104 78 / 40%);
+  border: 1px solid #deded4;
+  border-radius: 0.8rem;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
 
-  &[data-status='PENDING'] { border-inline-start-color: #d19a2c; }
-  &[data-status='PREPARING'] { border-inline-start-color: #3f7fa5; }
-  &[data-status='SERVED'] { border-inline-start-color: #50684e; }
-  &[data-status='CANCELLED'] { border-inline-start-color: #a53d24; opacity: 0.65; }
+  span { color: #71866c; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+  strong { color: #304533; font-size: 1.6rem; font-weight: 600; }
 
-  header {
-    display: flex;
-    gap: 0.75rem;
-    align-items: flex-start;
-    justify-content: space-between;
+  &.paid { background: #304533; border-color: #304533; }
+  &.paid span { color: rgb(255 254 250 / 75%); }
+  &.paid strong { color: #d8bd7e; }
+}
 
-    strong { display: block; color: #2c3a2b; }
-    small { color: rgb(44 58 43 / 65%); font-size: 0.75rem; }
-    select {
-      padding: 0.3rem 0.45rem;
-      border: 1px solid rgb(80 104 78 / 30%);
-      border-radius: 0.5rem;
-      background: transparent;
-      color: #50684e;
-      font-size: 0.78rem;
-    }
+.filters {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  label { color: #71866c; display: grid; font-size: 0.78rem; gap: 0.25rem; font-weight: 700; }
+  select {
+    background: #fffefa;
+    border: 1px solid rgb(80 104 78 / 25%);
+    border-radius: 0.55rem;
+    color: #304533;
+    font-size: 0.88rem;
+    padding: 0.45rem 0.6rem;
   }
 }
 
-.order-lines {
+.chip {
+  background: transparent;
+  border: 1px solid rgb(80 104 78 / 30%);
+  border-radius: 999px;
+  color: #50684e;
+  cursor: pointer;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.9rem;
+
+  &.active { background: #50684e; border-color: #50684e; color: #fffefa; }
+}
+
+.order-list {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.order-card {
+  background: #fffefa;
+  border-inline-start: 4px solid rgb(80 104 78 / 40%);
+  border-radius: 0.9rem;
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+
+  &[data-status='PENDING'] { border-inline-start-color: #d98324; }
+  &[data-status='PREPARING'] { border-inline-start-color: #5b4bbd; }
+  &[data-status='SERVED'] { border-inline-start-color: #2b7fb8; }
+  &[data-status='CANCELLED'] { border-inline-start-color: #a53d24; opacity: 0.6; }
+
+  header { align-items: start; display: flex; gap: 0.75rem; justify-content: space-between; }
+  .order-head strong { color: #2c3a2b; display: block; }
+  .order-head small { color: rgb(44 58 43 / 65%); font-size: 0.75rem; }
+}
+
+.badges {
+  align-items: end;
   display: grid;
   gap: 0.25rem;
-  font-size: 0.88rem;
-  color: rgb(44 58 43 / 85%);
+  justify-items: end;
+}
 
-  li { display: flex; justify-content: space-between; gap: 0.75rem; }
+.status-pill,
+.pay-pill {
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  white-space: nowrap;
+}
+
+.status-pill {
+  background: rgb(80 104 78 / 12%);
+  color: #50684e;
+}
+
+.pay-pill {
+  background: #f7dcd5;
+  color: #98341c;
+
+  &.paid { background: #d6efdd; color: #1f6b3c; }
+}
+
+.order-card[data-status='PENDING'] .status-pill { background: #fbe8cc; color: #92590b; }
+.order-card[data-status='PREPARING'] .status-pill { background: #e6e0f7; color: #4b3b8f; }
+.order-card[data-status='SERVED'] .status-pill { background: #d9e8f4; color: #1f5a80; }
+.order-card[data-status='CANCELLED'] .status-pill { background: #f7dcd5; color: #98341c; }
+
+.order-lines {
+  color: rgb(44 58 43 / 85%);
+  display: grid;
+  font-size: 0.88rem;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li { display: flex; gap: 0.75rem; justify-content: space-between; }
 }
 
 .note {
+  background: rgb(80 104 78 / 8%);
+  border-radius: 0.5rem;
+  color: rgb(44 58 43 / 80%);
+  font-size: 0.82rem;
   margin: 0;
   padding: 0.45rem 0.6rem;
-  border-radius: 0.5rem;
-  background: rgb(80 104 78 / 8%);
-  font-size: 0.82rem;
-  color: rgb(44 58 43 / 80%);
 }
 
-.total {
-  display: flex;
-  justify-content: space-between;
+.trace {
+  display: grid;
+  gap: 0.25rem 0.75rem;
+  grid-template-columns: 1fr 1fr;
   margin: 0;
-  color: #50684e;
+
+  div { display: grid; }
+  dt { color: #71866c; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+  dd { color: #304533; font-size: 0.82rem; margin: 0; overflow-wrap: anywhere; }
+}
+
+.order-card footer {
+  align-items: center;
+  border-top: 1px solid #ecece3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  padding-top: 0.6rem;
+
+  .amount { color: #304533; font-size: 1.05rem; }
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+
+  select {
+    background: transparent;
+    border: 1px solid rgb(80 104 78 / 30%);
+    border-radius: 0.5rem;
+    color: #50684e;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.45rem;
+  }
+  button {
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+  }
+  .pay { background: transparent; border: 1px solid #2f7d4f; color: #2f7d4f; }
+  .receipt-button { background: #304533; border: none; color: #fffefa; }
 }
 
 .state-message { color: rgb(44 58 43 / 70%); }
 .state-message.error { color: #a53d24; }
+
+.modal-backdrop {
+  background: rgb(44 58 43 / 45%);
+  display: grid;
+  inset: 0;
+  place-items: center;
+  position: fixed;
+  z-index: 20;
+}
+
+.order-dialog {
+  background: #fffefa;
+  border: none;
+  border-radius: 1rem;
+  max-height: 88vh;
+  max-width: 46rem;
+  overflow-y: auto;
+  padding: 1.25rem;
+  width: calc(100% - 2rem);
+}
+
+.form-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+
+  h2 { color: #50684e; font-size: 1.1rem; margin: 0; }
+  button { background: transparent; border: none; color: #50684e; cursor: pointer; font-size: 1rem; }
+}
+
+.dialog-body {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.picker input {
+  border: 1px solid rgb(80 104 78 / 25%);
+  border-radius: 0.55rem;
+  font: inherit;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  width: 100%;
+}
+
+.product-list {
+  display: grid;
+  gap: 0.3rem;
+  list-style: none;
+  margin: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+  padding: 0;
+
+  button {
+    background: #f4f1e8;
+    border: none;
+    border-radius: 0.5rem;
+    color: #304533;
+    cursor: pointer;
+    display: flex;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+    justify-content: space-between;
+    padding: 0.5rem 0.65rem;
+    width: 100%;
+  }
+}
+
+.draft {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.field {
+  color: rgb(44 58 43 / 80%);
+  display: grid;
+  font-size: 0.82rem;
+  gap: 0.25rem;
+
+  select,
+  textarea {
+    border: 1px solid rgb(80 104 78 / 25%);
+    border-radius: 0.55rem;
+    font: inherit;
+    padding: 0.45rem 0.6rem;
+  }
+}
+
+.checkbox {
+  align-items: center;
+  color: rgb(44 58 43 / 80%);
+  display: flex;
+  font-size: 0.85rem;
+  gap: 0.5rem;
+}
+
+.draft-lines {
+  display: grid;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    align-items: center;
+    display: grid;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+    grid-template-columns: 1fr auto auto;
+  }
+  .draft-name { overflow-wrap: anywhere; }
+}
+
+.stepper {
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+
+  button {
+    background: transparent;
+    border: 1px solid #50684e;
+    border-radius: 999px;
+    color: #50684e;
+    cursor: pointer;
+    height: 1.6rem;
+    line-height: 1;
+    width: 1.6rem;
+  }
+}
+
+.draft-total {
+  border-top: 1px solid #ecece3;
+  color: #50684e;
+  display: flex;
+  font-size: 1rem;
+  justify-content: space-between;
+  margin: 0;
+  padding-top: 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+
+  button {
+    background: transparent;
+    border: 1px solid rgb(80 104 78 / 30%);
+    border-radius: 0.6rem;
+    color: #50684e;
+    cursor: pointer;
+    padding: 0.55rem 1rem;
+  }
+  .save { background: #50684e; border: none; color: #fffefa; }
+  .save[disabled] { cursor: not-allowed; opacity: 0.55; }
+}
+
+.receipt { display: none; }
+
+@media (max-width: 52rem) {
+  .dialog-body { grid-template-columns: 1fr; }
+}
+
+@media print {
+  // Zero page margins stop the browser printing its own date, URL and page-number headers.
+  @page { margin: 0; }
+
+  // Style encapsulation stops us reaching classes inside the child components, so hide their hosts.
+  app-admin-sidebar,
+  app-admin-topbar { display: none !important; }
+
+  .admin-shell,
+  .modal-backdrop { display: none !important; }
+
+  .receipt {
+    color: #000;
+    display: block;
+    font-family: ui-monospace, "Courier New", monospace;
+    margin: 0 auto;
+    padding: 6mm 0;
+    width: 72mm;
+
+    h1 { font-size: 1.1rem; margin: 0 0 0.2rem; text-align: center; }
+  }
+
+  .receipt-head { text-align: center; }
+  .receipt-tagline { font-size: 0.7rem; font-style: italic; margin: 0 0 0.3rem; }
+  .receipt-contact { font-size: 0.68rem; line-height: 1.35; margin: 0 0 0.5rem; }
+
+  .receipt-qr {
+    align-items: center;
+    border-top: 1px dashed #000;
+    display: flex;
+    gap: 3mm;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+
+    img { height: 20mm; width: 20mm; }
+  }
+
+  .receipt-qr-copy {
+    font-size: 0.66rem;
+    line-height: 1.4;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .receipt-meta { font-size: 0.75rem; margin: 0.4rem 0; text-align: center; }
+
+  .receipt-lines {
+    border-top: 1px dashed #000;
+    border-bottom: 1px dashed #000;
+    font-size: 0.78rem;
+    padding: 0.3rem 0;
+    width: 100%;
+
+    td, th { padding: 0.1rem 0; text-align: left; }
+    .right { text-align: right; }
+    tfoot th { border-top: 1px solid #000; font-size: 0.85rem; padding-top: 0.25rem; }
+  }
+
+  .receipt-thanks { font-size: 0.75rem; margin-top: 0.6rem; text-align: center; }
+}

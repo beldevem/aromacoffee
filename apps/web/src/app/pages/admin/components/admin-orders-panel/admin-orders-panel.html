@@ -19,9 +19,9 @@
   <div class="order-list">
     @for (order of orders(); track order.id) {
       <article class="order-row">
-        <div class="order-table">{{ order.table.code }}</div>
+        <div class="order-table">{{ shortCode(order) }}</div>
         <div class="order-body">
-          <strong>{{ order.table.label }} · {{ order.reference }}</strong>
+          <strong>{{ target(order) }} · {{ order.reference }}</strong>
           <small>{{ summarise(order) }}</small>
         </div>
         <time>{{ order.createdAt | date:'HH:mm' }}</time>

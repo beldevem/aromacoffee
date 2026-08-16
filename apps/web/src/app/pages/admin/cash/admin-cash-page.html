@@ -1,0 +1,79 @@
+<div class="admin-shell">
+  <app-admin-sidebar />
+  <div class="admin-main">
+    <app-admin-topbar />
+    <main class="cash-page">
+      <div class="page-heading">
+        <div>
+          <p class="admin-kicker">{{ i18n.t('admin.cash.title') }}</p>
+          <h1>{{ i18n.t('admin.cash.subtitle') }}</h1>
+        </div>
+        <div class="range-chips">
+          @for (option of ranges; track option) {
+            <button type="button" class="chip" [class.active]="range() === option" (click)="setRange(option)">
+              {{ option }} {{ i18n.t('admin.cash.days') }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="summary-row">
+        <article class="summary-card paid">
+          <span>{{ i18n.t('admin.cash.periodTotal') }}</span>
+          <strong>{{ formatPrice(periodTotal()) }}</strong>
+        </article>
+        <article class="summary-card">
+          <span>{{ i18n.t('admin.orders.payment.cash') }}</span>
+          <strong>{{ formatPrice(periodCash()) }}</strong>
+        </article>
+        <article class="summary-card">
+          <span>{{ i18n.t('admin.orders.payment.card') }}</span>
+          <strong>{{ formatPrice(periodCard()) }}</strong>
+        </article>
+        <article class="summary-card">
+          <span>{{ i18n.t('admin.orders.summary.count') }}</span>
+          <strong>{{ periodOrders() }}</strong>
+        </article>
+      </div>
+
+      @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
+      @if (error()) { <p class="state-message error">{{ error() }}</p> }
+
+      @if (!loading() && !error()) {
+        <ul class="day-list">
+          @for (day of days(); track day.day) {
+            <li class="day-card">
+              <header>
+                <div>
+                  <strong>{{ formatDay(day.day) }}</strong>
+                  <small>{{ day.orders }} {{ i18n.t('admin.cash.ordersPaid') }}</small>
+                </div>
+                <span class="day-total">{{ formatPrice(day.totalCents) }}</span>
+              </header>
+
+              <div class="split-bar" [attr.aria-label]="i18n.t('admin.cash.split')">
+                <span class="cash" [style.width.%]="cashShare(day)"></span>
+              </div>
+              <p class="split-legend">
+                <span><i class="dot cash"></i>{{ i18n.t('admin.orders.payment.cash') }} {{ formatPrice(day.cashCents) }}</span>
+                <span><i class="dot card"></i>{{ i18n.t('admin.orders.payment.card') }} {{ formatPrice(day.cardCents) }}</span>
+              </p>
+
+              <ul class="agent-list">
+                @for (agent of day.agents; track agent.name) {
+                  <li>
+                    <span>{{ agent.name }}</span>
+                    <small>{{ agent.orders }}</small>
+                    <strong>{{ formatPrice(agent.totalCents) }}</strong>
+                  </li>
+                }
+              </ul>
+            </li>
+          } @empty {
+            <li class="state-message">{{ i18n.t('admin.cash.empty') }}</li>
+          }
+        </ul>
+      }
+    </main>
+  </div>
+</div>

@@ -5,5 +5,5 @@ import { AuthService } from './auth.service';
 export const adminOnlyGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  return auth.user()?.role === 'ADMIN' ? true : router.createUrlTree(['/admin/reservations']);
+  return auth.user()?.role === 'ADMIN' ? true : router.createUrlTree(['/admin/orders']);
 };
