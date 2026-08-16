@@ -146,10 +146,15 @@
 }
 
 @media print {
-  .admin-sidebar,
-  .admin-topbar,
+  // Style encapsulation stops us reaching classes inside the child components, so hide their hosts.
+  app-admin-sidebar,
+  app-admin-topbar,
   .page-heading,
   .card-actions { display: none !important; }
 
+  .admin-shell { display: block; }
+  .tables-page { padding: 0; }
+
+  .qr-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
   .qr-card { break-inside: avoid; border: 1px dashed rgb(44 58 43 / 40%); }
 }
