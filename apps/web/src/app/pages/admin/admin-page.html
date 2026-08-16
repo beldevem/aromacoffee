@@ -4,10 +4,10 @@
     <app-admin-topbar />
     <main class="admin-content">
       <app-admin-overview />
-      <div class="admin-grid admin-grid-primary">
-        <div id="reservations"><app-admin-reservations /></div>
+      <div class="admin-stack">
+        <section id="orders"><app-admin-orders-panel /></section>
+        <section id="reservations"><app-admin-reservations /></section>
       </div>
-      <div id="products"><app-admin-products /></div>
     </main>
   </div>
 </div>

@@ -21,14 +21,10 @@
   padding: 2rem clamp(1rem, 3vw, 3rem) 4rem;
 }
 
-.admin-grid {
+.admin-stack {
   display: grid;
-  gap: 1.25rem;
-}
-
-.admin-grid-primary {
-  grid-template-columns: minmax(0, 1.4fr) minmax(20rem, 0.8fr);
-  margin-top: 1.25rem;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 @media (max-width: 64rem) {
@@ -52,9 +48,5 @@
 
   .admin-content {
     padding-bottom: 2rem;
-  }
-
-  .admin-grid-primary {
-    grid-template-columns: 1fr;
   }
 }

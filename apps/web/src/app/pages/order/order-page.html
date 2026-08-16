@@ -1,0 +1,161 @@
+@if (state() === 'loading') {
+  <div class="order-gate">
+    <p>{{ i18n.t('order.loading') }}</p>
+  </div>
+}
+
+@if (state() === 'invalid') {
+  <div class="order-gate">
+    <h1>{{ i18n.t('order.invalid.title') }}</h1>
+    <p>{{ i18n.t('order.invalid.copy') }}</p>
+  </div>
+}
+
+@if (state() === 'expired') {
+  <div class="order-gate">
+    <h1>{{ i18n.t('order.expired.title') }}</h1>
+    <p>{{ i18n.t('order.expired.copy') }}</p>
+  </div>
+}
+
+@if (state() === 'sent') {
+  <div class="order-gate success">
+    <h1>{{ i18n.t('order.success.title') }}</h1>
+    <p>{{ i18n.t('order.success.copy') }}</p>
+    <p class="reference">{{ i18n.t('order.success.reference') }} <strong>{{ reference() }}</strong></p>
+    <button type="button" class="primary" (click)="orderAgain()">{{ i18n.t('order.success.again') }}</button>
+  </div>
+}
+
+@if (state() === 'ready') {
+  <div class="order-shell">
+    <header class="order-header">
+      <div class="order-header-top">
+        <img src="/brand/aroma-logo.svg" [attr.alt]="i18n.t('brand.alt')" />
+        <span class="table-chip">{{ session.table()?.label }}</span>
+        <span class="timer" [class.low]="lowTime()">{{ countdown() }}</span>
+      </div>
+      <label class="search">
+        <span class="visually-hidden">{{ i18n.t('order.search.placeholder') }}</span>
+        <input
+          type="search"
+          [value]="searchTerm()"
+          (input)="updateSearch($any($event.target).value)"
+          [attr.placeholder]="i18n.t('order.search.placeholder')"
+        />
+      </label>
+      <nav class="chips" [attr.aria-label]="i18n.t('menu.filters.label')">
+        <button type="button" [class.active]="activeCategory() === 'all'" (click)="selectCategory('all')">
+          {{ i18n.t('order.category.all') }}
+        </button>
+        @for (category of categories(); track category.slug) {
+          <button
+            type="button"
+            [class.active]="activeCategory() === category.slug"
+            (click)="selectCategory(category.slug)"
+          >
+            {{ categoryName(category) }}
+          </button>
+        }
+      </nav>
+    </header>
+
+    <main class="order-main">
+      @for (category of filteredCategories(); track category.slug) {
+        <section class="order-category">
+          <h2>{{ categoryName(category) }}</h2>
+          <ul class="order-items">
+            @for (product of category.products; track product.id) {
+              <li class="order-item">
+                <img [src]="productImageUrl(product, category.slug)" [alt]="productName(product)" loading="lazy" />
+                <div class="order-item-body">
+                  <h3>{{ productName(product) }}</h3>
+                  @if (productDescription(product)) {
+                    <p>{{ productDescription(product) }}</p>
+                  }
+                  <p class="price">
+                    @if (isPromotion(product)) {
+                      <s>{{ formatPrice(product.ogPrice ?? product.priceCents) }}</s>
+                    }
+                    <strong>{{ formatPrice(unitPrice(product)) }}</strong>
+                  </p>
+                </div>
+                <div class="order-item-actions">
+                  @if (quantityOf(product.id) === 0) {
+                    <button type="button" class="add" (click)="add(product)">
+                      {{ i18n.t('order.add') }}
+                    </button>
+                  } @else {
+                    <div class="stepper">
+                      <button type="button" (click)="setQuantity(product.id, quantityOf(product.id) - 1)" aria-label="-">&minus;</button>
+                      <span>{{ quantityOf(product.id) }}</span>
+                      <button type="button" (click)="setQuantity(product.id, quantityOf(product.id) + 1)" aria-label="+">+</button>
+                    </div>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      } @empty {
+        <p class="order-empty">{{ i18n.t('order.empty') }}</p>
+      }
+    </main>
+
+    @if (cartCount() > 0 && !cartOpen()) {
+      <button type="button" class="cart-bar" (click)="openCart()">
+        <span class="cart-count">{{ cartCount() }}</span>
+        <span>{{ i18n.t('order.cart.view') }}</span>
+        <strong>{{ formatPrice(cartTotal()) }}</strong>
+      </button>
+    }
+
+    @if (cartOpen()) {
+      <div class="cart-sheet" role="dialog" [attr.aria-label]="i18n.t('order.cart.title')">
+        <div class="cart-panel">
+          <h2>{{ i18n.t('order.cart.title') }}</h2>
+          @if (cart().length === 0) {
+            <p class="cart-empty">{{ i18n.t('order.cart.empty') }}</p>
+          } @else {
+            <ul class="cart-lines">
+              @for (item of cart(); track item.productId) {
+                <li>
+                  <span class="cart-line-name">{{ item.name }}</span>
+                  <div class="stepper">
+                    <button type="button" (click)="setQuantity(item.productId, item.quantity - 1)" aria-label="-">&minus;</button>
+                    <span>{{ item.quantity }}</span>
+                    <button type="button" (click)="setQuantity(item.productId, item.quantity + 1)" aria-label="+">+</button>
+                  </div>
+                  <strong>{{ formatPrice(item.unitPriceCents * item.quantity) }}</strong>
+                </li>
+              }
+            </ul>
+            <label class="cart-note">
+              <span>{{ i18n.t('order.cart.note') }}</span>
+              <textarea
+                rows="2"
+                maxlength="300"
+                [value]="note()"
+                (input)="updateNote($any($event.target).value)"
+                [attr.placeholder]="i18n.t('order.cart.notePlaceholder')"
+              ></textarea>
+            </label>
+            <p class="cart-total">
+              <span>{{ i18n.t('order.cart.total') }}</span>
+              <strong>{{ formatPrice(cartTotal()) }}</strong>
+            </p>
+          }
+          @if (errorMessage()) {
+            <p class="cart-error">{{ errorMessage() }}</p>
+          }
+          <div class="cart-actions">
+            <button type="button" class="ghost" (click)="closeCart()">{{ i18n.t('order.cart.close') }}</button>
+            <button type="button" class="primary" [disabled]="cart().length === 0 || sending()" (click)="submit()">
+              {{ sending() ? i18n.t('order.cart.sending') : i18n.t('order.cart.submit') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}

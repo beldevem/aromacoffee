@@ -143,9 +143,19 @@ async function seed(): Promise<void> {
       }
     }
 
+    for (let tableNumber = 1; tableNumber <= 12; tableNumber += 1) {
+      const code = `T${String(tableNumber).padStart(2, '0')}`;
+      await prisma.restaurantTable.upsert({
+        where: { code },
+        update: {},
+        create: { code, label: `Table ${tableNumber}`, seats: 4, qrToken: randomBytes(32).toString('hex') },
+      });
+    }
+
     const categoryCount = await prisma.category.count();
     const productCount = await prisma.product.count();
-    console.log(`Seed complete: ${categoryCount} categories, ${productCount} products.`);
+    const tableCount = await prisma.restaurantTable.count();
+    console.log(`Seed complete: ${categoryCount} categories, ${productCount} products, ${tableCount} tables.`);
   } finally {
     await prisma.$disconnect();
   }

@@ -1,4 +1,4 @@
-{
+﻿{
   "language.select": "Select language",
   "language.en": "EN",
   "language.fr": "FR",
@@ -34,15 +34,10 @@
   "admin.account": "Account menu",
   "admin.overview.kicker": "Today at a glance",
   "admin.overview.title": "Service overview",
-  "admin.overview.today": "Friday, 15 August",
   "admin.metric.today": "Reservations today",
   "admin.metric.todayNote": "Reservations scheduled today",
   "admin.metric.pending": "Pending requests",
   "admin.metric.pendingNote": "Need attention",
-  "admin.metric.categories": "Visible categories",
-  "admin.metric.categoriesNote": "Active menu categories",
-  "admin.metric.products": "Visible products",
-  "admin.metric.productsNote": "Published catalog products",
   "admin.reservations.kicker": "Front of house",
   "admin.reservations.title": "Upcoming reservations",
   "admin.viewAll": "View all",
@@ -305,4 +300,73 @@
   ,"notFound.title": "This page wandered off."
   ,"notFound.copy": "The page you are looking for is not here."
   ,"notFound.home": "Back to Aroma"
+  ,"order.title": "Order at your table"
+  ,"order.loading": "Opening your session…"
+  ,"order.table": "Table"
+  ,"order.timeLeft": "Session"
+  ,"order.search.placeholder": "Search a dish, a drink…"
+  ,"order.category.all": "All"
+  ,"order.empty": "No item matches your search."
+  ,"order.add": "Add"
+  ,"order.cart.title": "Your order"
+  ,"order.cart.empty": "Your cart is empty."
+  ,"order.cart.total": "Total"
+  ,"order.cart.view": "View order"
+  ,"order.cart.close": "Keep browsing"
+  ,"order.cart.note": "Note for the kitchen (optional)"
+  ,"order.cart.notePlaceholder": "No sugar, allergy…"
+  ,"order.cart.submit": "Send order"
+  ,"order.cart.sending": "Sending…"
+  ,"order.cart.remove": "Remove"
+  ,"order.success.title": "Order sent"
+  ,"order.success.copy": "Our team is preparing your order and will bring it to your table."
+  ,"order.success.reference": "Reference"
+  ,"order.success.again": "Order something else"
+  ,"order.error.generic": "Something went wrong. Please try again."
+  ,"order.invalid.title": "Invalid QR code"
+  ,"order.invalid.copy": "This ordering link is not valid. Please scan the QR code on your table."
+  ,"order.expired.title": "Session expired"
+  ,"order.expired.copy": "For your safety an ordering session lasts 30 minutes. Please scan your table QR code again."
+  ,"order.expired.retry": "Scan again"
+  ,"admin.tables": "Tables & QR"
+  ,"admin.tables.title": "Tables and QR codes"
+  ,"admin.tables.subtitle": "Generate and print the QR codes placed on each table."
+  ,"admin.tables.add": "New table"
+  ,"admin.tables.label": "Name"
+  ,"admin.tables.code": "Code"
+  ,"admin.tables.seats": "Seats"
+  ,"admin.tables.active": "Active"
+  ,"admin.tables.rotate": "Regenerate QR"
+  ,"admin.tables.rotateConfirm": "Regenerating the QR code invalidates the stickers already printed for this table. Continue?"
+  ,"admin.tables.print": "Print"
+  ,"admin.tables.deleteConfirm": "Delete this table?"
+  ,"admin.tables.empty": "No table registered yet."
+  ,"admin.orders": "Orders"
+  ,"admin.orders.title": "In-room orders"
+  ,"admin.orders.subtitle": "Follow the orders placed from the table QR codes."
+  ,"admin.orders.empty": "No order yet."
+  ,"admin.orders.reference": "Reference"
+  ,"admin.orders.status": "Status"
+  ,"admin.orders.total": "Total"
+  ,"admin.orders.time": "Received"
+  ,"admin.orders.refresh": "Refresh"
+  ,"admin.orders.kicker": "QR orders"
+  ,"admin.orders.metric.today": "Orders today"
+  ,"admin.orders.metric.pending": "Pending"
+  ,"admin.orders.metric.preparing": "Preparing"
+  ,"admin.orders.metric.served": "Served today"
+  ,"admin.orders.metric.revenue": "Revenue today"
+  ,"admin.orders.status.pending": "Pending"
+  ,"admin.orders.status.preparing": "Preparing"
+  ,"admin.orders.status.served": "Served"
+  ,"admin.orders.status.cancelled": "Cancelled"
+  ,"admin.metric.todayOrders": "Orders today"
+  ,"admin.metric.todayOrdersNote": "Orders received via QR code"
+  ,"admin.metric.pendingOrders": "Pending orders"
+  ,"admin.metric.pendingOrdersNote": "Waiting to be prepared"
+  ,"admin.alerts.newOrder": "New order"
+  ,"admin.alerts.view": "View orders"
+  ,"admin.alerts.dismiss": "Dismiss"
+  ,"admin.alerts.mute": "Mute notification sound"
+  ,"admin.alerts.unmute": "Unmute notification sound"
 }

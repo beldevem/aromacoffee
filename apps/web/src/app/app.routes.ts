@@ -28,6 +28,16 @@ export const routes: Routes = [
 		loadComponent: () => import('./pages/admin/management/admin-management-page').then(({ AdminManagementPage }) => AdminManagementPage),
 	},
 	{
+		path: 'admin/tables',
+		canActivate: [authGuard, adminOnlyGuard],
+		loadComponent: () => import('./pages/admin/tables/admin-tables-page').then(({ AdminTablesPage }) => AdminTablesPage),
+	},
+	{
+		path: 'admin/orders',
+		canActivate: [authGuard],
+		loadComponent: () => import('./pages/admin/orders/admin-orders-page').then(({ AdminOrdersPage }) => AdminOrdersPage),
+	},
+	{
 		path: 'admin',
 		canActivate: [authGuard],
 		loadComponent: () =>
@@ -73,6 +83,10 @@ export const routes: Routes = [
 		path: 'reserve',
 		loadComponent: () =>
 			import('./pages/reserve/reserve-page').then(({ ReservePage }) => ReservePage),
+	},
+	{
+		path: 'order',
+		loadComponent: () => import('./pages/order/order-page').then(({ OrderPage }) => OrderPage),
 	},
 	{
 		path: '**',

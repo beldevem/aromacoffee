@@ -4,15 +4,15 @@
       <p class="admin-kicker">{{ i18n.t('admin.overview.kicker') }}</p>
       <h2 id="overview-title">{{ i18n.t('admin.overview.title') }}</h2>
     </div>
-    <span class="date-chip">{{ i18n.t('admin.overview.today') }}</span>
+    <span class="date-chip">{{ today() }}</span>
   </div>
   <div class="metric-grid">
     @for (metric of metricCards(); track metric.label) {
-      <article class="metric-card" [class]="metric.tone">
+      <a class="metric-card" [class]="metric.tone" [routerLink]="metric.link">
         <span>{{ i18n.t(metric.label) }}</span>
         <strong>{{ metric.value }}</strong>
         <small>{{ i18n.t(metric.note) }}</small>
-      </article>
+      </a>
     }
   </div>
 </section>

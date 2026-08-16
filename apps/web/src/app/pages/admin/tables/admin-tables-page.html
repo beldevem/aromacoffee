@@ -1,0 +1,64 @@
+<div class="admin-shell">
+  <app-admin-sidebar />
+  <div class="admin-main">
+    <app-admin-topbar />
+    <main class="tables-page">
+      <div class="page-heading">
+        <div>
+          <p class="admin-kicker">{{ i18n.t('admin.tables.title') }}</p>
+          <h1>{{ i18n.t('admin.tables.subtitle') }}</h1>
+        </div>
+        <div class="heading-actions">
+          <button class="print-button" type="button" (click)="print()">{{ i18n.t('admin.tables.print') }}</button>
+          <button class="add-button" type="button" (click)="beginCreate()">+ {{ i18n.t('admin.tables.add') }}</button>
+        </div>
+      </div>
+
+      @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
+      @if (error()) { <p class="state-message error">{{ error() }}</p> }
+
+      @if (!loading() && !error()) {
+        <ul class="qr-grid">
+          @for (table of tables(); track table.id) {
+            <li class="qr-card" [class.inactive]="!table.active">
+              <h2>{{ table.label }}</h2>
+              <p class="code">{{ table.code }} &middot; {{ table.seats }} {{ i18n.t('admin.tables.seats') }}</p>
+              @if (qrImages()[table.id]) {
+                <img [src]="qrImages()[table.id]" [alt]="table.label" />
+              }
+              <p class="hint">{{ i18n.t('order.title') }}</p>
+              <div class="card-actions">
+                <button type="button" (click)="beginEdit(table)">{{ i18n.t('admin.products.edit') }}</button>
+                <button type="button" (click)="rotate(table)">{{ i18n.t('admin.tables.rotate') }}</button>
+                <button class="delete" type="button" (click)="remove(table)">{{ i18n.t('admin.products.delete') }}</button>
+              </div>
+            </li>
+          } @empty {
+            <li class="state-message">{{ i18n.t('admin.tables.empty') }}</li>
+          }
+        </ul>
+      }
+    </main>
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-backdrop">
+    <dialog class="tables-dialog" open>
+      <form class="tables-form" (submit)="$event.preventDefault(); save()">
+        <div class="form-heading">
+          <h2>{{ editing() ? i18n.t('admin.products.edit') : i18n.t('admin.tables.add') }}</h2>
+          <button type="button" (click)="closeForm()">&#10005;</button>
+        </div>
+        <label>{{ i18n.t('admin.tables.label') }}<input name="label" [(ngModel)]="draft.label" required /></label>
+        <label>{{ i18n.t('admin.tables.code') }}<input name="code" [(ngModel)]="draft.code" required /></label>
+        <label>{{ i18n.t('admin.tables.seats') }}<input name="seats" type="number" min="1" max="30" [(ngModel)]="draft.seats" /></label>
+        <label class="checkbox-control"><input name="active" type="checkbox" [(ngModel)]="draft.active" />{{ i18n.t('admin.tables.active') }}</label>
+        <div class="form-actions">
+          <button type="button" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button>
+          <button class="save" type="submit" [disabled]="saving()">{{ i18n.t('admin.save') }}</button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+}

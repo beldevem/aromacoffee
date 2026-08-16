@@ -11,13 +11,35 @@ export class DashboardService {
     const endOfDay = new Date(startOfDay);
     endOfDay.setDate(endOfDay.getDate() + 1);
 
-    const [todayReservations, pendingReservations, categories, publishedProducts] = await Promise.all([
+    const [
+      todayReservations,
+      pendingReservations,
+      todayOrders,
+      pendingOrders,
+      preparingOrders,
+      servedOrders,
+      todayRevenue,
+    ] = await Promise.all([
       this.prisma.reservation.count({ where: { dateTime: { gte: startOfDay, lt: endOfDay } } }),
       this.prisma.reservation.count({ where: { status: 'PENDING' } }),
-      this.prisma.category.count({ where: { visible: true } }),
-      this.prisma.product.count({ where: { status: 'PUBLISHED' } }),
+      this.prisma.order.count({ where: { createdAt: { gte: startOfDay, lt: endOfDay } } }),
+      this.prisma.order.count({ where: { status: 'PENDING' } }),
+      this.prisma.order.count({ where: { status: 'PREPARING' } }),
+      this.prisma.order.count({ where: { status: 'SERVED', createdAt: { gte: startOfDay, lt: endOfDay } } }),
+      this.prisma.order.aggregate({
+        _sum: { totalCents: true },
+        where: { createdAt: { gte: startOfDay, lt: endOfDay }, status: 'SERVED' },
+      }),
     ]);
 
-    return { todayReservations, pendingReservations, categories, publishedProducts };
+    return {
+      todayReservations,
+      pendingReservations,
+      todayOrders,
+      pendingOrders,
+      preparingOrders,
+      servedOrders,
+      todayRevenueCents: todayRevenue._sum.totalCents ?? 0,
+    };
   }
 }

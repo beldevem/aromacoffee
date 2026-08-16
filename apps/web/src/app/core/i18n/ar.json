@@ -1,4 +1,4 @@
-{
+﻿{
   "language.select": "اختر اللغة",
   "language.en": "EN",
   "language.fr": "FR",
@@ -34,15 +34,10 @@
   "admin.account": "قائمة الحساب",
   "admin.overview.kicker": "لمحة عن اليوم",
   "admin.overview.title": "ملخص الخدمة",
-  "admin.overview.today": "الجمعة، 15 أغسطس",
   "admin.metric.today": "حجوزات اليوم",
   "admin.metric.todayNote": "الحجوزات المقررة اليوم",
   "admin.metric.pending": "طلبات معلقة",
   "admin.metric.pendingNote": "تحتاج إلى متابعة",
-  "admin.metric.categories": "الفئات الظاهرة",
-  "admin.metric.categoriesNote": "فئات القائمة النشطة",
-  "admin.metric.products": "المنتجات الظاهرة",
-  "admin.metric.productsNote": "المنتجات المنشورة في القائمة",
   "admin.reservations.kicker": "قاعة المقهى",
   "admin.reservations.title": "الحجوزات القادمة",
   "admin.viewAll": "عرض الكل",
@@ -305,4 +300,73 @@
   ,"notFound.title": "هذه الصفحة تاهت."
   ,"notFound.copy": "الصفحة التي تبحثون عنها غير موجودة هنا."
   ,"notFound.home": "العودة إلى أروما"
+  ,"order.title": "اطلب من طاولتك"
+  ,"order.loading": "جاري فتح الجلسة…"
+  ,"order.table": "طاولة"
+  ,"order.timeLeft": "الجلسة"
+  ,"order.search.placeholder": "ابحث عن طبق أو مشروب…"
+  ,"order.category.all": "الكل"
+  ,"order.empty": "لا يوجد عنصر مطابق لبحثك."
+  ,"order.add": "إضافة"
+  ,"order.cart.title": "طلبك"
+  ,"order.cart.empty": "سلتك فارغة."
+  ,"order.cart.total": "المجموع"
+  ,"order.cart.view": "عرض الطلب"
+  ,"order.cart.close": "متابعة التصفح"
+  ,"order.cart.note": "ملاحظة للمطبخ (اختياري)"
+  ,"order.cart.notePlaceholder": "بدون سكر، حساسية…"
+  ,"order.cart.submit": "إرسال الطلب"
+  ,"order.cart.sending": "جاري الإرسال…"
+  ,"order.cart.remove": "إزالة"
+  ,"order.success.title": "تم إرسال الطلب"
+  ,"order.success.copy": "فريقنا يحضّر طلبك وسيحضره إلى طاولتك."
+  ,"order.success.reference": "المرجع"
+  ,"order.success.again": "اطلب شيئاً آخر"
+  ,"order.error.generic": "حدث خطأ. يرجى المحاولة مرة أخرى."
+  ,"order.invalid.title": "رمز QR غير صالح"
+  ,"order.invalid.copy": "رابط الطلب هذا غير صالح. يرجى مسح رمز QR الموجود على طاولتك."
+  ,"order.expired.title": "انتهت الجلسة"
+  ,"order.expired.copy": "لأمانك، تدوم جلسة الطلب 30 دقيقة. يرجى إعادة مسح رمز QR الخاص بطاولتك."
+  ,"order.expired.retry": "إعادة المسح"
+  ,"admin.tables": "الطاولات ورموز QR"
+  ,"admin.tables.title": "الطاولات ورموز QR"
+  ,"admin.tables.subtitle": "أنشئ واطبع رموز QR الموضوعة على كل طاولة."
+  ,"admin.tables.add": "طاولة جديدة"
+  ,"admin.tables.label": "الاسم"
+  ,"admin.tables.code": "الرمز"
+  ,"admin.tables.seats": "المقاعد"
+  ,"admin.tables.active": "مفعّلة"
+  ,"admin.tables.rotate": "إعادة إنشاء QR"
+  ,"admin.tables.rotateConfirm": "إعادة إنشاء رمز QR ستبطل الملصقات المطبوعة لهذه الطاولة. متابعة؟"
+  ,"admin.tables.print": "طباعة"
+  ,"admin.tables.deleteConfirm": "حذف هذه الطاولة؟"
+  ,"admin.tables.empty": "لا توجد طاولات مسجلة."
+  ,"admin.orders": "الطلبات"
+  ,"admin.orders.title": "طلبات الصالة"
+  ,"admin.orders.subtitle": "متابعة الطلبات الواردة من رموز QR للطاولات."
+  ,"admin.orders.empty": "لا توجد طلبات حالياً."
+  ,"admin.orders.reference": "المرجع"
+  ,"admin.orders.status": "الحالة"
+  ,"admin.orders.total": "المجموع"
+  ,"admin.orders.time": "وردت"
+  ,"admin.orders.refresh": "تحديث"
+  ,"admin.orders.kicker": "طلبات QR"
+  ,"admin.orders.metric.today": "طلبات اليوم"
+  ,"admin.orders.metric.pending": "قيد الانتظار"
+  ,"admin.orders.metric.preparing": "قيد التحضير"
+  ,"admin.orders.metric.served": "قُدّمت اليوم"
+  ,"admin.orders.metric.revenue": "إيرادات اليوم"
+  ,"admin.orders.status.pending": "قيد الانتظار"
+  ,"admin.orders.status.preparing": "قيد التحضير"
+  ,"admin.orders.status.served": "قُدّمت"
+  ,"admin.orders.status.cancelled": "أُلغيت"
+  ,"admin.metric.todayOrders": "طلبات اليوم"
+  ,"admin.metric.todayOrdersNote": "طلبات واردة عبر رمز QR"
+  ,"admin.metric.pendingOrders": "طلبات قيد الانتظار"
+  ,"admin.metric.pendingOrdersNote": "بانتظار التحضير"
+  ,"admin.alerts.newOrder": "طلب جديد"
+  ,"admin.alerts.view": "عرض الطلبات"
+  ,"admin.alerts.dismiss": "إغلاق"
+  ,"admin.alerts.mute": "كتم صوت الإشعارات"
+  ,"admin.alerts.unmute": "تشغيل صوت الإشعارات"
 }

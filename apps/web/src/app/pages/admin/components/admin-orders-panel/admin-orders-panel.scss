@@ -1,0 +1,125 @@
+.panel {
+  background: #fffefa;
+  border: 1px solid #deded4;
+  border-radius: 0.8rem;
+  padding: 1.25rem;
+}
+
+.panel-heading {
+  align-items: start;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.admin-kicker {
+  color: #71866c;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+}
+
+.panel h2 {
+  color: #304533;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.view-all { color: #50684e; font-weight: 800; text-decoration: none; }
+
+.order-metrics {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  margin-bottom: 1.25rem;
+}
+
+.order-metric {
+  border-radius: 0.7rem;
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.8rem 0.9rem;
+
+  span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; }
+  strong { font-size: 1.5rem; font-weight: 600; }
+
+  &.green { background: #eaf0e6; color: #304533; }
+  &.gold { background: #f6ecd6; color: #7a5c14; }
+  &.blue { background: #e4edf4; color: #29536b; }
+  &.cream { background: #f4f1e8; color: #4a4a3f; }
+  &.ink { background: #50684e; color: #fffefa; }
+}
+
+.order-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.order-row {
+  align-items: center;
+  border: 1px solid #ecece3;
+  border-radius: 0.7rem;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 2.5rem 1fr auto auto auto;
+  padding: 0.65rem 0.8rem;
+}
+
+.order-table {
+  align-items: center;
+  background: #eaf0e6;
+  border-radius: 0.5rem;
+  color: #50684e;
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  height: 2.5rem;
+  justify-content: center;
+}
+
+.order-body {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+
+  strong { color: #304533; font-size: 0.92rem; }
+  small {
+    color: #71866c;
+    font-size: 0.78rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.order-row time { color: #71866c; font-size: 0.82rem; }
+.order-row .amount { color: #304533; font-weight: 700; font-size: 0.9rem; }
+
+.status {
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  background: #eaf0e6;
+  color: #50684e;
+
+  &[data-status='PENDING'] { background: #f6ecd6; color: #7a5c14; }
+  &[data-status='PREPARING'] { background: #e4edf4; color: #29536b; }
+  &[data-status='CANCELLED'] { background: #f6e2dc; color: #a53d24; }
+}
+
+.empty-orders { color: #71866c; margin: 0; }
+
+@media (max-width: 48rem) {
+  .order-row {
+    grid-template-columns: 2.5rem 1fr auto;
+    row-gap: 0.4rem;
+
+    time { grid-column: 2; }
+    .amount { grid-column: 3; }
+  }
+}

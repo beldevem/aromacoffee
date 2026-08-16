@@ -41,6 +41,10 @@ export class SeoService {
       title: 'Reserve a Table | Aroma Coffee Shop',
       description: 'Reserve a table at Aroma Coffee Shop by phone or online when reservations are available.',
     },
+    '/order': {
+      title: 'Order at Your Table | Aroma Coffee Shop',
+      description: 'Scan the QR code on your table to browse the Aroma Coffee Shop menu and order without leaving your seat.',
+    },
   };
 
   constructor() {
@@ -56,7 +60,7 @@ export class SeoService {
 
     this.document.title = definition.title;
     this.setMeta('description', definition.description);
-    this.setMeta('robots', cleanUrl.startsWith('/admin') ? 'noindex,nofollow' : 'index,follow');
+    this.setMeta('robots', cleanUrl.startsWith('/admin') || cleanUrl.startsWith('/order') ? 'noindex,nofollow' : 'index,follow');
     this.setMetaProperty('og:title', definition.title);
     this.setMetaProperty('og:description', definition.description);
     this.setMetaProperty('og:type', definition.type ?? 'website');

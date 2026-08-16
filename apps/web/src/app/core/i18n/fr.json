@@ -1,4 +1,4 @@
-{
+﻿{
   "language.select": "Choisir la langue",
   "language.en": "EN",
   "language.fr": "FR",
@@ -34,15 +34,10 @@
   "admin.account": "Menu du compte",
   "admin.overview.kicker": "Aujourd'hui en un coup d'œil",
   "admin.overview.title": "Vue du service",
-  "admin.overview.today": "Vendredi 15 août",
   "admin.metric.today": "Réservations aujourd'hui",
   "admin.metric.todayNote": "Réservations prévues aujourd'hui",
   "admin.metric.pending": "Demandes en attente",
   "admin.metric.pendingNote": "À traiter",
-  "admin.metric.categories": "Catégories visibles",
-  "admin.metric.categoriesNote": "Catégories actives du menu",
-  "admin.metric.products": "Produits visibles",
-  "admin.metric.productsNote": "Produits publiés au catalogue",
   "admin.reservations.kicker": "Salle",
   "admin.reservations.title": "Prochaines réservations",
   "admin.viewAll": "Tout voir",
@@ -305,4 +300,73 @@
   ,"notFound.title": "Cette page s'est échappée."
   ,"notFound.copy": "La page que vous cherchez n'existe pas ici."
   ,"notFound.home": "Retour chez Aroma"
+  ,"order.title": "Commander à table"
+  ,"order.loading": "Ouverture de votre session…"
+  ,"order.table": "Table"
+  ,"order.timeLeft": "Session"
+  ,"order.search.placeholder": "Rechercher un plat, une boisson…"
+  ,"order.category.all": "Tout"
+  ,"order.empty": "Aucun article ne correspond à votre recherche."
+  ,"order.add": "Ajouter"
+  ,"order.cart.title": "Votre commande"
+  ,"order.cart.empty": "Votre panier est vide."
+  ,"order.cart.total": "Total"
+  ,"order.cart.view": "Voir la commande"
+  ,"order.cart.close": "Continuer à choisir"
+  ,"order.cart.note": "Note pour la cuisine (optionnel)"
+  ,"order.cart.notePlaceholder": "Sans sucre, allergie…"
+  ,"order.cart.submit": "Envoyer la commande"
+  ,"order.cart.sending": "Envoi…"
+  ,"order.cart.remove": "Retirer"
+  ,"order.success.title": "Commande envoyée"
+  ,"order.success.copy": "Notre équipe prépare votre commande et vous l'apporte à table."
+  ,"order.success.reference": "Référence"
+  ,"order.success.again": "Commander autre chose"
+  ,"order.error.generic": "Une erreur est survenue. Merci de réessayer."
+  ,"order.invalid.title": "QR code invalide"
+  ,"order.invalid.copy": "Ce lien de commande n'est pas valide. Merci de scanner le QR code posé sur votre table."
+  ,"order.expired.title": "Session expirée"
+  ,"order.expired.copy": "Pour votre sécurité, une session de commande dure 30 minutes. Merci de rescanner le QR code de votre table."
+  ,"order.expired.retry": "Rescanner"
+  ,"admin.tables": "Tables & QR"
+  ,"admin.tables.title": "Tables et QR codes"
+  ,"admin.tables.subtitle": "Générez et imprimez les QR codes posés sur chaque table."
+  ,"admin.tables.add": "Nouvelle table"
+  ,"admin.tables.label": "Nom"
+  ,"admin.tables.code": "Code"
+  ,"admin.tables.seats": "Places"
+  ,"admin.tables.active": "Active"
+  ,"admin.tables.rotate": "Régénérer le QR"
+  ,"admin.tables.rotateConfirm": "Régénérer le QR code invalidera les autocollants déjà imprimés pour cette table. Continuer ?"
+  ,"admin.tables.print": "Imprimer"
+  ,"admin.tables.deleteConfirm": "Supprimer cette table ?"
+  ,"admin.tables.empty": "Aucune table enregistrée."
+  ,"admin.orders": "Commandes"
+  ,"admin.orders.title": "Commandes en salle"
+  ,"admin.orders.subtitle": "Suivi des commandes passées depuis les QR codes des tables."
+  ,"admin.orders.empty": "Aucune commande pour le moment."
+  ,"admin.orders.reference": "Référence"
+  ,"admin.orders.status": "Statut"
+  ,"admin.orders.total": "Total"
+  ,"admin.orders.time": "Reçue"
+  ,"admin.orders.refresh": "Actualiser"
+  ,"admin.orders.kicker": "Commandes QR"
+  ,"admin.orders.metric.today": "Commandes du jour"
+  ,"admin.orders.metric.pending": "En attente"
+  ,"admin.orders.metric.preparing": "En préparation"
+  ,"admin.orders.metric.served": "Servies aujourd'hui"
+  ,"admin.orders.metric.revenue": "Chiffre du jour"
+  ,"admin.orders.status.pending": "En attente"
+  ,"admin.orders.status.preparing": "En préparation"
+  ,"admin.orders.status.served": "Servie"
+  ,"admin.orders.status.cancelled": "Annulée"
+  ,"admin.metric.todayOrders": "Commandes aujourd'hui"
+  ,"admin.metric.todayOrdersNote": "Commandes reçues via QR code"
+  ,"admin.metric.pendingOrders": "Commandes en attente"
+  ,"admin.metric.pendingOrdersNote": "À préparer"
+  ,"admin.alerts.newOrder": "Nouvelle commande"
+  ,"admin.alerts.view": "Voir les commandes"
+  ,"admin.alerts.dismiss": "Fermer"
+  ,"admin.alerts.mute": "Couper le son des notifications"
+  ,"admin.alerts.unmute": "Activer le son des notifications"
 }

@@ -6,7 +6,24 @@
   <div class="admin-topbar-actions">
     <span class="status-dot"></span>
     <span>{{ i18n.t('admin.openStatus') }}</span>
+    <button
+      type="button"
+      class="sound-toggle"
+      [class.muted]="alerts.muted()"
+      [attr.aria-pressed]="!alerts.muted()"
+      [attr.aria-label]="i18n.t(alerts.muted() ? 'admin.alerts.unmute' : 'admin.alerts.mute')"
+      [attr.title]="i18n.t(alerts.muted() ? 'admin.alerts.unmute' : 'admin.alerts.mute')"
+      (click)="alerts.toggleMute()"
+    >
+      @if (alerts.muted()) {
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m17 9 4 6M21 9l-4 6"/></svg>
+      } @else {
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>
+      }
+    </button>
     <span>{{ auth.user()?.name }}</span>
     <button type="button" [attr.aria-label]="i18n.t('auth.logout')" (click)="auth.logout()">&#10140;</button>
   </div>
 </header>
+
+<app-admin-order-alerts />

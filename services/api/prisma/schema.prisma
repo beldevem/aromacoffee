@@ -28,6 +28,13 @@ enum ProductStatus {
   HIDDEN
 }
 
+enum OrderStatus {
+  PENDING
+  PREPARING
+  SERVED
+  CANCELLED
+}
+
 model User {
   id           String     @id @default(uuid()) @db.Uuid
   name         String
@@ -97,6 +104,7 @@ model Product {
   category        Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   flagId          String?       @map("flag_id") @db.Uuid
   flag            Flag?         @relation(fields: [flagId], references: [id], onDelete: SetNull)
+  orderItems      OrderItem[]
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
@@ -162,4 +170,54 @@ model AuditLog {
   @@index([entity, entityId])
   @@index([userId, createdAt])
   @@map("audit_logs")
+}
+
+model RestaurantTable {
+  id        String   @id @default(uuid()) @db.Uuid
+  label     String
+  code      String   @unique
+  // Unguessable secret printed inside the QR code; rotating it invalidates the printed sticker.
+  qrToken   String   @unique @map("qr_token")
+  seats     Int      @default(2)
+  active    Boolean  @default(true)
+  orders    Order[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@map("restaurant_tables")
+}
+
+model Order {
+  id         String          @id @default(uuid()) @db.Uuid
+  reference  String          @unique
+  tableId    String          @map("table_id") @db.Uuid
+  table      RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
+  sessionId  String          @map("session_id")
+  status     OrderStatus     @default(PENDING)
+  totalCents Int             @map("total_cents")
+  note       String?
+  items      OrderItem[]
+  createdAt  DateTime        @default(now()) @map("created_at")
+  updatedAt  DateTime        @updatedAt @map("updated_at")
+
+  @@index([status, createdAt])
+  @@index([tableId, createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String  @id @default(uuid()) @db.Uuid
+  orderId        String  @map("order_id") @db.Uuid
+  order          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId      String  @map("product_id") @db.Uuid
+  product        Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  // Name and price are snapshotted so past orders stay accurate when the catalog changes.
+  nameFr         String  @map("name_fr")
+  unitPriceCents Int     @map("unit_price_cents")
+  quantity       Int
+  lineTotalCents Int     @map("line_total_cents")
+
+  @@index([orderId])
+  @@map("order_items")
 }

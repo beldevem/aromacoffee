@@ -1,0 +1,47 @@
+<div class="admin-shell">
+  <app-admin-sidebar />
+  <div class="admin-main">
+    <app-admin-topbar />
+    <main class="orders-page">
+      <div class="page-heading">
+        <div>
+          <p class="admin-kicker">{{ i18n.t('admin.orders.title') }}</p>
+          <h1>{{ i18n.t('admin.orders.subtitle') }}</h1>
+        </div>
+        <button class="refresh-button" type="button" (click)="load()">{{ i18n.t('admin.orders.refresh') }}</button>
+      </div>
+
+      @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
+      @if (error()) { <p class="state-message error">{{ error() }}</p> }
+
+      @if (!loading() && !error()) {
+        <ul class="order-list">
+          @for (order of orders(); track order.id) {
+            <li class="order-card" [attr.data-status]="order.status">
+              <header>
+                <div>
+                  <strong>{{ order.table.label }}</strong>
+                  <small>{{ i18n.t('admin.orders.reference') }} {{ order.reference }} &middot; {{ formatTime(order.createdAt) }}</small>
+                </div>
+                <select [value]="order.status" (change)="setStatus(order, $any($event.target).value)">
+                  @for (status of statuses; track status) {
+                    <option [value]="status">{{ i18n.t(statusKey(status)) }}</option>
+                  }
+                </select>
+              </header>
+              <ul class="order-lines">
+                @for (item of order.items; track item.id) {
+                  <li><span>{{ item.quantity }} &times; {{ item.nameFr }}</span><span>{{ formatPrice(item.lineTotalCents) }}</span></li>
+                }
+              </ul>
+              @if (order.note) { <p class="note">{{ order.note }}</p> }
+              <p class="total"><span>{{ i18n.t('admin.orders.total') }}</span><strong>{{ formatPrice(order.totalCents) }}</strong></p>
+            </li>
+          } @empty {
+            <li class="state-message">{{ i18n.t('admin.orders.empty') }}</li>
+          }
+        </ul>
+      }
+    </main>
+  </div>
+</div>

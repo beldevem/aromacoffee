@@ -1,0 +1,97 @@
+.orders-page {
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+.page-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+
+  h1 { margin: 0; font-size: 1.25rem; color: #2c3a2b; }
+}
+
+.refresh-button {
+  padding: 0.55rem 1rem;
+  border: 1px solid rgb(80 104 78 / 35%);
+  border-radius: 0.6rem;
+  background: transparent;
+  color: #50684e;
+  cursor: pointer;
+}
+
+.order-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+
+.order-card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  border-radius: 0.9rem;
+  background: #fffefa;
+  border-inline-start: 4px solid rgb(80 104 78 / 40%);
+
+  &[data-status='PENDING'] { border-inline-start-color: #d19a2c; }
+  &[data-status='PREPARING'] { border-inline-start-color: #3f7fa5; }
+  &[data-status='SERVED'] { border-inline-start-color: #50684e; }
+  &[data-status='CANCELLED'] { border-inline-start-color: #a53d24; opacity: 0.65; }
+
+  header {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    strong { display: block; color: #2c3a2b; }
+    small { color: rgb(44 58 43 / 65%); font-size: 0.75rem; }
+    select {
+      padding: 0.3rem 0.45rem;
+      border: 1px solid rgb(80 104 78 / 30%);
+      border-radius: 0.5rem;
+      background: transparent;
+      color: #50684e;
+      font-size: 0.78rem;
+    }
+  }
+}
+
+.order-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.88rem;
+  color: rgb(44 58 43 / 85%);
+
+  li { display: flex; justify-content: space-between; gap: 0.75rem; }
+}
+
+.note {
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.5rem;
+  background: rgb(80 104 78 / 8%);
+  font-size: 0.82rem;
+  color: rgb(44 58 43 / 80%);
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  color: #50684e;
+}
+
+.state-message { color: rgb(44 58 43 / 70%); }
+.state-message.error { color: #a53d24; }
