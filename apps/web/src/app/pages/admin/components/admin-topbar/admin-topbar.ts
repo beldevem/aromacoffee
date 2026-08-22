@@ -28,4 +28,10 @@ export class AdminTopbar {
     if (locale === 'en') return `Hello, ${name}`;
     return `Bonjour, ${name}`;
   });
+
+  protected confirmLogout(): void {
+    if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+      this.auth.logout();
+    }
+  }
 }

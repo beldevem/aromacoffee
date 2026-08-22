@@ -7,7 +7,7 @@ import { AuthGuard } from './auth.guard';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-	imports: [PrismaModule, JwtModule.registerAsync({ inject: [ConfigService], useFactory: (config: ConfigService) => ({ secret: config.get<string>('JWT_SECRET') ?? 'dev-only-change-this-secret', signOptions: { expiresIn: '8h' } }) })],
+	imports: [PrismaModule, JwtModule.registerAsync({ inject: [ConfigService], useFactory: (config: ConfigService) => ({ secret: config.get<string>('JWT_SECRET') ?? 'dev-only-change-this-secret', signOptions: { expiresIn: '30d' } }) })],
 	controllers: [AuthController],
 	providers: [AuthService, AuthGuard],
 	exports: [AuthService, AuthGuard, JwtModule],

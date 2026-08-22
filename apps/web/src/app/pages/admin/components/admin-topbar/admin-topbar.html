@@ -29,7 +29,7 @@
       }
     </button>
     <span>{{ auth.user()?.name }}</span>
-    <button type="button" [attr.aria-label]="i18n.t('auth.logout')" (click)="auth.logout()">&#10140;</button>
+    <button type="button" class="btn-logout" [attr.aria-label]="i18n.t('auth.logout')" title="Se déconnecter" (click)="confirmLogout()">&#10140;</button>
   </div>
 </header>
 
