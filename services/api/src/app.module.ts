@@ -11,12 +11,13 @@ import { ReservationsModule } from './reservations/reservations.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { TablesModule } from './tables/tables.module';
 import { OrdersModule } from './orders/orders.module';
+import { ExpensesModule } from './expenses/expenses.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, ProductsModule, CategoriesModule, BadgesModule, UsersModule, ReservationsModule, DashboardModule, TablesModule, OrdersModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, ProductsModule, CategoriesModule, BadgesModule, UsersModule, ReservationsModule, DashboardModule, TablesModule, OrdersModule, ExpensesModule],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useExisting: AuthGuard }],
 })

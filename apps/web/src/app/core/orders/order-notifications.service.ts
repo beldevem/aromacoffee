@@ -15,7 +15,7 @@ export interface NewOrderNotification {
 }
 
 const MUTE_KEY = 'aroma.ordersMuted';
-const MAX_VISIBLE = 3;
+const MAX_VISIBLE = 1;
 
 /**
  * Subscribes to the order SSE feed with fetch rather than EventSource, because EventSource
@@ -28,6 +28,7 @@ export class OrderNotificationsService {
   private audioContext?: AudioContext;
   private retryDelay = 2000;
   private running = false;
+  private readonly recentOrderIds = new Set<string>();
 
   readonly notifications = signal<NewOrderNotification[]>([]);
   readonly muted = signal(this.readMuted());
@@ -120,8 +121,23 @@ export class OrderNotificationsService {
 
     try {
       const order = JSON.parse(dataLines.join('\n')) as NewOrderNotification;
-      this.notifications.update((items) => [order, ...items].slice(0, MAX_VISIBLE));
+      if (!order?.id || this.recentOrderIds.has(order.id)) return;
+
+      this.recentOrderIds.add(order.id);
+      setTimeout(() => this.recentOrderIds.delete(order.id), 45_000);
+
+      // Notify for orders created by customers or agents/staff.
+      // If the order was created by the currently logged-in user on this device, skip the chime/banner on this device.
+      const currentUserName = this.auth.user()?.name?.trim().toLowerCase();
+      const creatorName = order.createdBy?.trim().toLowerCase();
+      const isSelf = currentUserName && creatorName && currentUserName === creatorName;
+      if (isSelf) return;
+
+      this.notifications.update((items) => [order, ...items.filter((it) => it.id !== order.id)].slice(0, MAX_VISIBLE));
       if (!this.muted()) this.playChime();
+
+      // Auto-dismiss notification after 7 seconds
+      setTimeout(() => this.dismiss(order.id), 7000);
     } catch {
       // Ignore malformed frames rather than killing the stream.
     }
@@ -148,7 +164,7 @@ export class OrderNotificationsService {
         oscillator.stop(startAt + 0.32);
       });
     } catch {
-      // Autoplay policy or unsupported browser: the visual toast is still shown.
+      // Autoplay policy or unsupported browser
     }
   }
 

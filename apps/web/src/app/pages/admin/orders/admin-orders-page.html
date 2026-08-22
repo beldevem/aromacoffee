@@ -3,17 +3,49 @@
   <div class="admin-main">
     <app-admin-topbar />
     <main class="orders-page">
+      <!-- Heading & View Switcher -->
       <div class="page-heading">
-        <div>
+        <div class="heading-left">
           <p class="admin-kicker">{{ i18n.t('admin.orders.title') }}</p>
           <h1>{{ i18n.t('admin.orders.subtitle') }}</h1>
         </div>
-        <div class="heading-actions">
-          <button type="button" class="ghost" (click)="load()">{{ i18n.t('admin.orders.refresh') }}</button>
-          <button type="button" class="primary" (click)="openForm()">+ {{ i18n.t('admin.orders.new') }}</button>
+
+        <div class="heading-controls">
+          <!-- View mode switcher -->
+          <div class="view-toggle" role="group" aria-label="Mode d'affichage">
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="viewMode() === 'feed'"
+              (click)="setViewMode('feed')"
+            >
+              <span class="icon">☰</span> {{ i18n.t('admin.orders.view.feed') }}
+            </button>
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="viewMode() === 'tables'"
+              (click)="setViewMode('tables')"
+            >
+              <span class="icon">⊞</span> {{ i18n.t('admin.orders.view.tables') }}
+            </button>
+          </div>
+
+          <div class="heading-actions">
+            <button type="button" class="ghost" (click)="exportOrders()" title="Exporter les commandes en fichier CSV / Excel">
+              📥 Exporter CSV
+            </button>
+            <button type="button" class="ghost" (click)="load()">
+              ↻ {{ i18n.t('admin.orders.refresh') }}
+            </button>
+            <button type="button" class="primary" (click)="openForm()">
+              + {{ i18n.t('admin.orders.new') }}
+            </button>
+          </div>
         </div>
       </div>
 
+      <!-- Financial Metrics Summary (Admin Only) -->
       @if (isAdmin()) {
         <div class="summary-row">
           <article class="summary-card">
@@ -28,179 +60,583 @@
             <span>{{ i18n.t('admin.orders.summary.paid') }}</span>
             <strong>{{ formatPrice(summary()?.paidCents) }}</strong>
           </article>
-          <article class="summary-card">
+          <article class="summary-card unpaid">
             <span>{{ i18n.t('admin.orders.summary.unpaid') }}</span>
             <strong>{{ formatPrice((summary()?.totalCents ?? 0) - (summary()?.paidCents ?? 0)) }}</strong>
           </article>
         </div>
       }
 
-      <div class="filters">
-        <label>
-          {{ i18n.t('admin.orders.filter.status') }}
-          <select [value]="statusFilter()" (change)="setStatusFilter($any($event.target).value)">
-            <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
-            @for (status of statuses; track status) {
-              <option [value]="status">{{ i18n.t(statusKey(status)) }}@if (isAdmin()) { ({{ statusCount(status) }}) }</option>
-            }
-          </select>
-        </label>
-        <label>
-          {{ i18n.t('admin.orders.table') }}
-          <select [value]="tableFilter()" (change)="setTableFilter($any($event.target).value)">
-            <option value="">{{ i18n.t('admin.orders.filter.allTables') }}</option>
-            @for (table of tables(); track table.id) {
-              <option [value]="table.id">{{ table.label }}</option>
-            }
-          </select>
-        </label>
-        <label>
-          {{ i18n.t('admin.orders.filter.payment') }}
-          <select [value]="paidFilter()" (change)="setPaidFilter($any($event.target).value)">
-            <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
-            <option value="true">{{ i18n.t('admin.orders.paid') }}</option>
-            <option value="false">{{ i18n.t('admin.orders.unpaid') }}</option>
-          </select>
-        </label>
-        <label>
-          {{ i18n.t('admin.orders.filter.createdBy') }}
-          <select [value]="channelFilter()" (change)="setChannelFilter($any($event.target).value)">
-            <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
-            @for (channel of channels; track channel) {
-              <option [value]="channel">{{ i18n.t(channelKey(channel)) }}</option>
-            }
-          </select>
-        </label>
-        <button type="button" class="chip" [class.active]="todayOnly()" (click)="toggleToday()">
-          {{ todayOnly() ? i18n.t('admin.orders.filter.today') : i18n.t('admin.orders.filter.allTime') }}
-        </button>
-      </div>
+      <!-- VIEW 1: TABLE FLOOR PLAN (Plan des tables) -->
+      @if (viewMode() === 'tables') {
+        <div class="tables-view">
+          <div class="tables-legend">
+            <span class="legend-item"><i class="dot free"></i> {{ i18n.t('admin.orders.table.free') }}</span>
+            <span class="legend-item"><i class="dot busy"></i> {{ i18n.t('admin.orders.table.busy') }}</span>
+            <span class="legend-item"><i class="dot served"></i> {{ i18n.t('admin.orders.table.served') }}</span>
+          </div>
 
-      @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
-      @if (error()) { <p class="state-message error">{{ error() }}</p> }
-
-      @if (!loading() && !error()) {
-        <ul class="order-list">
-          @for (order of orders(); track order.id) {
-            <li class="order-card" [attr.data-status]="order.status">
-              <header>
-                <div class="order-head">
-                  <strong>{{ orderTarget(order) }} · {{ order.reference }}</strong>
-                  <small>{{ order.createdAt | date:'dd/MM HH:mm' }} · {{ i18n.t(channelKey(order.channel)) }}</small>
-                </div>
-                <div class="badges">
-                  <span class="status-pill">{{ i18n.t(statusKey(order.status)) }}</span>
-                  <span class="pay-pill" [class.paid]="isPaid(order)">
-                    {{ isPaid(order) ? i18n.t('admin.orders.paid') : i18n.t('admin.orders.unpaid') }}
+          <div class="tables-grid">
+            @for (occ of tableOccupancies(); track occ.table.id) {
+              <article
+                class="table-pos-card"
+                [attr.data-status]="occ.status"
+                (click)="selectOrderForTable(occ)"
+              >
+                <header class="table-pos-header">
+                  <div class="table-title-group">
+                    <strong class="table-label">{{ occ.table.label }}</strong>
+                    <span class="table-code">{{ occ.table.code }}</span>
+                  </div>
+                  <span class="table-status-badge" [attr.data-status]="occ.status">
+                    @if (occ.status === 'free') { {{ i18n.t('admin.orders.table.free') }} }
+                    @if (occ.status === 'busy') { {{ i18n.t('admin.orders.table.busy') }} }
+                    @if (occ.status === 'served') { {{ i18n.t('admin.orders.table.served') }} }
                   </span>
-                </div>
-              </header>
+                </header>
 
-              <ul class="order-lines">
-                @for (item of order.items; track item.id) {
-                  <li><span>{{ item.quantity }} &times; {{ item.nameFr }}</span><span>{{ formatPrice(item.lineTotalCents) }}</span></li>
-                }
-              </ul>
-
-              @if (order.note) { <p class="note">{{ order.note }}</p> }
-
-              <dl class="trace">
-                <div><dt>{{ i18n.t('admin.orders.createdBy') }}</dt><dd>{{ origin(order) }}</dd></div>
-                <div><dt>{{ i18n.t('admin.orders.validatedBy') }}</dt><dd>{{ order.validatedBy || '—' }}</dd></div>
-                <div><dt>{{ i18n.t('admin.orders.paidBy') }}</dt><dd>{{ order.paidBy || '—' }}</dd></div>
-                @if (order.paymentMethod) {
-                  <div><dt>{{ i18n.t('admin.orders.paymentMethod') }}</dt><dd>{{ i18n.t(paymentKey(order.paymentMethod)) }}</dd></div>
-                }
-              </dl>
-
-              <footer>
-                <strong class="amount">{{ formatPrice(order.totalCents) }}</strong>
-                <div class="card-actions">
-                  <select [value]="order.status" (change)="setStatus(order, $any($event.target).value)">
-                    @for (status of statuses; track status) {
-                      <option [value]="status">{{ i18n.t(statusKey(status)) }}</option>
-                    }
-                  </select>
-                  @if (!isPaid(order) && order.status !== 'CANCELLED') {
-                    <button type="button" class="pay" (click)="markPaid(order, 'CASH')">{{ i18n.t('admin.orders.payCash') }}</button>
-                    <button type="button" class="pay" (click)="markPaid(order, 'CARD')">{{ i18n.t('admin.orders.payCard') }}</button>
-                  }
-                  @if (isPaid(order)) {
-                    <button type="button" class="receipt-button" (click)="printReceipt(order)">{{ i18n.t('admin.orders.receipt') }}</button>
+                <div class="table-pos-body">
+                  @if (occ.activeOrders.length > 0) {
+                    <div class="table-order-info">
+                      <div class="orders-chips-stack" (click)="$event.stopPropagation()">
+                        @for (ord of occ.activeOrders; track ord.id) {
+                          <button
+                            type="button"
+                            class="order-subchip"
+                            (click)="openOrderModal(ord)"
+                            title="Ouvrir cette commande"
+                          >
+                            <span class="subchip-ref">{{ ord.reference }}</span>
+                            <span class="subchip-amt">{{ formatPrice(ord.totalCents) }}</span>
+                          </button>
+                        }
+                      </div>
+                      @if (occ.latestCreatedAt) {
+                        <p class="order-time">⏱ {{ timeAgo(occ.latestCreatedAt) }}</p>
+                      }
+                      <p class="items-count">{{ occ.itemCount }} articles au total</p>
+                    </div>
+                    <div class="table-total">
+                      <span class="total-label">Total Table:</span>
+                      <strong>{{ formatPrice(occ.totalCents) }}</strong>
+                    </div>
+                  } @else {
+                    <div class="table-empty-prompt">
+                      <span class="plus-icon">+</span>
+                      <p>{{ i18n.t('admin.orders.table.openOrder') }}</p>
+                    </div>
                   }
                 </div>
-              </footer>
-            </li>
-          } @empty {
-            <li class="state-message">{{ i18n.t('admin.orders.empty') }}</li>
-          }
-        </ul>
-      }
-    </main>
-  </div>
-</div>
 
-@if (formOpen()) {
-  <div class="modal-backdrop">
-    <dialog class="order-dialog" open>
-      <div class="form-heading">
-        <h2>{{ i18n.t('admin.orders.new') }}</h2>
-        <button type="button" (click)="closeForm()">&#10005;</button>
-      </div>
-
-      <div class="dialog-body">
-        <div class="picker">
-          <input
-            type="search"
-            [value]="productSearch()"
-            (input)="productSearch.set($any($event.target).value)"
-            [attr.placeholder]="i18n.t('admin.orders.searchProduct')"
-          />
-          <ul class="product-list">
-            @for (product of filteredProducts(); track product.id) {
-              <li>
-                <button type="button" (click)="addLine(product)">
-                  <span>{{ product.nameFr }}</span>
-                  <strong>{{ formatPrice(product.priceCents) }}</strong>
-                </button>
-              </li>
+                @if (occ.activeOrders.length > 0) {
+                  <footer class="table-pos-footer">
+                    <div class="table-actions-dual">
+                      <button
+                        type="button"
+                        class="btn-table-inspect"
+                        (click)="$event.stopPropagation(); selectOrderForTable(occ)"
+                        title="Inspecter l'addition"
+                      >
+                        👁️ Voir
+                      </button>
+                      <button
+                        type="button"
+                        class="btn-table-add"
+                        (click)="$event.stopPropagation(); openFormForTable(occ.table.id)"
+                        title="Ajouter une nouvelle commande pour cette même table"
+                      >
+                        ＋ Commander
+                      </button>
+                    </div>
+                  </footer>
+                }
+              </article>
             } @empty {
-              <li class="state-message">{{ i18n.t('order.empty') }}</li>
+              <div class="state-message">{{ i18n.t('admin.tables.empty') }}</div>
             }
-          </ul>
+          </div>
         </div>
+      }
 
-        <div class="draft">
-          <label class="field">
+      <!-- VIEW 2: ORDERS FEED VIEW -->
+      @if (viewMode() === 'feed') {
+        <!-- Filters Bar -->
+        <div class="filters">
+          <label>
+            {{ i18n.t('admin.orders.filter.status') }}
+            <select [value]="statusFilter()" (change)="setStatusFilter($any($event.target).value)">
+              <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
+              @for (status of statuses; track status) {
+                <option [value]="status">{{ i18n.t(statusKey(status)) }}@if (isAdmin()) { ({{ statusCount(status) }}) }</option>
+              }
+            </select>
+          </label>
+          <label>
             {{ i18n.t('admin.orders.table') }}
-            <select [(ngModel)]="draftTableId" [disabled]="draftTakeaway">
-              <option value="">{{ i18n.t('admin.orders.selectTable') }}</option>
+            <select [value]="tableFilter()" (change)="setTableFilter($any($event.target).value)">
+              <option value="">{{ i18n.t('admin.orders.filter.allTables') }}</option>
               @for (table of tables(); track table.id) {
                 <option [value]="table.id">{{ table.label }}</option>
               }
             </select>
           </label>
-          <label class="checkbox"><input type="checkbox" [(ngModel)]="draftTakeaway" />{{ i18n.t('admin.orders.takeaway') }}</label>
+          <label>
+            {{ i18n.t('admin.orders.filter.payment') }}
+            <select [value]="paidFilter()" (change)="setPaidFilter($any($event.target).value)">
+              <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
+              <option value="true">{{ i18n.t('admin.orders.paid') }}</option>
+              <option value="false">{{ i18n.t('admin.orders.unpaid') }}</option>
+            </select>
+          </label>
+          <label>
+            {{ i18n.t('admin.orders.filter.createdBy') }}
+            <select [value]="channelFilter()" (change)="setChannelFilter($any($event.target).value)">
+              <option value="">{{ i18n.t('admin.orders.filter.all') }}</option>
+              @for (channel of channels; track channel) {
+                <option [value]="channel">{{ i18n.t(channelKey(channel)) }}</option>
+              }
+            </select>
+          </label>
+          <button type="button" class="chip" [class.active]="todayOnly()" (click)="toggleToday()">
+            {{ todayOnly() ? i18n.t('admin.orders.filter.today') : i18n.t('admin.orders.filter.allTime') }}
+          </button>
+        </div>
 
-          <ul class="draft-lines">
-            @for (line of draft(); track line.productId) {
-              <li>
-                <span class="draft-name">{{ line.nameFr }}</span>
-                <div class="stepper">
-                  <button type="button" (click)="setLineQuantity(line.productId, line.quantity - 1)" aria-label="-">&minus;</button>
-                  <span>{{ line.quantity }}</span>
-                  <button type="button" (click)="setLineQuantity(line.productId, line.quantity + 1)" aria-label="+">+</button>
-                </div>
-                <strong>{{ formatPrice(line.unitPriceCents * line.quantity) }}</strong>
+        @if (loading()) { <p class="state-message">{{ i18n.t('admin.products.loading') }}</p> }
+        @if (error()) { <p class="state-message error">{{ error() }}</p> }
+
+        @if (!loading() && !error()) {
+          <ul class="order-list">
+            @for (order of orders(); track order.id) {
+              <li
+                class="order-card"
+                [attr.data-status]="order.status"
+                (click)="openOrderModal(order)"
+              >
+                <header>
+                  <div class="order-head">
+                    <strong class="order-title">{{ orderTarget(order) }} · {{ order.reference }}</strong>
+                    <small class="order-sub">{{ order.createdAt | date:'HH:mm' }} ({{ timeAgo(order.createdAt) }}) · {{ i18n.t(channelKey(order.channel)) }}</small>
+                  </div>
+                  <div class="badges">
+                    <span class="status-pill" [attr.data-status]="order.status">
+                      {{ i18n.t(statusKey(order.status)) }}
+                    </span>
+                    <span class="pay-pill" [class.paid]="isPaid(order)">
+                      {{ isPaid(order) ? i18n.t('admin.orders.paid') : i18n.t('admin.orders.unpaid') }}
+                    </span>
+                  </div>
+                </header>
+
+                <ul class="order-lines">
+                  @for (item of order.items; track item.id) {
+                    <li>
+                      <span class="qty-name"><strong>{{ item.quantity }}&times;</strong> {{ item.nameFr }}</span>
+                      <span class="line-price">{{ formatPrice(item.lineTotalCents) }}</span>
+                    </li>
+                  }
+                </ul>
+
+                @if (order.note) {
+                  <p class="order-note">📝 {{ order.note }}</p>
+                }
+
+                <footer>
+                  <strong class="amount">{{ formatPrice(order.totalCents) }}</strong>
+                  <div class="card-quick-actions" (click)="$event.stopPropagation()">
+                    @if (order.status === 'PENDING') {
+                      <button type="button" class="btn-prep" (click)="setStatus(order, 'PREPARING')">
+                        ⚡ Préparer
+                      </button>
+                    }
+                    @if (order.status === 'PREPARING') {
+                      <button type="button" class="btn-serve" (click)="setStatus(order, 'SERVED')">
+                        ✓ Servir
+                      </button>
+                    }
+                    <button type="button" class="btn-inspect" (click)="openOrderModal(order)">
+                      Détails ➜
+                    </button>
+                  </div>
+                </footer>
               </li>
             } @empty {
-              <li class="state-message">{{ i18n.t('order.cart.empty') }}</li>
+              <li class="state-message">{{ i18n.t('admin.orders.empty') }}</li>
             }
           </ul>
+        }
+      }
+    </main>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 3. CENTER MODAL ORDER INSPECTOR                                          -->
+<!-- ========================================================================= -->
+@if (selectedOrder(); as order) {
+  <div class="modal-backdrop" (click)="closeOrderModal()">
+    <div
+      class="order-inspector-card"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Modal Header -->
+      <header class="inspector-header">
+        <div class="inspector-title">
+          <div class="table-tag">
+            <span class="table-badge">{{ orderTarget(order) }}</span>
+            <span class="ref-badge">{{ order.reference }}</span>
+            <span class="channel-badge">{{ i18n.t(channelKey(order.channel)) }}</span>
+          </div>
+          <p class="timestamp">
+            Reçue à {{ order.createdAt | date:'HH:mm' }} (il y a {{ timeAgo(order.createdAt) }})
+          </p>
+        </div>
+        <div class="inspector-actions-top">
+          @if (getTableIdForOrder(order)) {
+            <button
+              type="button"
+              class="btn-top-add-order"
+              (click)="openFormForOrderTable(order)"
+              title="Ajouter une autre commande pour cette même table"
+            >
+              ＋ Ajouter à cette table
+            </button>
+          }
+          <button type="button" class="btn-close" (click)="closeOrderModal()" aria-label="Fermer">✕</button>
+        </div>
+      </header>
+
+      <div class="inspector-body">
+        <!-- Status Progression Bar -->
+        <section class="lifecycle-section">
+          <div class="status-tracker">
+            <button
+              type="button"
+              class="step-node"
+              [class.active]="order.status === 'PENDING'"
+              [class.completed]="order.status === 'PREPARING' || order.status === 'SERVED'"
+              (click)="setStatus(order, 'PENDING')"
+            >
+              <span class="step-num">1</span>
+              <span class="step-label">En attente</span>
+            </button>
+            <span class="step-line" [class.filled]="order.status === 'PREPARING' || order.status === 'SERVED'"></span>
+            <button
+              type="button"
+              class="step-node"
+              [class.active]="order.status === 'PREPARING'"
+              [class.completed]="order.status === 'SERVED'"
+              (click)="setStatus(order, 'PREPARING')"
+            >
+              <span class="step-num">2</span>
+              <span class="step-label">En préparation</span>
+            </button>
+            <span class="step-line" [class.filled]="order.status === 'SERVED'"></span>
+            <button
+              type="button"
+              class="step-node"
+              [class.active]="order.status === 'SERVED'"
+              (click)="setStatus(order, 'SERVED')"
+            >
+              <span class="step-num">3</span>
+              <span class="step-label">Servie en salle</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Customer Order Items Table -->
+        <section class="items-section">
+          <h3>Articles commandés</h3>
+          <div class="items-table-wrapper">
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Qté</th>
+                  <th>Article</th>
+                  <th class="text-right">Prix Unitaire</th>
+                  <th class="text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of order.items; track item.id) {
+                  <tr>
+                    <td class="qty-col"><strong>{{ item.quantity }}&times;</strong></td>
+                    <td class="item-name-col">{{ item.nameFr }}</td>
+                    <td class="text-right">{{ formatPrice(item.unitPriceCents) }}</td>
+                    <td class="text-right font-bold">{{ formatPrice(item.lineTotalCents) }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3"><strong>Total de la commande</strong></td>
+                  <td class="text-right total-amount"><strong>{{ formatPrice(order.totalCents) }}</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          @if (order.note) {
+            <div class="order-note-callout">
+              <strong>📝 Instructions spéciales du client :</strong>
+              <p>{{ order.note }}</p>
+            </div>
+          }
+        </section>
+
+        <!-- Audit & Tracking Metadata -->
+        <section class="meta-section">
+          <div class="meta-grid">
+            <div><span>Créée par :</span> <strong>{{ origin(order) }}</strong></div>
+            <div><span>Validée par :</span> <strong>{{ order.validatedBy || '—' }}</strong></div>
+            <div><span>Paiement :</span>
+              <strong [class.text-success]="isPaid(order)" [class.text-danger]="!isPaid(order)">
+                {{ isPaid(order) ? ('Payé (' + i18n.t(paymentKey(order.paymentMethod!)) + ')') : 'En attente de paiement' }}
+              </strong>
+            </div>
+            <div><span>Encaissée par :</span> <strong>{{ order.paidBy || '—' }}</strong></div>
+          </div>
+        </section>
+
+        <!-- Payment & Change Calculator Section -->
+        @if (!isPaid(order) && order.status !== 'CANCELLED') {
+          <section class="checkout-section">
+            <h3>Règlement & Encaissement</h3>
+            
+            <div class="payment-actions-box">
+              <div class="quick-cash-row">
+                <span class="cash-label">Espèces reçues :</span>
+                <div class="preset-buttons">
+                  <button type="button" class="preset-btn" (click)="setTenderedSuggestion(order.totalCents / 100)">
+                    Exact ({{ (order.totalCents / 100).toFixed(2) }} DT)
+                  </button>
+                  <button type="button" class="preset-btn" (click)="setTenderedSuggestion(10)">10 DT</button>
+                  <button type="button" class="preset-btn" (click)="setTenderedSuggestion(20)">20 DT</button>
+                  <button type="button" class="preset-btn" (click)="setTenderedSuggestion(50)">50 DT</button>
+                </div>
+              </div>
+
+              @if (tenderedCash(); as tendered) {
+                <div class="change-display">
+                  <span>Reçu : <strong>{{ tendered.toFixed(2) }} DT</strong></span>
+                  <span class="change-tag">Monnaie à rendre : <strong>{{ changeDue().toFixed(2) }} DT</strong></span>
+                </div>
+              }
+
+              <div class="pay-buttons-row">
+                <button
+                  type="button"
+                  class="btn-pay-cash"
+                  (click)="markPaid(order, 'CASH')"
+                >
+                  💵 Payer en Espèces
+                </button>
+                <button
+                  type="button"
+                  class="btn-pay-card"
+                  (click)="markPaid(order, 'CARD')"
+                >
+                  💳 Payer par Carte
+                </button>
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Post-Payment Receipt Print Prompt (Ask to print check or not) -->
+        @if (printPromptOrder(); as promptOrder) {
+          <section class="print-prompt-card">
+            <div class="prompt-header">
+              <span class="prompt-badge">✓ Paiement Validé</span>
+              <span class="prompt-amount">{{ formatPrice(promptOrder.totalCents) }}</span>
+            </div>
+            <p class="prompt-question">Souhaitez-vous imprimer le ticket de caisse ?</p>
+            <div class="prompt-actions-row">
+              <button
+                type="button"
+                class="btn-prompt-print"
+                (click)="confirmPrintAndDismiss(true)"
+              >
+                🖨️ Oui, imprimer le reçu
+              </button>
+              <button
+                type="button"
+                class="btn-prompt-skip"
+                (click)="confirmPrintAndDismiss(false)"
+              >
+                ✕ Non, terminer
+              </button>
+            </div>
+          </section>
+        }
+      </div>
+
+      <!-- Modal Footer with Printing Tools -->
+      <footer class="inspector-footer">
+        <div class="print-tools-group">
+          <!-- 1. Print Pre-Check Customer Bill -->
+          <button
+            type="button"
+            class="btn-tool-print"
+            title="Imprimer l'addition pour la présenter au client avant paiement"
+            (click)="printPreCheck(order)"
+          >
+            🖨️ Imprimer l'Addition
+          </button>
+
+          <!-- 2. Print Bar / Kitchen Prep Ticket -->
+          <button
+            type="button"
+            class="btn-tool-ticket"
+            title="Imprimer le bon de préparation pour le barista / cuisine"
+            (click)="printBarTicket(order)"
+          >
+            📋 Ticket Bar / Cuisine
+          </button>
+
+          <!-- 3. Print Official Receipt (if paid) -->
+          @if (isPaid(order)) {
+            <button
+              type="button"
+              class="btn-tool-receipt"
+              (click)="printReceipt(order)"
+            >
+              🧾 Reçu de Caisse
+            </button>
+          }
+        </div>
+
+        <button type="button" class="btn-modal-close" (click)="closeOrderModal()">
+          {{ i18n.t('admin.orders.modal.close') }}
+        </button>
+      </footer>
+    </div>
+  </div>
+}
+
+<!-- ========================================================================= -->
+<!-- 4. MANUAL POS NEW ORDER MODAL                                             -->
+<!-- ========================================================================= -->
+@if (formOpen()) {
+  <div class="modal-backdrop" (click)="closeForm()">
+    <div class="order-dialog" (click)="$event.stopPropagation()">
+      <div class="form-heading">
+        <h2>{{ i18n.t('admin.orders.new') }}</h2>
+        <button type="button" class="btn-close" (click)="closeForm()">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <div class="pos-picker-pane">
+          <!-- Search Box -->
+          <div class="pos-search-box">
+            <span class="search-icon">🔍</span>
+            <input
+              type="search"
+              [value]="productSearch()"
+              (input)="productSearch.set($any($event.target).value)"
+              [attr.placeholder]="i18n.t('admin.orders.searchProduct')"
+            />
+            @if (productSearch()) {
+              <button type="button" class="btn-clear-search" (click)="productSearch.set('')">✕</button>
+            }
+          </div>
+
+          <!-- Categories Scrollable Filter Bar -->
+          <div class="pos-category-chips">
+            <button
+              type="button"
+              class="cat-chip"
+              [class.active]="selectedCategoryId() === 'ALL'"
+              (click)="setSelectedCategory('ALL')"
+            >
+              Tous ({{ products().length }})
+            </button>
+            @for (cat of categories(); track cat.id) {
+              <button
+                type="button"
+                class="cat-chip"
+                [class.active]="selectedCategoryId() === cat.id"
+                (click)="setSelectedCategory(cat.id)"
+              >
+                {{ cat.nameFr }} ({{ cat.products.length }})
+              </button>
+            }
+          </div>
+
+          <!-- Products Interactive Tiles Grid -->
+          <div class="pos-product-grid">
+            @for (product of filteredProducts(); track product.id) {
+              <article
+                class="pos-product-card"
+                [class.in-cart]="getDraftQuantity(product.id) > 0"
+                (click)="addLine(product)"
+              >
+                <div class="pos-card-info">
+                  <strong class="product-name">{{ product.nameFr }}</strong>
+                  <span class="product-price">{{ formatPrice(product.promotion && product.promoPrice != null ? product.promoPrice : product.priceCents) }}</span>
+                  @if (product.promotion) {
+                    <span class="promo-badge">Promo</span>
+                  }
+                </div>
+
+                @if (getDraftQuantity(product.id) > 0) {
+                  <div class="pos-qty-badge" (click)="$event.stopPropagation()">
+                    <button type="button" class="btn-qty-minus" (click)="setLineQuantity(product.id, getDraftQuantity(product.id) - 1)">&minus;</button>
+                    <span class="qty-count">{{ getDraftQuantity(product.id) }}</span>
+                    <button type="button" class="btn-qty-plus" (click)="setLineQuantity(product.id, getDraftQuantity(product.id) + 1)">+</button>
+                  </div>
+                } @else {
+                  <span class="add-tap-btn">+</span>
+                }
+              </article>
+            } @empty {
+              <div class="state-message">{{ i18n.t('order.empty') }}</div>
+            }
+          </div>
+        </div>
+
+        <div class="draft">
+          <div class="draft-header-fields">
+            <label class="field">
+              {{ i18n.t('admin.orders.table') }}
+              <select [(ngModel)]="draftTableId" [disabled]="draftTakeaway">
+                <option value="">{{ i18n.t('admin.orders.selectTable') }}</option>
+                @for (table of tables(); track table.id) {
+                  <option [value]="table.id">{{ table.label }}</option>
+                }
+              </select>
+            </label>
+            <label class="checkbox takeaway-toggle">
+              <input type="checkbox" [(ngModel)]="draftTakeaway" />
+              <span>{{ i18n.t('admin.orders.takeaway') }}</span>
+            </label>
+          </div>
+
+          <div class="draft-items-box">
+            <ul class="draft-lines">
+              @for (line of draft(); track line.productId) {
+                <li>
+                  <div class="draft-item-details">
+                    <strong class="draft-name">{{ line.nameFr }}</strong>
+                    <small class="draft-unit-price">{{ formatPrice(line.unitPriceCents) }} / u</small>
+                  </div>
+                  <div class="stepper">
+                    <button type="button" (click)="setLineQuantity(line.productId, line.quantity - 1)" aria-label="-">&minus;</button>
+                    <span class="stepper-val">{{ line.quantity }}</span>
+                    <button type="button" (click)="setLineQuantity(line.productId, line.quantity + 1)" aria-label="+">+</button>
+                  </div>
+                  <strong class="draft-line-total">{{ formatPrice(line.unitPriceCents * line.quantity) }}</strong>
+                  <button type="button" class="btn-remove-line" (click)="setLineQuantity(line.productId, 0)" title="Supprimer">✕</button>
+                </li>
+              } @empty {
+                <li class="state-message">{{ i18n.t('order.cart.empty') }}</li>
+              }
+            </ul>
+          </div>
 
           <label class="field">
             {{ i18n.t('order.cart.note') }}
-            <textarea rows="2" maxlength="300" [(ngModel)]="draftNote"></textarea>
+            <textarea rows="2" maxlength="300" [(ngModel)]="draftNote" placeholder="Instructions spéciales, sans sucre..."></textarea>
           </label>
 
           <label class="checkbox"><input type="checkbox" [(ngModel)]="draftMarkPaid" />{{ i18n.t('admin.orders.markPaid') }}</label>
@@ -218,67 +654,187 @@
           <p class="draft-total"><span>{{ i18n.t('order.cart.total') }}</span><strong>{{ formatPrice(draftTotal()) }}</strong></p>
 
           <div class="form-actions">
-            <button type="button" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button>
+            <button type="button" class="btn-cancel" (click)="closeForm()">{{ i18n.t('admin.cancel') }}</button>
             <button type="button" class="save" [disabled]="draft().length === 0 || saving()" (click)="submitOrder()">
               {{ i18n.t('admin.save') }}
             </button>
           </div>
         </div>
       </div>
-    </dialog>
+    </div>
   </div>
 }
 
+<!-- ========================================================================= -->
+<!-- 5. MULTI-TEMPLATE THERMAL PRINTER OUTPUT (80mm)                           -->
+<!-- ========================================================================= -->
 @if (receipt(); as order) {
-  <div class="receipt">
-    <header class="receipt-head">
-      <h1>Aroma Coffee Shop</h1>
-      <p class="receipt-tagline">{{ i18n.t('footer.tagline') }}</p>
-      <p class="receipt-contact">
-        {{ i18n.t('footer.address') }}<br />
-        {{ phone }}
-      </p>
-    </header>
+  <!-- TEMPLATE 1: PRE-CHECK CUSTOMER ADDITION (Before Payment) -->
+  @if (printTemplate() === 'addition') {
+    <div class="receipt thermal-print-container">
+      <header class="receipt-head">
+        <h1 class="shop-title">AROMA COFFEE SHOP</h1>
+        <p class="receipt-tagline">Janoura, Kébili · Route de Douz</p>
+        <p class="receipt-contact">Tél: {{ phone }}</p>
+        <h2 class="document-type-title">*** ADDITION / NOTE DE TABLE ***</h2>
+      </header>
 
-    <p class="receipt-meta">
-      {{ i18n.t('admin.orders.receipt') }} <strong>{{ order.reference }}</strong><br />
-      {{ order.paidAt || order.createdAt | date:'dd/MM/yyyy HH:mm' }}<br />
-      {{ orderTarget(order) }}
-    </p>
+      <div class="receipt-divider"></div>
 
-    <table class="receipt-lines">
-      <tbody>
-        @for (item of order.items; track item.id) {
+      <div class="receipt-meta-block">
+        <p><strong>Table : {{ orderTarget(order) }}</strong></p>
+        <p>Commande : <strong>{{ order.reference }}</strong></p>
+        <p>Date : {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p>Serveur : {{ order.validatedBy || order.createdBy }}</p>
+      </div>
+
+      <div class="receipt-divider"></div>
+
+      <table class="receipt-lines">
+        <thead>
           <tr>
-            <td>{{ item.quantity }} &times; {{ item.nameFr }}</td>
-            <td class="right">{{ formatPrice(item.lineTotalCents) }}</td>
+            <th class="left">Article</th>
+            <th class="center">Qté</th>
+            <th class="right">Total</th>
           </tr>
+        </thead>
+        <tbody>
+          @for (item of order.items; track item.id) {
+            <tr>
+              <td class="left">{{ item.nameFr }}</td>
+              <td class="center">{{ item.quantity }}</td>
+              <td class="right">{{ formatPrice(item.lineTotalCents) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="receipt-divider double"></div>
+
+      <div class="receipt-total-block">
+        <div class="total-line">
+          <span>TOTAL À PAYER :</span>
+          <span class="total-val">{{ formatPrice(order.totalCents) }}</span>
+        </div>
+      </div>
+
+      <div class="receipt-divider"></div>
+
+      <p class="receipt-notice">{{ i18n.t('receipt.additionNotice') }}</p>
+
+      <div class="receipt-qr">
+        @if (receiptQr()) {
+          <img [src]="receiptQr()" alt="Aroma Coffee Shop" />
         }
-      </tbody>
-      <tfoot>
-        <tr>
-          <th>{{ i18n.t('order.cart.total') }}</th>
-          <th class="right">{{ formatPrice(order.totalCents) }}</th>
-        </tr>
-      </tfoot>
-    </table>
+        <p class="receipt-qr-copy">
+          <strong>Aroma Coffee Shop</strong><br />
+          {{ receiptDomain() }}
+        </p>
+      </div>
 
-    <p class="receipt-meta">
-      @if (order.paymentMethod) { {{ i18n.t(paymentKey(order.paymentMethod)) }}<br /> }
-      {{ i18n.t('admin.orders.servedBy') }} {{ order.paidBy || order.validatedBy || order.createdBy }}
-    </p>
-
-    <div class="receipt-qr">
-      @if (receiptQr()) {
-        <img [src]="receiptQr()" [alt]="i18n.t('receipt.qrAlt')" />
-      }
-      <p class="receipt-qr-copy">
-        <strong>{{ i18n.t('receipt.scanTitle') }}</strong><br />
-        {{ i18n.t('receipt.scanCopy') }}<br />
-        {{ receiptDomain() }}
-      </p>
+      <p class="receipt-thanks">Merci de votre visite ! À très bientôt.</p>
     </div>
+  }
 
-    <p class="receipt-thanks">{{ i18n.t('admin.orders.thanks') }}</p>
-  </div>
+  <!-- TEMPLATE 2: BAR / KITCHEN PREP TICKET -->
+  @if (printTemplate() === 'barTicket') {
+    <div class="receipt thermal-print-container kitchen-ticket">
+      <header class="receipt-head">
+        <h2 class="kitchen-title">=== BON DE COMMANDE BAR / CUISINE ===</h2>
+      </header>
+
+      <div class="kitchen-header-meta">
+        <p class="kitchen-table">TABLE : <strong>{{ orderTarget(order) }}</strong></p>
+        <p class="kitchen-ref">Réf : #{{ order.reference }} · {{ order.createdAt | date:'HH:mm' }}</p>
+      </div>
+
+      <div class="receipt-divider double"></div>
+
+      <ul class="kitchen-items-list">
+        @for (item of order.items; track item.id) {
+          <li class="kitchen-item-row">
+            <span class="kitchen-qty">[{{ item.quantity }}x]</span>
+            <span class="kitchen-name">{{ item.nameFr }}</span>
+          </li>
+        }
+      </ul>
+
+      @if (order.note) {
+        <div class="receipt-divider"></div>
+        <div class="kitchen-note-box">
+          <strong>⚠️ NOTE :</strong>
+          <p>{{ order.note }}</p>
+        </div>
+      }
+
+      <div class="receipt-divider"></div>
+      <p class="kitchen-time">Heure de commande : {{ order.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+    </div>
+  }
+
+  <!-- TEMPLATE 3: OFFICIAL PAYMENT RECEIPT (After Payment) -->
+  @if (printTemplate() === 'receipt') {
+    <div class="receipt thermal-print-container">
+      <header class="receipt-head">
+        <h1 class="shop-title">AROMA COFFEE SHOP</h1>
+        <p class="receipt-tagline">Janoura, Kébili · Route de Douz</p>
+        <p class="receipt-contact">Tél: {{ phone }}</p>
+        <h2 class="document-type-title">*** REÇU DE PAIEMENT ***</h2>
+      </header>
+
+      <div class="receipt-divider"></div>
+
+      <div class="receipt-meta-block">
+        <p><strong>Table : {{ orderTarget(order) }}</strong></p>
+        <p>Reçu : <strong>{{ order.reference }}</strong></p>
+        <p>Date : {{ order.paidAt || order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p>Mode : <strong>{{ order.paymentMethod ? i18n.t(paymentKey(order.paymentMethod)) : 'Espèces' }}</strong></p>
+        <p>Caissier : {{ order.paidBy || order.validatedBy || order.createdBy }}</p>
+      </div>
+
+      <div class="receipt-divider"></div>
+
+      <table class="receipt-lines">
+        <thead>
+          <tr>
+            <th class="left">Article</th>
+            <th class="center">Qté</th>
+            <th class="right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of order.items; track item.id) {
+            <tr>
+              <td class="left">{{ item.nameFr }}</td>
+              <td class="center">{{ item.quantity }}</td>
+              <td class="right">{{ formatPrice(item.lineTotalCents) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="receipt-divider double"></div>
+
+      <div class="receipt-total-block">
+        <div class="total-line">
+          <span>TOTAL PAYÉ :</span>
+          <span class="total-val">{{ formatPrice(order.totalCents) }}</span>
+        </div>
+      </div>
+
+      <div class="receipt-divider"></div>
+
+      <div class="receipt-qr">
+        @if (receiptQr()) {
+          <img [src]="receiptQr()" alt="Aroma Coffee Shop" />
+        }
+        <p class="receipt-qr-copy">
+          <strong>Aroma Coffee Shop</strong><br />
+          {{ receiptDomain() }}
+        </p>
+      </div>
+
+      <p class="receipt-thanks">{{ i18n.t('admin.orders.thanks') }}</p>
+    </div>
+  }
 }

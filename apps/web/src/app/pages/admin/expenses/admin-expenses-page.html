@@ -1,0 +1,431 @@
+<div class="admin-shell">
+  <app-admin-sidebar />
+
+  <main class="admin-main">
+    <app-admin-topbar />
+
+    <section class="expenses-page">
+      <!-- PAGE HEADER -->
+      <header class="page-heading">
+        <div class="heading-left">
+          <p class="admin-kicker">{{ i18n.t('admin.workspace') }}</p>
+          <h1>{{ i18n.t('admin.expenses.title') }}</h1>
+          <p class="heading-sub">{{ i18n.t('admin.expenses.subtitle') }}</p>
+        </div>
+
+        <div class="heading-controls">
+          <div class="period-toggle" role="group" aria-label="Période">
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="selectedPeriod() === 'today'"
+              (click)="setPeriod('today')"
+            >
+              {{ i18n.t('admin.expenses.period.today') }}
+            </button>
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="selectedPeriod() === 'month'"
+              (click)="setPeriod('month')"
+            >
+              {{ i18n.t('admin.expenses.period.month') }}
+            </button>
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="selectedPeriod() === 'year'"
+              (click)="setPeriod('year')"
+            >
+              {{ i18n.t('admin.expenses.period.year') }}
+            </button>
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="selectedPeriod() === 'all'"
+              (click)="setPeriod('all')"
+            >
+              {{ i18n.t('admin.expenses.period.all') }}
+            </button>
+          </div>
+
+          <button type="button" class="btn-ghost-export" (click)="exportExpenses()" title="Télécharger les dépenses en fichier Excel / CSV">
+            📥 Exporter CSV
+          </button>
+          <button type="button" class="btn-primary" (click)="openCreateModal()">
+            <span class="btn-icon">+</span> {{ i18n.t('admin.expenses.new') }}
+          </button>
+        </div>
+      </header>
+
+      <!-- FINANCIAL KPI CARDS -->
+      @if (summary()) {
+        <div class="kpi-grid">
+          <div class="kpi-card expense-kpi">
+            <div class="kpi-meta">
+              <span class="kpi-icon">📉</span>
+              <span class="kpi-label">{{ i18n.t('admin.expenses.metric.total') }}</span>
+            </div>
+            <strong class="kpi-value text-danger">{{ formatPrice(summary()!.totalCents) }}</strong>
+            <p class="kpi-subtext">{{ summary()!.totalCount }} {{ i18n.t('admin.expenses.metric.count') }}</p>
+          </div>
+
+          <div class="kpi-card revenue-kpi">
+            <div class="kpi-meta">
+              <span class="kpi-icon">📈</span>
+              <span class="kpi-label">{{ i18n.t('admin.expenses.metric.revenue') }}</span>
+            </div>
+            <strong class="kpi-value text-primary">{{ formatPrice(summary()!.revenueCents) }}</strong>
+            <p class="kpi-subtext">Commandes encaissées</p>
+          </div>
+
+          <div
+            class="kpi-card profit-kpi"
+            [class.positive]="summary()!.netProfitCents >= 0"
+            [class.negative]="summary()!.netProfitCents < 0"
+          >
+            <div class="kpi-meta">
+              <span class="kpi-icon">{{ summary()!.netProfitCents >= 0 ? '💰' : '⚠️' }}</span>
+              <span class="kpi-label">{{ i18n.t('admin.expenses.metric.netProfit') }}</span>
+            </div>
+            <strong class="kpi-value">
+              {{ summary()!.netProfitCents >= 0 ? '+' : '' }}{{ formatPrice(summary()!.netProfitCents) }}
+            </strong>
+            <p class="kpi-subtext">Recettes − Dépenses</p>
+          </div>
+        </div>
+      }
+
+      <!-- CATEGORY BREAKDOWN BARS -->
+      @if (activeCategorySummary().length > 0) {
+        <section class="breakdown-card">
+          <h2>Répartition des Dépenses</h2>
+          <div class="breakdown-grid">
+            @for (cat of activeCategorySummary(); track cat.key) {
+              <div class="breakdown-item">
+                <div class="item-head">
+                  <span class="cat-label">
+                    <span class="cat-icon">{{ cat.icon }}</span> {{ i18n.t(cat.labelKey) }}
+                  </span>
+                  <strong class="cat-amount">{{ formatPrice(cat.totalCents) }}</strong>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-bar" [style.width.%]="cat.percentage"></div>
+                </div>
+                <div class="item-foot">
+                  <span>{{ cat.count }} dépense(s)</span>
+                  <span class="percentage-tag">{{ cat.percentage }}%</span>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- QUICK ADD EXPENSE BAR -->
+      <form class="quick-add-card" (ngSubmit)="submitQuickAdd()">
+        <div class="quick-add-head">
+          <span class="quick-badge">⚡ Ajout Rapide</span>
+          <span class="quick-hint">Enregistrez une dépense instantanément avec le bouton +</span>
+        </div>
+        <div class="quick-add-controls">
+          <div class="quick-field cat-select">
+            <select [ngModel]="quickCategory()" (ngModelChange)="quickCategory.set($event)" name="quickCat">
+              @for (cat of categoryOptions; track cat.key) {
+                <option [value]="cat.key">{{ cat.icon }} {{ i18n.t(cat.labelKey) }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="quick-field title-input">
+            <input
+              type="text"
+              required
+              placeholder="Ex: 5kg Grains de Café, Facture STEG, 10 Briques Lait..."
+              [ngModel]="quickTitle()"
+              (ngModelChange)="quickTitle.set($event)"
+              name="quickTitleInput"
+            />
+          </div>
+
+          <div class="quick-field amount-input">
+            <input
+              type="number"
+              step="0.1"
+              min="0.1"
+              required
+              placeholder="0.00 DT"
+              [ngModel]="quickAmount()"
+              (ngModelChange)="quickAmount.set($event)"
+              name="quickAmountInput"
+            />
+          </div>
+
+          <div class="quick-field pay-select">
+            <select [ngModel]="quickPaymentMethod()" (ngModelChange)="quickPaymentMethod.set($event)" name="quickPay">
+              <option value="CASH">💵 Espèces</option>
+              <option value="CARD">💳 Carte</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-quick-add" [disabled]="quickAdding()" title="Ajouter la dépense (+)">
+            <span class="plus-icon">＋</span>
+            <span class="btn-text">Ajouter</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- FILTER & SEARCH BAR -->
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input
+            type="search"
+            [placeholder]="i18n.t('admin.expenses.search')"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+          />
+        </div>
+
+        <div class="category-filter">
+          <select [ngModel]="selectedCategory()" (ngModelChange)="setCategoryFilter($event)">
+            <option value="ALL">{{ i18n.t('admin.expenses.cat.all') }}</option>
+            @for (cat of categoryOptions; track cat.key) {
+              <option [value]="cat.key">{{ cat.icon }} {{ i18n.t(cat.labelKey) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- EXPENSES TABLE -->
+      <div class="table-container">
+        @if (loading()) {
+          <div class="state-box">
+            <p>Chargement des dépenses...</p>
+          </div>
+        } @else if (filteredExpenses().length === 0) {
+          <div class="state-box empty">
+            <span class="empty-icon">📂</span>
+            <p>{{ i18n.t('admin.expenses.empty') }}</p>
+          </div>
+        } @else {
+          <table class="expenses-table">
+            <thead>
+              <tr>
+                <th>{{ i18n.t('admin.expenses.field.date') }}</th>
+                <th>{{ i18n.t('admin.expenses.field.title') }}</th>
+                <th>{{ i18n.t('admin.expenses.field.category') }}</th>
+                <th>Facture / Pièce</th>
+                <th>Mode</th>
+                <th class="text-right">{{ i18n.t('admin.expenses.field.amount') }}</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of filteredExpenses(); track item.id) {
+                <tr>
+                  <td class="date-cell">{{ formatDate(item.date) }}</td>
+                  <td class="title-cell">
+                    <strong>{{ item.title }}</strong>
+                    @if (item.note) {
+                      <span class="item-note">{{ item.note }}</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="cat-pill">
+                      {{ getCategoryMeta(item.category).icon }} {{ i18n.t(getCategoryMeta(item.category).labelKey) }}
+                    </span>
+                  </td>
+                  <td>
+                    @if (item.invoiceNumber) {
+                      <span class="invoice-pill">#{{ item.invoiceNumber }}</span>
+                    } @else {
+                      <span class="text-muted">—</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="payment-badge" [class.card]="item.paymentMethod === 'CARD'">
+                      {{ item.paymentMethod === 'CARD' ? '💳 Carte' : '💵 Espèces' }}
+                    </span>
+                  </td>
+                  <td class="amount-cell text-right">
+                    <strong>{{ formatPrice(item.amountCents) }}</strong>
+                  </td>
+                  <td class="actions-cell text-right">
+                    <button type="button" class="btn-edit" (click)="openEditModal(item)" title="Modifier">
+                      ✏️
+                    </button>
+                    <button type="button" class="btn-delete" (click)="deleteExpense(item.id)" title="Supprimer">
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    </section>
+
+    <!-- CREATE / EDIT EXPENSE MODAL -->
+    @if (showModal()) {
+      <div class="modal-backdrop" (click)="closeModal()">
+        <div class="expense-modal" (click)="$event.stopPropagation()">
+          <header class="modal-header">
+            <h2>{{ editingId() ? i18n.t('admin.expenses.edit') : i18n.t('admin.expenses.new') }}</h2>
+            <button type="button" class="btn-close" (click)="closeModal()">✕</button>
+          </header>
+
+          <form class="modal-body" (ngSubmit)="saveExpense()">
+            <!-- Category Picker Grid -->
+            <div class="form-group">
+              <label>{{ i18n.t('admin.expenses.field.category') }}</label>
+              <div class="category-chips-grid">
+                @for (cat of categoryOptions; track cat.key) {
+                  <button
+                    type="button"
+                    class="category-select-btn"
+                    [class.selected]="formCategory === cat.key"
+                    (click)="formCategory = cat.key"
+                  >
+                    <span class="cat-icon">{{ cat.icon }}</span>
+                    <span class="cat-name">{{ i18n.t(cat.labelKey) }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Title / Description -->
+            <div class="form-group">
+              <label for="exp-title">{{ i18n.t('admin.expenses.field.title') }} *</label>
+              <input
+                id="exp-title"
+                type="text"
+                required
+                placeholder="Ex: Facture STEG Électricité Août, Café grains 20kg..."
+                [(ngModel)]="formTitle"
+                name="title"
+              />
+            </div>
+
+            <!-- Detailed Sub-Elements / Articles (+) -->
+            <div class="form-group items-breakdown-group">
+              <div class="items-head">
+                <label>Articles / Détails des éléments (optionnel)</label>
+                <button type="button" class="btn-add-item" (click)="addFormItem()">
+                  <span>＋</span> Ajouter un élément
+                </button>
+              </div>
+
+              @if (formItems().length > 0) {
+                <div class="items-list-container">
+                  @for (it of formItems(); track $index; let idx = $index) {
+                    <div class="sub-item-row">
+                      <input
+                        type="text"
+                        placeholder="Ex: Lait demi-écrémé, Café torréfié..."
+                        [(ngModel)]="it.description"
+                        [name]="'it_desc_' + idx"
+                      />
+                      <input
+                        type="number"
+                        min="1"
+                        placeholder="Qté"
+                        class="qty-field"
+                        [(ngModel)]="it.quantity"
+                        [name]="'it_qty_' + idx"
+                        (ngModelChange)="recalculateTotalFromItems()"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        placeholder="Prix DT"
+                        class="price-field"
+                        [ngModel]="it.amountDt"
+                        (ngModelChange)="updateItemAmount(idx, $event)"
+                        [name]="'it_price_' + idx"
+                      />
+                      <button type="button" class="btn-remove-subitem" (click)="removeFormItem(idx)" title="Supprimer la ligne">
+                        ✕
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Amount & Date Row -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="exp-amount">{{ i18n.t('admin.expenses.field.amount') }} *</label>
+                <input
+                  id="exp-amount"
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  required
+                  placeholder="0.00"
+                  [(ngModel)]="formAmountDt"
+                  name="amountDt"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="exp-date">{{ i18n.t('admin.expenses.field.date') }} *</label>
+                <input
+                  id="exp-date"
+                  type="date"
+                  required
+                  [(ngModel)]="formDate"
+                  name="date"
+                />
+              </div>
+            </div>
+
+            <!-- Payment Method & Invoice Number Row -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="exp-pay">{{ i18n.t('admin.expenses.field.paymentMethod') }}</label>
+                <select id="exp-pay" [(ngModel)]="formPaymentMethod" name="paymentMethod">
+                  <option value="CASH">💵 Espèces</option>
+                  <option value="CARD">💳 Carte Bancaire / Virement</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="exp-inv">{{ i18n.t('admin.expenses.field.invoiceNumber') }}</label>
+                <input
+                  id="exp-inv"
+                  type="text"
+                  placeholder="Ex: FACT-2026-084"
+                  [(ngModel)]="formInvoiceNumber"
+                  name="invoiceNumber"
+                />
+              </div>
+            </div>
+
+            <!-- Note / Details -->
+            <div class="form-group">
+              <label for="exp-note">{{ i18n.t('admin.expenses.field.note') }}</label>
+              <textarea
+                id="exp-note"
+                rows="2"
+                placeholder="Détails supplémentaires ou remarques..."
+                [(ngModel)]="formNote"
+                name="note"
+              ></textarea>
+            </div>
+
+            <footer class="modal-footer">
+              <button type="button" class="btn-cancel" (click)="closeModal()">Annuler</button>
+              <button type="submit" class="btn-save" [disabled]="saving()">
+                {{ saving() ? 'Enregistrement...' : i18n.t('admin.expenses.save') }}
+              </button>
+            </footer>
+          </form>
+        </div>
+      </div>
+    }
+  </main>
+</div>

@@ -82,6 +82,11 @@ export const routes: Routes = [
 		loadComponent: () => import('./pages/admin/cash/admin-cash-page').then(({ AdminCashPage }) => AdminCashPage),
 	},
 	{
+		path: 'admin/expenses',
+		canActivate: [authGuard, adminOnlyGuard],
+		loadComponent: () => import('./pages/admin/expenses/admin-expenses-page').then(({ AdminExpensesPage }) => AdminExpensesPage),
+	},
+	{
 		path: 'admin/tables',
 		canActivate: [authGuard, adminOnlyGuard],
 		loadComponent: () => import('./pages/admin/tables/admin-tables-page').then(({ AdminTablesPage }) => AdminTablesPage),

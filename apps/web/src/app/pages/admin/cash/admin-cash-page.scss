@@ -1,7 +1,7 @@
 .cash-page {
   align-content: start;
   display: grid;
-  gap: 1.1rem;
+  gap: 1.25rem;
   padding: 1.5rem;
 }
 
@@ -12,7 +12,28 @@
   gap: 1rem;
   justify-content: space-between;
 
-  h1 { color: #2c3a2b; font-size: 1.25rem; margin: 0; }
+  .admin-kicker {
+    color: #50684e;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin: 0 0 0.25rem;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    color: #2c3a2b;
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .heading-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
 }
 
 .range-chips { display: flex; gap: 0.4rem; }
@@ -24,9 +45,58 @@
   color: #50684e;
   cursor: pointer;
   font-size: 0.82rem;
+  font-weight: 600;
   padding: 0.4rem 0.85rem;
+  transition: all 0.15s ease;
 
-  &.active { background: #50684e; border-color: #50684e; color: #fffefa; }
+  &.active {
+    background: #50684e;
+    border-color: #50684e;
+    color: #fffefa;
+  }
+}
+
+.btn-ghost-export {
+  align-items: center;
+  background: #fffefa;
+  border: 1px solid #c9aa70;
+  border-radius: 0.6rem;
+  color: #8a5a16;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 700;
+  gap: 0.35rem;
+  padding: 0.55rem 0.95rem;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #c9aa70;
+    color: #2c3a2b;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(201, 170, 112, 0.2);
+  }
+}
+
+.btn-z-report {
+  align-items: center;
+  background: #354a36;
+  border: 1px solid #354a36;
+  border-radius: 0.6rem;
+  color: #fffefa;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 700;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #243525;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .summary-row {
@@ -43,12 +113,25 @@
   gap: 0.35rem;
   padding: 0.9rem 1rem;
 
-  span { color: #71866c; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
-  strong { color: #304533; font-size: 1.6rem; font-weight: 600; }
+  span {
+    color: #71866c;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  strong {
+    color: #304533;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
 
-  &.paid { background: #304533; border-color: #304533; }
-  &.paid span { color: rgb(255 254 250 / 75%); }
-  &.paid strong { color: #d8bd7e; }
+  &.paid {
+    background: #304533;
+    border-color: #304533;
+    span { color: rgb(255 254 250 / 75%); }
+    strong { color: #d8bd7e; }
+  }
 }
 
 .day-list {
@@ -66,20 +149,27 @@
   border-radius: 0.9rem;
   display: grid;
   gap: 0.6rem;
-  padding: 1rem;
+  padding: 1.1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 
-  header { align-items: center; display: flex; gap: 0.75rem; justify-content: space-between; }
-  header strong { color: #2c3a2b; display: block; text-transform: capitalize; }
-  header small { color: #71866c; font-size: 0.75rem; }
+  header {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+
+    strong { color: #2c3a2b; display: block; text-transform: capitalize; font-size: 1rem; }
+    small { color: #71866c; font-size: 0.78rem; }
+  }
 }
 
-.day-total { color: #304533; font-size: 1.15rem; font-weight: 700; }
+.day-total { color: #304533; font-size: 1.25rem; font-weight: 800; }
 
 .split-bar {
   background: #2b7fb8;
   border-radius: 999px;
   display: flex;
-  height: 0.5rem;
+  height: 0.55rem;
   overflow: hidden;
 
   .cash { background: #2f7d4f; display: block; height: 100%; }
@@ -93,7 +183,7 @@
   gap: 0.75rem;
   margin: 0;
 
-  span { align-items: center; display: flex; gap: 0.35rem; }
+  span { align-items: center; display: flex; gap: 0.35rem; font-weight: 600; }
 }
 
 .dot {
@@ -109,7 +199,7 @@
 .agent-list {
   border-top: 1px solid #ecece3;
   display: grid;
-  gap: 0.3rem;
+  gap: 0.35rem;
   list-style: none;
   margin: 0;
   padding: 0.6rem 0 0;
@@ -123,8 +213,351 @@
     grid-template-columns: 1fr auto auto;
   }
   small { color: #71866c; font-size: 0.75rem; }
-  strong { color: #304533; }
+  strong { color: #304533; font-weight: 700; }
 }
 
 .state-message { color: rgb(44 58 43 / 70%); }
 .state-message.error { color: #a53d24; }
+
+/* ========================================================================= */
+/* CLÔTURE DE CAISSE / RAPPORT Z MODAL                                      */
+/* ========================================================================= */
+
+.modal-backdrop {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.z-report-modal {
+  background: #fffefa;
+  border: 1px solid #deded4;
+  border-radius: 1.1rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  max-height: calc(100vh - 3rem);
+  max-width: 44rem;
+  width: 100%;
+  overflow: hidden;
+  animation: modalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+  align-items: center;
+  background: #f7f5ef;
+  border-bottom: 1px solid #deded4;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.1rem 1.5rem;
+
+  h2 { color: #2c3a2b; font-size: 1.25rem; font-weight: 800; margin: 0; }
+  .modal-sub { color: #71866c; font-size: 0.8rem; font-weight: 600; display: block; margin-top: 0.15rem; }
+
+  .btn-close {
+    background: transparent;
+    border: 1px solid #deded4;
+    border-radius: 50%;
+    color: #596057;
+    cursor: pointer;
+    font-size: 1rem;
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover { background: #deded4; }
+  }
+}
+
+.modal-body {
+  display: grid;
+  gap: 1.25rem;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.z-balance-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+
+  .balance-card {
+    background: #fbfaf6;
+    border: 1px solid #edebe2;
+    border-radius: 0.65rem;
+    padding: 0.75rem 0.9rem;
+    display: grid;
+    gap: 0.35rem;
+
+    label { font-size: 0.75rem; color: #71866c; font-weight: 700; }
+    strong { font-size: 1.15rem; font-weight: 800; color: #2c3a2b; }
+
+    input {
+      background: #fffefa;
+      border: 1px solid #deded4;
+      border-radius: 0.45rem;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #354a36;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    &.highlight {
+      background: #f4faf5;
+      border-color: #bad8be;
+      strong { color: #166534; }
+    }
+
+    &.expense {
+      background: #fef2f2;
+      border-color: #fecaca;
+      strong { color: #991b1b; }
+    }
+
+    &.total-expected {
+      background: #354a36;
+      border-color: #354a36;
+      label { color: #e2e8f0; }
+      .expected-val { color: #e8d7ab; font-size: 1.25rem; }
+    }
+  }
+}
+
+.counted-cash-box {
+  background: #fffefa;
+  border: 1.5px solid #deded4;
+  border-radius: 0.85rem;
+  padding: 1.1rem;
+  display: grid;
+  gap: 0.85rem;
+
+  .count-input-group {
+    display: grid;
+    gap: 0.4rem;
+
+    label { font-size: 0.9rem; font-weight: 700; color: #2c3a2b; }
+    input {
+      background: #fbfaf6;
+      border: 1.5px solid #354a36;
+      border-radius: 0.55rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      padding: 0.6rem 0.85rem;
+      color: #1e211c;
+      width: 100%;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(53, 74, 54, 0.15);
+      }
+    }
+  }
+
+  .variance-result {
+    border-radius: 0.6rem;
+    padding: 0.75rem 1rem;
+    display: grid;
+    gap: 0.25rem;
+
+    .var-badge {
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 0.2rem 0.65rem;
+      width: fit-content;
+      text-transform: uppercase;
+    }
+
+    p { margin: 0; font-size: 0.88rem; font-weight: 600; }
+
+    &.perfect {
+      background: #f4faf5;
+      border: 1px solid #bad8be;
+      .var-badge { background: #376b4a; color: #fffefa; }
+      p { color: #166534; }
+    }
+
+    &.surplus {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      .var-badge { background: #16a34a; color: #fffefa; }
+      p { color: #15803d; }
+    }
+
+    &.shortage {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      .var-badge { background: #dc2626; color: #fffefa; }
+      p { color: #991b1b; }
+    }
+  }
+}
+
+.today-sales-summary {
+  background: #f7f5ef;
+  border-radius: 0.75rem;
+  padding: 0.9rem 1.1rem;
+
+  h3 { font-size: 0.9rem; color: #50684e; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.6rem; }
+
+  .sales-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    span {
+      background: #fffefa;
+      border: 1px solid #deded4;
+      border-radius: 0.45rem;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.65rem;
+      color: #596057;
+
+      strong { color: #2c3a2b; font-weight: 700; }
+    }
+  }
+}
+
+.modal-footer {
+  background: #f7f5ef;
+  border-top: 1px solid #deded4;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+
+  button {
+    border-radius: 0.55rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.6rem 1.25rem;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    border: 1px solid #deded4;
+    color: #596057;
+    &:hover { background: #deded4; }
+  }
+
+  .btn-print-z {
+    background: #354a36;
+    border: none;
+    color: #fffefa;
+
+    &:hover {
+      background: #243525;
+    }
+  }
+}
+
+/* ========================================================================= */
+/* 80mm THERMAL PRINT STYLING FOR Z-REPORT                                   */
+/* ========================================================================= */
+
+.thermal-print-container {
+  display: none;
+}
+
+@page {
+  size: auto;
+  margin: 10mm auto;
+}
+
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .admin-shell,
+  .modal-backdrop,
+  app-admin-sidebar,
+  app-admin-topbar {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .thermal-print-container,
+  .thermal-print-container * {
+    visibility: visible !important;
+  }
+
+  .thermal-print-container {
+    display: block !important;
+    position: relative !important;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    margin: 0 auto !important;
+    padding: 4mm 6mm !important;
+    font-family: 'Courier New', Courier, monospace, system-ui;
+    font-size: 10pt;
+    line-height: 1.3;
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  .shop-title { font-size: 14pt; font-weight: 900; text-align: center; margin: 0 0 1mm; }
+  .receipt-tagline { font-size: 10pt; font-weight: 800; text-align: center; margin: 1mm 0; }
+  .receipt-divider {
+    border-bottom: 1px dashed #000;
+    margin: 2mm 0;
+    &.double { border-bottom: 2px solid #000; }
+  }
+
+  .receipt-meta-block {
+    font-size: 9pt;
+    p { margin: 1mm 0; }
+  }
+
+  .document-type-title {
+    font-size: 10.5pt;
+    font-weight: 800;
+    text-align: center;
+    margin: 2mm 0 1mm;
+  }
+
+  .receipt-lines {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5mm 0;
+    font-size: 9.5pt;
+
+    td { padding: 1mm 0; }
+    .left { text-align: left; }
+    .right { text-align: right; }
+  }
+
+  .receipt-thanks {
+    font-size: 9pt;
+    font-weight: 700;
+    text-align: center;
+    margin: 2mm 0 0;
+  }
+}

@@ -8,12 +8,20 @@
           <p class="admin-kicker">{{ i18n.t('admin.cash.title') }}</p>
           <h1>{{ i18n.t('admin.cash.subtitle') }}</h1>
         </div>
-        <div class="range-chips">
-          @for (option of ranges; track option) {
-            <button type="button" class="chip" [class.active]="range() === option" (click)="setRange(option)">
-              {{ option }} {{ i18n.t('admin.cash.days') }}
-            </button>
-          }
+        <div class="heading-controls">
+          <div class="range-chips">
+            @for (option of ranges; track option) {
+              <button type="button" class="chip" [class.active]="range() === option" (click)="setRange(option)">
+                {{ option }} {{ i18n.t('admin.cash.days') }}
+              </button>
+            }
+          </div>
+          <button type="button" class="btn-ghost-export" (click)="exportCsv()" title="Télécharger le registre de caisse en CSV">
+            📥 Exporter CSV
+          </button>
+          <button type="button" class="btn-z-report" (click)="openZReport()" title="Effectuer la clôture de caisse et imprimer le rapport Z">
+            📊 Clôture de Caisse (Rapport Z)
+          </button>
         </div>
       </div>
 
@@ -63,7 +71,7 @@
                 @for (agent of day.agents; track agent.name) {
                   <li>
                     <span>{{ agent.name }}</span>
-                    <small>{{ agent.orders }}</small>
+                    <small>{{ agent.orders }} cmds</small>
                     <strong>{{ formatPrice(agent.totalCents) }}</strong>
                   </li>
                 }
@@ -75,5 +83,188 @@
         </ul>
       }
     </main>
+  </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- CLÔTURE DE CAISSE / RAPPORT Z MODAL                                      -->
+<!-- ========================================================================= -->
+@if (showZReportModal()) {
+  <div class="modal-backdrop" (click)="closeZReport()">
+    <div class="z-report-modal" (click)="$event.stopPropagation()">
+      <header class="modal-header">
+        <div>
+          <h2>📊 Clôture de Caisse & Rapport Z</h2>
+          <span class="modal-sub">Session du {{ closingTimestamp() }}</span>
+        </div>
+        <button type="button" class="btn-close" (click)="closeZReport()">✕</button>
+      </header>
+
+      <div class="modal-body">
+        <!-- Live Calculations Grid -->
+        <div class="z-balance-grid">
+          <div class="balance-card">
+            <label>Fond de caisse initial (DT)</label>
+            <input type="number" step="0.5" [(ngModel)]="initialFloatDt" placeholder="100.00" />
+          </div>
+
+          <div class="balance-card highlight">
+            <label>Recettes Espèces (Ventes)</label>
+            <strong>+ {{ formatPrice(todayTakings()?.cashCents ?? 0) }}</strong>
+          </div>
+
+          <div class="balance-card expense">
+            <label>Dépenses Espèces (Caisse)</label>
+            <strong>- {{ formatPrice(todayExpensesCashCents()) }}</strong>
+          </div>
+
+          <div class="balance-card total-expected">
+            <label>Montant Espèces Théorique</label>
+            <strong class="expected-val">{{ formatPrice(expectedCashCents()) }}</strong>
+          </div>
+        </div>
+
+        <!-- Counted Cash Verification -->
+        <div class="counted-cash-box">
+          <div class="count-input-group">
+            <label for="countedInput">💵 Montant réel compté dans le tiroir-caisse (DT) :</label>
+            <input
+              id="countedInput"
+              type="number"
+              step="0.1"
+              [(ngModel)]="countedCashDt"
+              placeholder="Ex: 245.50"
+              autofocus
+            />
+          </div>
+
+          @if (cashVarianceCents(); as variance) {
+            <div class="variance-result" [class.perfect]="variance === 0" [class.surplus]="variance > 0" [class.shortage]="variance < 0">
+              @if (variance === 0) {
+                <span class="var-badge">✓ Caisse Parfaite</span>
+                <p>Aucun écart de caisse (0.00 DT). Le montant compté correspond exactement au montant théorique.</p>
+              } @else if (variance > 0) {
+                <span class="var-badge">+ Excédent de caisse</span>
+                <p>Surplus de <strong>+{{ formatPrice(variance) }}</strong> constaté dans le tiroir.</p>
+              } @else {
+                <span class="var-badge">- Manquant de caisse</span>
+                <p>Déficit de <strong>{{ formatPrice(variance) }}</strong> constaté par rapport au théorique.</p>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Sales Summary Breakdown for Today -->
+        @if (todayTakings(); as today) {
+          <div class="today-sales-summary">
+            <h3>Détail des ventes de la journée</h3>
+            <div class="sales-pills">
+              <span>💳 Carte Bancaire : <strong>{{ formatPrice(today.cardCents) }}</strong></span>
+              <span>💵 Espèces : <strong>{{ formatPrice(today.cashCents) }}</strong></span>
+              <span>🧾 Total Ventes : <strong>{{ formatPrice(today.totalCents) }}</strong></span>
+              <span>👥 Commandes : <strong>{{ today.orders }}</strong></span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeZReport()">Fermer</button>
+        <button type="button" class="btn-print-z" (click)="printZReport()">
+          🖨️ Imprimer Rapport Z (Ticket 80mm)
+        </button>
+      </footer>
+    </div>
+  </div>
+}
+
+<!-- ========================================================================= -->
+<!-- 80mm THERMAL PRINTABLE Z-REPORT SLIP                                      -->
+<!-- ========================================================================= -->
+<div class="thermal-print-container">
+  <div class="z-report-ticket">
+    <div class="shop-title">AROMA COFFEE SHOP</div>
+    <div class="receipt-tagline">RAPPORT Z — CLÔTURE DE CAISSE</div>
+    <div class="receipt-divider double"></div>
+
+    <div class="receipt-meta-block">
+      <p>Date / Heure : {{ closingTimestamp() }}</p>
+      <p>Clôturé par : {{ auth.user()?.name }} ({{ auth.user()?.role }})</p>
+      <p>Session ID : Z-{{ (todayTakings()?.day || 'TODAY').replace('-', '') }}</p>
+    </div>
+
+    <div class="receipt-divider"></div>
+
+    <div class="document-type-title">VENTES DU JOUR</div>
+    <table class="receipt-lines">
+      <tr>
+        <td class="left">Commandes Réglées</td>
+        <td class="right">{{ todayTakings()?.orders ?? 0 }}</td>
+      </tr>
+      <tr>
+        <td class="left">Ventes Espèces</td>
+        <td class="right">{{ formatPrice(todayTakings()?.cashCents ?? 0) }}</td>
+      </tr>
+      <tr>
+        <td class="left">Ventes Carte Bancaire</td>
+        <td class="right">{{ formatPrice(todayTakings()?.cardCents ?? 0) }}</td>
+      </tr>
+      <tr style="font-weight: 800;">
+        <td class="left">CHIFFRE D'AFFAIRES TOTAL</td>
+        <td class="right">{{ formatPrice(todayTakings()?.totalCents ?? 0) }}</td>
+      </tr>
+    </table>
+
+    <div class="receipt-divider"></div>
+
+    <div class="document-type-title">RÉCONCILIATION TIROIR-CAISSE</div>
+    <table class="receipt-lines">
+      <tr>
+        <td class="left">(+) Fond de Caisse Initial</td>
+        <td class="right">{{ initialFloatDt }} DT</td>
+      </tr>
+      <tr>
+        <td class="left">(+) Encaissements Espèces</td>
+        <td class="right">+{{ formatPrice(todayTakings()?.cashCents ?? 0) }}</td>
+      </tr>
+      <tr>
+        <td class="left">(-) Dépenses Espèces Caisse</td>
+        <td class="right">-{{ formatPrice(todayExpensesCashCents()) }}</td>
+      </tr>
+      <tr style="font-weight: 800; border-top: 1px dashed #000;">
+        <td class="left">TOTAL ESPÈCES THÉORIQUE</td>
+        <td class="right">{{ formatPrice(expectedCashCents()) }}</td>
+      </tr>
+      @if (countedCashCents(); as counted) {
+        <tr>
+          <td class="left">Montant Espèces Compté</td>
+          <td class="right">{{ formatPrice(counted) }}</td>
+        </tr>
+      }
+      @if (cashVarianceCents(); as variance) {
+        <tr style="font-weight: 900;">
+          <td class="left">ÉCART DE CAISSE</td>
+          <td class="right">{{ formatPrice(variance) }}</td>
+        </tr>
+      }
+    </table>
+
+    @if (todayTakings()?.agents?.length) {
+      <div class="receipt-divider"></div>
+      <div class="document-type-title">VENTES PAR SERVEUR / AGENT</div>
+      <table class="receipt-lines">
+        @for (ag of todayTakings()!.agents; track ag.name) {
+          <tr>
+            <td class="left">{{ ag.name }} ({{ ag.orders }} cmds)</td>
+            <td class="right">{{ formatPrice(ag.totalCents) }}</td>
+          </tr>
+        }
+      </table>
+    }
+
+    <div class="receipt-divider double"></div>
+    <p class="receipt-thanks">Certifié conforme par la direction</p>
+    <div style="margin-top: 10mm; border-bottom: 1px dashed #000; width: 60mm; margin: 8mm auto 2mm;"></div>
+    <p class="receipt-notice" style="text-align: center;">Signature du responsable</p>
   </div>
 </div>

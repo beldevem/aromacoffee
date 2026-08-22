@@ -1,11 +1,18 @@
 <header class="admin-topbar">
   <div>
     <p class="admin-kicker">{{ i18n.t('admin.kicker') }}</p>
-    <h1>{{ i18n.t('admin.title') }}</h1>
+    <h1>{{ greeting() }}</h1>
   </div>
   <div class="admin-topbar-actions">
-    <span class="status-dot"></span>
-    <span>{{ i18n.t('admin.openStatus') }}</span>
+    @if (!network.isOnline()) {
+      <span class="network-badge offline" title="Connexion réseau perdue.">
+        <span class="status-dot red"></span> Hors-ligne
+      </span>
+    } @else {
+      <span class="network-badge online">
+        <span class="status-dot"></span> {{ i18n.t('admin.openStatus') }}
+      </span>
+    }
     <button
       type="button"
       class="sound-toggle"
