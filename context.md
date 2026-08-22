@@ -1,142 +1,197 @@
-title: Aroma Coffee Shop — Context
-summary: Context and scope for Aroma Coffee Shop web presence: a mobile-first, SEO-friendly (SSR) Angular 22 site for menu, pricing, and reservations; future admin dashboard and QR ordering.
-owners:
+# 🤖 Aroma Platform: Agent Context & Architectural Guidelines
 
-DevOps
-Purpose
+> **Target Audience**: AI Agents (Antigravity, Cursor, Windsurf, Copilot, Claude) and developers working on this codebase.  
+> **Rule of Thumb**: Read this entire document before generating code, refactoring models, adding endpoints, or modifying UI components in the Aroma codebase.
 
-Capture product context, scope, and mobile-first branding recommendations for the Aroma Coffee Shop website MVP.
-Provide a single source of truth for building a public site with online menu, prices, and reservations, and a roadmap for admin/QR flows.
-Project goals (MVP)
+---
 
-Launch a responsive, mobile-first Angular 22 site (with Angular Universal SSR) showcasing Aroma Coffee Shop brand, menu, prices, contact and reservation options.
-Prioritize fast mobile experience, clear call-to-action (call/reserve), and simplified reservation flow.
-Prepare architecture and design tokens for an admin dashboard and QR-driven ordering to be added post-MVP.
-Scope
-Included
+## 1. 🎯 High-Level Overview & Business Context
 
-Public site: homepage, menu/catalog, product pages, contact/visit page, reservation form, click-to-call functionality, basic SEO (SSR), sitemap.
-Customer flows: browse menu, view product details, reserve a table (online form), call the shop (tel:), newsletter signup.
-Infrastructure: CI/CD, staging + production, HTTPS, images on CDN, basic monitoring.
-Brand assets: color tokens, logo SVGs, web font choices, photography guidelines.
-Excluded (out of scope for MVP)
+**Aroma** is a full-stack hospitality platform for a specialty coffee shop and restaurant based in Tunisia (currency: **TND** / Tunisian Dinar).
 
-Full admin dashboard (post-MVP).
-Online payments and order routing to staff (post-MVP).
-POS hardware integrations, loyalty programs, subscriptions.
-Audience & personas
+The platform consists of two integrated applications:
+1. **`apps/web` (Frontend)**: Customer-facing web portal (trilingual menu, table reservations, self-ordering from tables via QR tokens) and a staff operational portal (live kitchen Kanban board, cashier POS, table management, catalog administration, analytics).
+2. **`services/api` (Backend)**: NestJS REST API with PostgreSQL database managed via Prisma ORM, Supabase Storage integration for assets, and a dual-token authentication architecture.
 
-Mobile-first Customer: wants quick menu access, easy reservation or call, minimal typing.
-Staff/Manager: receives reservation notifications and will use admin dashboard later.
-Developer/Designer: implements mobile-first Angular SSR site and backend APIs.
-Key success metrics
+---
 
-Mobile performance: Lighthouse Performance >= 85 on mobile for primary flows.
-Time-to-first-CTA <= 5s on 3G simulated mobile.
-Reservation submission success rate >= 99%.
-Accessibility: WCAG AA on primary flows.
-Branding & visual identity (mobile-first)
+## 2. 🗂 Codebase Topology
 
-Use supplied PDF color palette. Define tokens: primary, secondary, accent, neutral-foreground, neutral-background.
-Web fonts: 1 heading (warm characterful), 1 body (readable). Use variable fonts where possible.
-Provide SVG logos: full, icon-only, monochrome.
-Photography: hero image, product images, interior shots, consistent warm filter.
-Microcopy tone: friendly, local, reassuring (examples: "Freshly roasted, brewed with care", CTAs: "Call to reserve", "Reserve online").
-Mobile-first UX & layout
+```
+aroma/
+├── apps/
+│   └── web/                               # Angular 22+ Application (Standalone & Signals)
+│       └── src/
+│           ├── app/
+│           │   ├── core/
+│           │   │   ├── api/               # API base URL configuration
+│           │   │   ├── auth/              # Staff session state, JWT storage, guards
+│           │   │   ├── i18n/              # Translation service & fr/ar/en dictionary files
+│           │   │   ├── menu/              # Menu art, catalog caches, fallback data
+│           │   │   ├── order/             # Table QR order session state service
+│           │   │   ├── orders/            # Kitchen notifications (audio/toast events)
+│           │   │   └── seo/               # Meta tags & page titles
+│           │   ├── pages/
+│           │   │   ├── admin/             # Back-office (orders, cash, products, tables, etc.)
+│           │   │   ├── home/              # Landing page
+│           │   │   ├── menu/              # Public catalog with dietary filters
+│           │   │   ├── order/             # Table QR self-ordering page
+│           │   │   ├── reserve/           # Table reservation booking page
+│           │   │   └── visit|events|gallery/
+│           │   └── shared/                # Shared layout & reusable components
+│           └── styles.scss                # Global styles & design token variables
+├── services/
+│   └── api/                               # NestJS 11+ REST API
+│       ├── prisma/
+│       │   ├── schema.prisma              # Database schema definitions & Prisma client
+│       │   ├── migrations/                # PostgreSQL migration history
+│       │   └── seed.ts                    # Database seeds (categories, products, tables, staff)
+│       ├── scripts/                       # Maintenance scripts (image upload, QR link printer)
+│       └── src/
+│           ├── auth/                      # Staff auth controller, JWT service, guards & decorators
+│           ├── products/                  # Product catalog CRUD & Supabase storage uploads
+│           ├── categories/                # Menu taxonomy
+│           ├── badges/                    # Dietary / promotional flags
+│           ├── tables/                    # Table CRUD & QR secret rotation
+│           ├── orders/                    # Order fulfillment, POS desk, QR sessions, events
+│           ├── reservations/              # Bookings, opening hours, blackout dates
+│           ├── dashboard/                 # Sales and operational KPIs
+│           ├── users/                     # Staff accounts & roles (ADMIN, MANAGER, STAFF)
+│           └── generated/prisma/          # Generated Prisma Client output directory
+└── docs/
+    └── brand/                             # Source design tokens (design-tokens.json, SCSS)
+```
 
-Single-column vertical flow; collapsible category accordions for menu.
-Sticky bottom action bar with primary CTAs: Call, Reserve, Menu.
-Floating Action Button (FAB) for quick call/reserve; ensure safe-area-inset support.
-Product details and reservation flows use bottom-sheet modals for native-like experience.
-Minimize typing: use native input types (tel, email), quick presets (party size, "Today in 30m"), and inline validation.
-Show prices and availability prominently; display dietary/allergen tags.
-Menu & pricing model
+---
 
-Categories: Coffee, Tea, Cold Drinks, Pastries, Extras.
-Product fields: id, name, description, base_price_cents, sizes[], tags[], image_url, visible, prep_time_mins.
-Prices shown in clear format, include tax info in footer.
-Start with limited online menu to ensure fulfillment reliability.
-Reservation flow (MVP)
+## 3. 🛡️ Critical Architectural Invariants
 
-Form fields: name, phone or email (required), date, time, party size, notes, opt-in for SMS/email.
-Validate against opening hours; provide instant feedback on likely availability.
-On submit: create reservation, return reservation id, send confirmation email and optional SMS, notify staff via email/webhook.
-Provide one-tap Add to calendar and Call shop actions on confirmation screen.
-Accessibility & inclusivity
+### 1. Money and Prices Are Stored in CENTS (Integers)
+- All monetary amounts in the database, API DTOs, and frontend computations are **integer cents** (e.g. `priceCents`, `promoPrice`, `unitPriceCents`, `lineTotalCents`, `totalCents`).
+- *Never store currency as floating-point numbers.*
+- In Tunisian Dinars (TND), 1 TND = 1000 millimes. The codebase models prices in standard cent increments (e.g. `1200` = `12.000 DT` or `12.00 TND`). Always format prices using the dedicated formatting utilities.
 
-WCAG AA for main flows: clear labels, ARIA where needed, keyboard navigation, sufficient color contrast.
-Tap targets >= 44x44 CSS pixels and visible focus states.
-SEO & discoverability
+### 2. Trilingual Localization Is Mandatory (FR, AR, EN)
+- Every product, category, and flag in the database includes localized columns:
+  - English: `name`, `description`
+  - French: `nameFr`, `descriptionFr` (or `labelFr`)
+  - Arabic: `nameAr`, `descriptionAr` (or `labelAr`)
+- **Do not remove or bypass multi-language fields** when adding or updating entities.
+- The frontend supports dynamic RTL switching for Arabic (`ar`).
 
-Angular Universal SSR for rendered meta tags and structured data.
-Implement LocalBusiness and Menu structured data where appropriate.
-Sitemaps, robots.txt, descriptive URLs: /menu, /product/:slug, /reserve.
-Open Graph and Twitter card tags with default and per-product images.
-Technical stack & architecture
+### 3. Dual-Layer Authentication Architecture
+The API has two completely distinct authorization mechanisms:
 
-Frontend: Angular 22 with Angular Universal (SSR). Mobile-first responsive components.
-Styling: design-token-driven approach (JSON/SCSS), optional Angular Material theming or custom Tailwind-inspired utility set.
-Shared component library: /libs/ui for components (header, bottom bar, FAB, bottom-sheet, product card).
-Backend: NestJS exposing REST endpoints for menu and reservations. Use background job queue for email/SMS.
-Database: PostgreSQL for persistent data; Redis optional for caching/locking.
-Images: responsive srcset, WebP/AVIF where possible; serve via CDN.
-CI/CD: GitHub Actions or GitLab CI, with staging and production deployments.
-Monitoring: Sentry for errors, RUM for performance metrics, basic logging and health checks.
-APIs (MVP)
+1. **Staff / Admin Auth**:
+   - Standard JWT Bearer token passed in the `Authorization: Bearer <token>` header.
+   - Roles: `ADMIN`, `MANAGER`, `STAFF`.
+   - Regulated by `@Roles('ADMIN')`, `@Roles('STAFF')`, and the global `AuthGuard`.
+   - Public endpoints must be explicitly decorated with `@Public()`.
+2. **Customer Table QR Ordering Sessions**:
+   - Customer scans a physical table QR code containing a non-guessable `qrToken`.
+   - Customer client exchanges `qrToken` via `POST /orders/session` to obtain a short-lived session token (TTL: 30 minutes).
+   - Subsequent ordering requests transmit this token via the custom header:  
+     `x-order-session: <session-token>`.
+   - Regulated by `OrderSessionGuard` (`services/api/src/orders/order-session.guard.ts`).
+   - Rate-limited to prevent table token scraping.
+   - ⚠️ **CRITICAL**: Never accept an admin JWT as an order session, and never accept an order session token on admin/staff routes.
 
-GET /menu — list categories and items
-GET /menu/:id — product details
-POST /reservations — create reservation (returns id + status)
-GET /reservations/:id — reservation status
-POST /contact — contact form submissions
-Webhooks: /webhooks/email-delivery, /webhooks/admin-notify
-Data model (core fields)
+### 4. Order Lifecycle: Decoupling Fulfillment from Payment
+- **Fulfilment Status (`OrderStatus`)**: `PENDING` ➔ `PREPARING` ➔ `SERVED` (or `CANCELLED`).
+- **Payment Status**: Tracked independently by `paidAt` (timestamp), `paidBy` (staff user ID), and `paymentMethod` (`CASH` | `CARD`).
+- **Why?** A counter/takeaway order (`channel: COUNTER`) is paid *before* preparation, while a dine-in table order (`channel: QR`) is typically paid *after* dining.
 
-User (for future auth): id, name, email, role, created_at
-Product: id, name, description, base_price_cents, sizes[], tags[], image_url, visible, prep_time_mins
-Reservation: id, customer_name, contact_phone, contact_email, date_time_utc, party_size, notes, status, created_at
-SiteConfig: opening_hours, phone_number, address, social_links, tax_rate
-Mobile performance & best practices
+### 5. Snapshot Integrity on `OrderItem`
+- When an order is created, `OrderItem` **snapshots** the product's `nameFr`, `unitPriceCents`, and `lineTotalCents`.
+- Past orders must never change if a manager edits product names or updates menu prices later.
 
-SSR + critical CSS inline, defer non-critical CSS.
-Code-split routes, lazy-load heavy modules.
-Minimize third-party scripts; lazy-load analytics.
-Preconnect to fonts/CDN, compress assets, optimize images.
-Service Worker: precache shell, cache-first for menu, network-first for reservations.
-Aim Lighthouse mobile Performance >= 85.
-Project structure (suggested)
+### 6. Product Image Storage via Supabase
+- Uploaded product photos are stored in Supabase Storage (`product-images` bucket).
+- The secret service key `SUPABASE_SECRET_KEY` is **strictly server-side** in `services/api`.
+- Client applications only receive the public CDN URL (`imageUrl`).
 
-/apps/web — Angular 22 SSR app (public site)
-/apps/admin — Admin dashboard (future)
-/libs/ui — shared UI components and design tokens
-/libs/data — shared DTOs/types
-/services/api — NestJS backend (menu, reservations)
-/infra — IaC, deployment configs
-/docs/brand — logo SVGs, color tokens, fonts, photo assets
-/tests — E2E and integration tests
-Brand assets & deliverables (action items)
+---
 
-Export color token file (JSON/SCSS) from provided PDF (hex/RGB + contrast checks).
-Provide SVG logos (full, icon-only, monochrome).
-Choose web font pair and license; prepare font loading strategy.
-Supply product photography with recommended sizes and aspect ratios.
-Write short copy (tagline, CTAs, confirmation messages, reservation policy).
-Operational recommendations
+## 4. 💻 Technology Stack Best Practices
 
-Phone-first approach for urgent bookings; reserve online for planned visits.
-Start with a small online menu to reduce fulfillment errors.
-Train staff on reservation notifications and future admin dashboard workflows.
-Monitor reservation no-show rates and optimize slots/confirmation messaging.
-Open decisions / TODOs
+### Frontend (`apps/web`)
+- **Angular 22+ Standalone Components**: Do not use legacy NgModules.
+- **Signals**: Use reactive signals (`signal()`, `computed()`, `input()`, `output()`) for component state rather than legacy `BehaviorSubject` where possible.
+- **Modern Control Flow**: Use `@if`, `@else`, `@for`, `@switch` syntax instead of `*ngIf` and `*ngFor`.
+- **Styling**: Vanilla SCSS using CSS variables defined from `docs/brand/_design-tokens.scss`. Do not introduce Tailwind CSS or utility-first frameworks.
 
-Confirm final color hex values and web fonts from the PDF.
-Decide whether to use Angular Material or custom component library.
-Confirm SMS provider for confirmations (Twilio or local equivalent).
-Post-MVP: implement admin dashboard, QR-driven ordering, online payments.
-Onboarding checklist
+### Backend (`services/api`)
+- **NestJS 11+ Modules**: Maintain clean separation across `controller`, `service`, and `dto`.
+- **Validation**: Every incoming body must have a DTO decorated with `class-validator` and `class-transformer`.
+- **Prisma ORM**: The generated Prisma client outputs to `src/generated/prisma`. Run `npx prisma generate` after modifying `prisma/schema.prisma`.
+- **Audit Logging**: Sensitive changes (staff creations, table modifications, cancellations) record entries in the `AuditLog` table.
 
-Add brand assets to /docs/brand/
-Create design-token JSON/SCSS from palette
-Scaffold Angular 22 SSR app with mobile-first theme
-Scaffold NestJS service with reservations endpoint and email webhook
-Setup CI pipeline and staging environment
+---
+
+## 5. 🗄️ Database Schema Reference (Prisma)
+
+Key entities and their roles:
+
+| Model | Table | Purpose |
+| :--- | :--- | :--- |
+| `User` | `users` | Staff, managers, and administrators (`passwordHash`, `role`, `active`) |
+| `Category` | `categories` | Menu sections (`slug`, `name`, `nameFr`, `nameAr`, `sortOrder`, `visible`) |
+| `Flag` | `flags` | Dietary/promo badges (`slug`, `label`, `labelFr`, `labelAr`) |
+| `Product` | `products` | Menu items (`priceCents`, `promoPrice`, `imageUrl`, `status`, `allergens`) |
+| `RestaurantTable` | `restaurant_tables` | Physical tables (`label`, `code`, `qrToken`, `seats`, `active`) |
+| `Order` | `orders` | Orders (`reference`, `channel`, `status`, `tableId`, `paidAt`, `paymentMethod`) |
+| `OrderItem` | `order_items` | Snapshotted line items (`unitPriceCents`, `quantity`, `lineTotalCents`) |
+| `Reservation` | `reservations` | Guest bookings (`customerName`, `contactPhone`, `dateTime`, `partySize`, `status`) |
+| `OpeningHour` | `opening_hours` | Operating schedule per day of week (0 = Sunday ... 6 = Saturday) |
+| `BlockedDate` | `blocked_dates` | Blackout dates for holidays and private bookings |
+| `AuditLog` | `audit_logs` | Traceability for back-office mutations |
+
+---
+
+## 6. 🎨 Brand Identity & Style Tokens
+
+When adding UI features, always adhere to the brand tokens:
+
+- **Colors**:
+  - `brand.green`: `#50684E`
+  - `brand.greenDeep`: `#354A36`
+  - `brand.cream`: `#E8D7AB`
+  - `brand.gold`: `#C9AA70`
+  - `neutral.ink`: `#1E211C`
+  - `neutral.ivory`: `#F7F5EF`
+  - `neutral.paper`: `#FFFEFA`
+- **Typography**:
+  - Display: `Cormorant Garamond, Georgia, serif`
+  - Body: `Source Sans 3, system-ui, sans-serif`
+- **Aesthetic**: Warm, artisanal, premium, editorial coffeehouse atmosphere.
+
+---
+
+## 7. 🚀 Common Commands & Workflows
+
+```bash
+# Backend (services/api)
+cd services/api
+npm run start:dev          # Run API on port 3000
+npm run db:seed            # Seed initial categories, menu items, and admin users
+npm run db:qr-links        # Print table testing QR links to terminal
+npx prisma migrate dev     # Apply Prisma migrations
+npx prisma studio          # Open visual DB GUI
+
+# Frontend (apps/web)
+cd apps/web
+npm start                  # Run web app on port 4200
+npm run build              # Production build
+npm test                   # Run Vitest test suite
+```
+
+---
+
+## 8. ⚠️ Common Traps & Rules for AI Agents
+
+1. ❌ **Do NOT introduce Tailwind CSS** — the project uses custom SCSS design tokens.
+2. ❌ **Do NOT hardcode prices in floating numbers** — always work in integer cents.
+3. ❌ **Do NOT commit `.env` or expose `SUPABASE_SECRET_KEY`** to the frontend.
+4. ❌ **Do NOT delete multi-language fields** (`nameFr`, `nameAr`, `descriptionFr`, `descriptionAr`) when modifying DTOs or schemas.
+5. ❌ **Do NOT bypass `OrderSessionGuard`** for table QR endpoints or mix it with staff JWT auth.
+6. ❌ **Do NOT mutate past `OrderItem` historical prices** when updating catalog products.

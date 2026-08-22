@@ -1,36 +1,67 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <title>Aroma Coffee Shop | Coffee, Breakfasts &amp; Fresh Drinks</title>
+  <title>Aroma Coffee Shop | Specialty Coffee, Breakfasts &amp; Fresh Drinks in Kébili</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Discover Aroma Coffee Shop in Janoura, Kébili: freshly roasted coffee, breakfasts, fresh drinks, desserts, events, and warm tables.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Discover Aroma Coffee Shop in Janoura, Kébili, Tunisia. Specialty coffee, fresh crêpes, waffles, gourmet breakfasts, milkshakes, artisan desserts, and cozy tables.">
+  <meta name="keywords" content="Aroma Coffee Shop, Café Kébili, Coffee Janoura, Specialty Coffee Tunisia, Petit déjeuner Kébili, Brunch Kébili, Crepes, Waffles, Fresh Juices">
   <meta name="theme-color" content="#354A36">
+  <meta name="author" content="Aroma Coffee Shop">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <!-- Geo-Targeting for Tunisia / Kébili Local SEO -->
+  <meta name="geo.region" content="TN-73">
+  <meta name="geo.placename" content="Janoura, Kébili, Tunisia">
+  <meta name="geo.position" content="33.7044;8.9692">
+  <meta name="ICBM" content="33.7044, 8.9692">
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:site_name" content="Aroma Coffee Shop">
   <meta property="og:locale" content="fr_TN">
-  <meta property="og:title" content="Aroma Coffee Shop | Coffee, Breakfasts &amp; Fresh Drinks">
-  <meta property="og:description" content="Freshly roasted coffee, breakfasts, fresh drinks, desserts, events, and warm tables in Janoura, Kébili.">
+  <meta property="og:locale:alternate" content="ar_TN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:title" content="Aroma Coffee Shop | Specialty Coffee, Breakfasts &amp; Fresh Drinks">
+  <meta property="og:description" content="Specialty coffee, fresh crêpes, waffles, gourmet breakfasts, milkshakes, artisan desserts, and cozy tables in Janoura, Kébili.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://myaromacoffee.com/">
   <meta property="og:image" content="https://myaromacoffee.com/brand/aroma-logo.svg">
+  <meta property="og:image:alt" content="Aroma Coffee Shop Logo">
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Aroma Coffee Shop">
-  <meta name="twitter:description" content="Freshly roasted coffee, breakfasts, fresh drinks, desserts, events, and warm tables.">
+  <meta name="twitter:title" content="Aroma Coffee Shop | Janoura, Kébili">
+  <meta name="twitter:description" content="Specialty coffee, gourmet breakfasts, fresh drinks, desserts, and warm tables in Janoura, Kébili.">
   <meta name="twitter:image" content="https://myaromacoffee.com/brand/aroma-logo.svg">
+
+  <!-- Links -->
   <link rel="canonical" href="https://myaromacoffee.com/">
   <link rel="icon" type="image/svg+xml" href="/brand/aroma-logo.svg">
+  <link rel="apple-touch-icon" href="/brand/aroma-logo.svg">
+
+  <!-- Resource Preconnects for Core Web Vitals -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
   <app-root></app-root>
+  <!-- Base Organization / Local Business Schema -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "CafeOrCoffeeShop",
+      "@id": "https://myaromacoffee.com/#business",
       "name": "Aroma Coffee Shop",
       "url": "https://myaromacoffee.com/",
+      "logo": "https://myaromacoffee.com/brand/aroma-logo.svg",
       "image": "https://myaromacoffee.com/brand/aroma-logo.svg",
       "telephone": "+21655264235",
+      "priceRange": "$$",
+      "currenciesAccepted": "TND",
+      "paymentAccepted": "Cash, Credit Card",
+      "servesCuisine": ["Specialty Coffee", "Breakfast", "Pastries", "Fresh Drinks", "Desserts"],
+      "acceptsReservations": "True",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Route de Douz",
@@ -39,6 +70,19 @@
         "addressRegion": "Kébili",
         "addressCountry": "TN"
       },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 33.7044,
+        "longitude": 8.9692
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "07:00",
+          "closes": "23:00"
+        }
+      ],
       "sameAs": [
         "https://www.facebook.com/people/Aroma-Coffee-Shop/61592663897483/",
         "https://www.instagram.com/aromaacoffeeshopp/"

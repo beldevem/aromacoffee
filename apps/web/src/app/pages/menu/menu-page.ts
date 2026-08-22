@@ -68,34 +68,39 @@ export class MenuPage implements AfterViewInit, OnDestroy, OnInit {
   };
 
   ngOnInit(): void {
-    this.http.get<CatalogResponse>(`${API_BASE_URL}/categories/public/catalog`).subscribe({
-      next: (catalog) => {
-        const categories = catalog.map((category) => ({
-          key: category.slug,
-          items: category.products.map((product): MenuItem => {
-            const isPromotion = product.promotion && product.promoPrice != null && product.promoPrice < (product.ogPrice ?? product.priceCents);
-            return {
-              slug: product.slug,
-              name: { en: product.name, fr: product.nameFr, ar: product.nameAr },
-              description: { en: product.description ?? product.name, fr: product.descriptionFr ?? product.nameFr, ar: product.descriptionAr ?? product.nameAr },
-              price: `${(isPromotion ? (product.promoPrice ?? product.priceCents) : product.priceCents) / 100} DT`,
-              isPromotion,
-              originalPrice: isPromotion && product.ogPrice ? `${product.ogPrice / 100} DT` : undefined,
-              promotionPrice: isPromotion ? `${(product.promoPrice ?? product.priceCents) / 100} DT` : undefined,
-              badgeLabel: product.flag ? { en: product.flag.label, fr: product.flag.labelFr, ar: product.flag.labelAr } : undefined,
-              imageUrl: product.imageUrl ?? undefined,
-              status: 'PUBLISHED',
-            };
-          }),
-        })).filter((category) => category.items.length > 0);
-        if (categories.length > 0) {
-          this.categoryLabels = Object.fromEntries(catalog.map((category) => [category.slug, { en: category.name, fr: category.nameFr, ar: category.nameAr }]));
-          this.categories.set(categories);
-          this.categoryKeys = ['all', ...categories.map((category) => category.key)];
-          this.resetCategoryWindow();
-        }
-      },
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.http.get<CatalogResponse>(`${API_BASE_URL}/categories/public/catalog`).subscribe({
+        next: (catalog) => {
+          const categories = catalog.map((category) => ({
+            key: category.slug,
+            items: category.products.map((product): MenuItem => {
+              const isPromotion = product.promotion && product.promoPrice != null && product.promoPrice < (product.ogPrice ?? product.priceCents);
+              return {
+                slug: product.slug,
+                name: { en: product.name, fr: product.nameFr, ar: product.nameAr },
+                description: { en: product.description ?? product.name, fr: product.descriptionFr ?? product.nameFr, ar: product.descriptionAr ?? product.nameAr },
+                price: `${(isPromotion ? (product.promoPrice ?? product.priceCents) : product.priceCents) / 100} DT`,
+                isPromotion,
+                originalPrice: isPromotion && product.ogPrice ? `${product.ogPrice / 100} DT` : undefined,
+                promotionPrice: isPromotion ? `${(product.promoPrice ?? product.priceCents) / 100} DT` : undefined,
+                badgeLabel: product.flag ? { en: product.flag.label, fr: product.flag.labelFr, ar: product.flag.labelAr } : undefined,
+                imageUrl: product.imageUrl ?? undefined,
+                status: 'PUBLISHED',
+              };
+            }),
+          })).filter((category) => category.items.length > 0);
+          if (categories.length > 0) {
+            this.categoryLabels = Object.fromEntries(catalog.map((category) => [category.slug, { en: category.name, fr: category.nameFr, ar: category.nameAr }]));
+            this.categories.set(categories);
+            this.categoryKeys = ['all', ...categories.map((category) => category.key)];
+            this.resetCategoryWindow();
+          }
+        },
+        error: () => {
+          // Keep static categories fallback
+        },
+      });
+    }
   }
   protected readonly filteredCategories = computed(() => {
     const query = this.searchTerm().trim().toLocaleLowerCase();

@@ -3,7 +3,56 @@ import { authGuard } from './core/auth/auth.guard';
 import { adminOnlyGuard } from './core/auth/role.guard';
 
 export const routes: Routes = [
-	{ path: 'login', loadComponent: () => import('./pages/login/login-page').then(({ LoginPage }) => LoginPage) },
+	{
+		path: '',
+		pathMatch: 'full',
+		loadComponent: () =>
+			import('./pages/home/home-page').then(({ HomePage }) => HomePage),
+	},
+	{
+		path: 'menu',
+		loadComponent: () =>
+			import('./pages/menu/menu-page').then(({ MenuPage }) => MenuPage),
+	},
+	{
+		path: 'product/:slug',
+		loadComponent: () =>
+			import('./pages/product/product-page').then(({ ProductPage }) => ProductPage),
+	},
+	{
+		path: 'visit',
+		loadComponent: () =>
+			import('./pages/visit/visit-page').then(({ VisitPage }) => VisitPage),
+	},
+	{
+		path: 'events',
+		loadComponent: () =>
+			import('./pages/events/events-page').then(({ EventsPage }) => EventsPage),
+	},
+	{
+		path: 'gallery',
+		loadComponent: () =>
+			import('./pages/gallery/gallery-page').then(({ GalleryPage }) => GalleryPage),
+	},
+	{
+		path: 'reserve',
+		loadComponent: () =>
+			import('./pages/reserve/reserve-page').then(({ ReservePage }) => ReservePage),
+	},
+	{
+		path: 'order',
+		loadComponent: () => import('./pages/order/order-page').then(({ OrderPage }) => OrderPage),
+	},
+	{
+		path: 'login',
+		loadComponent: () => import('./pages/login/login-page').then(({ LoginPage }) => LoginPage),
+	},
+	{
+		path: 'admin',
+		canActivate: [authGuard, adminOnlyGuard],
+		loadComponent: () =>
+			import('./pages/admin/admin-page').then(({ AdminPage }) => AdminPage),
+	},
 	{
 		path: 'admin/products',
 		canActivate: [authGuard, adminOnlyGuard],
@@ -43,55 +92,10 @@ export const routes: Routes = [
 		loadComponent: () => import('./pages/admin/orders/admin-orders-page').then(({ AdminOrdersPage }) => AdminOrdersPage),
 	},
 	{
-		path: 'admin',
-		canActivate: [authGuard, adminOnlyGuard],
-		loadComponent: () =>
-			import('./pages/admin/admin-page').then(({ AdminPage }) => AdminPage),
-	},
-	{
 		path: 'admin/users',
 		canActivate: [authGuard, adminOnlyGuard],
 		data: { resource: 'users' },
 		loadComponent: () => import('./pages/admin/management/admin-management-page').then(({ AdminManagementPage }) => AdminManagementPage),
-	},
-	{
-		path: '',
-		loadComponent: () =>
-			import('./pages/home/home-page').then(({ HomePage }) => HomePage),
-	},
-	{
-		path: 'menu',
-		loadComponent: () =>
-			import('./pages/menu/menu-page').then(({ MenuPage }) => MenuPage),
-	},
-	{
-		path: 'product/:slug',
-		loadComponent: () =>
-			import('./pages/product/product-page').then(({ ProductPage }) => ProductPage),
-	},
-	{
-		path: 'visit',
-		loadComponent: () =>
-			import('./pages/visit/visit-page').then(({ VisitPage }) => VisitPage),
-	},
-	{
-		path: 'events',
-		loadComponent: () =>
-			import('./pages/events/events-page').then(({ EventsPage }) => EventsPage),
-	},
-	{
-		path: 'gallery',
-		loadComponent: () =>
-			import('./pages/gallery/gallery-page').then(({ GalleryPage }) => GalleryPage),
-	},
-	{
-		path: 'reserve',
-		loadComponent: () =>
-			import('./pages/reserve/reserve-page').then(({ ReservePage }) => ReservePage),
-	},
-	{
-		path: 'order',
-		loadComponent: () => import('./pages/order/order-page').then(({ OrderPage }) => OrderPage),
 	},
 	{
 		path: '**',

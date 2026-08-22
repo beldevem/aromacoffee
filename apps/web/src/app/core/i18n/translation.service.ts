@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import en from './en.json';
 import fr from './fr.json';
 import ar from './ar.json';
@@ -11,6 +11,7 @@ type Dictionary = Record<string, string>;
 @Injectable({ providedIn: 'root' })
 export class TranslationService {
   private readonly document = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly dictionaries: Record<Locale, Dictionary> = { en, fr, ar };
   readonly locale = signal<Locale>('fr');
   readonly languages: ReadonlyArray<{ code: Locale; label: string }> = [
@@ -39,7 +40,9 @@ export class TranslationService {
   }
 
   private updateDocumentLanguage(locale: Locale): void {
-    this.document.documentElement.lang = locale;
-    this.document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+    if (this.document?.documentElement) {
+      this.document.documentElement.lang = locale;
+      this.document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+    }
   }
 }

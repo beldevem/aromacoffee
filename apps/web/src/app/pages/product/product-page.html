@@ -1,14 +1,54 @@
 <app-site-header />
 
 <main class="page-shell">
-  <p class="eyebrow">{{ i18n.t('product.page.eyebrow') }}</p>
-  <h1>{{ productName() }}</h1>
-  <p class="page-intro">{{ productDescription() }}</p>
-  @if (product) {
-    <p class="product-price">{{ product.price }}</p>
-  } @else {
-    <p class="product-slug">{{ i18n.t('product.page.unknown-copy') }}</p>
-  }
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a routerLink="/" itemprop="item"><span itemprop="name">{{ i18n.t('nav.home') || 'Accueil' }}</span></a>
+        <meta itemprop="position" content="1" />
+      </li>
+      <li class="separator" aria-hidden="true">/</li>
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a routerLink="/menu" itemprop="item"><span itemprop="name">{{ i18n.t('nav.menu') || 'Menu' }}</span></a>
+        <meta itemprop="position" content="2" />
+      </li>
+      <li class="separator" aria-hidden="true">/</li>
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
+        <span itemprop="name">{{ productName() }}</span>
+        <meta itemprop="position" content="3" />
+      </li>
+    </ol>
+  </nav>
+
+  <div class="product-layout">
+    @if (localImage) {
+      <div class="product-media">
+        <img [src]="localImage" [alt]="productName()" width="480" height="480" loading="eager" fetchpriority="high" class="product-image" />
+      </div>
+    }
+
+    <div class="product-content">
+      <p class="eyebrow">{{ i18n.t('product.page.eyebrow') }}</p>
+      <h1>{{ productName() }}</h1>
+      <p class="page-intro">{{ productDescription() }}</p>
+
+      @if (product) {
+        <div class="pricing-badge-row">
+          @if (product.isPromotion && product.promotionPrice) {
+            <span class="product-price promo">{{ product.promotionPrice }}</span>
+            <span class="product-og-price">{{ product.originalPrice }}</span>
+          } @else {
+            <span class="product-price">{{ product.price }}</span>
+          }
+        </div>
+      }
+
+      <div class="product-actions">
+        <a class="button button-primary" routerLink="/reserve">{{ i18n.t('hero.reserve') || 'Réserver une table' }}</a>
+        <a class="button button-secondary" routerLink="/menu">{{ i18n.t('nav.menu') || 'Retour au menu' }}</a>
+      </div>
+    </div>
+  </div>
 </main>
 
 <app-site-footer />

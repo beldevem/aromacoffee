@@ -1,4 +1,19 @@
+# Robots.txt for Aroma Coffee Shop
 User-agent: *
 Allow: /
+Allow: /menu
+Allow: /product/
+Allow: /visit
+Allow: /events
+Allow: /gallery
+Allow: /reserve
+
+# Disallow private / transactional routes from crawling
+Disallow: /admin/
 Disallow: /admin
+Disallow: /order/
+Disallow: /order
+Disallow: /login
+
+# Sitemap location
 Sitemap: https://myaromacoffee.com/sitemap.xml
