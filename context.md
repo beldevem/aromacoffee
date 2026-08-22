@@ -109,6 +109,7 @@ The API has two completely distinct authorization mechanisms:
 ### 4. Order Lifecycle: Decoupling Fulfillment from Payment
 - **Fulfilment Status (`OrderStatus`)**: `PENDING` ➔ `PREPARING` ➔ `SERVED` (or `CANCELLED`).
 - **Payment Status**: Tracked independently by `paidAt` (timestamp), `paidBy` (staff user ID), and `paymentMethod` (`CASH` | `CARD`).
+- **Table-Level Batch Settlement**: `PATCH /orders/table/:tableId/payment` atomically marks all unpaid active orders for a table as paid, generates a combined consolidated 80mm thermal slip, and broadcasts real-time SSE updates.
 - **Post-Payment UX**: Cashier is prompted with a clear modal to print the receipt ticket or complete without printing.
 
 ### 5. Smart Multi-Device Notification Invariants

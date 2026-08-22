@@ -180,6 +180,47 @@ export class OrdersService {
     });
   }
 
+  /** Pay all unpaid active orders for a given table at once */
+  async markTablePaid(tableId: string, paymentMethod: PaymentMethod, actor: OrderActor) {
+    const unpaidOrders = await this.prisma.order.findMany({
+      where: {
+        tableId,
+        paidAt: null,
+        status: { not: OrderStatus.CANCELLED },
+      },
+      include: ORDER_INCLUDE,
+    });
+
+    if (unpaidOrders.length === 0) {
+      throw new BadRequestException('Aucune commande impayée pour cette table.');
+    }
+
+    const now = new Date();
+    await this.prisma.order.updateMany({
+      where: {
+        id: { in: unpaidOrders.map((o) => o.id) },
+      },
+      data: {
+        paidAt: now,
+        paidBy: actor.name,
+        paymentMethod,
+      },
+    });
+
+    const updated = await this.prisma.order.findMany({
+      where: {
+        id: { in: unpaidOrders.map((o) => o.id) },
+      },
+      include: ORDER_INCLUDE,
+    });
+
+    for (const ord of updated) {
+      this.publish(ord);
+    }
+
+    return updated;
+  }
+
   /** Daily till: what was actually collected each day, split by tender and by who took it. */
   async cashRegister(days: number) {
     const since = new Date();

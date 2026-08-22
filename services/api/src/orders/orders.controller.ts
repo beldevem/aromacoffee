@@ -72,6 +72,15 @@ export class OrdersController {
     return this.orders.createFromStaff(dto, { name: request.user.name });
   }
 
+  @Patch('table/:tableId/payment')
+  payTable(
+    @Param('tableId', ParseUUIDPipe) tableId: string,
+    @Body() dto: PayOrderDto,
+    @Req() request: StaffRequest,
+  ) {
+    return this.orders.markTablePaid(tableId, dto.paymentMethod, { name: request.user.name });
+  }
+
   @Patch(':id/status')
   updateStatus(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateOrderStatusDto, @Req() request: StaffRequest) {
     return this.orders.updateStatus(id, dto.status, { name: request.user.name });

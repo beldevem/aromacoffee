@@ -54,6 +54,7 @@ export interface RestaurantTable {
   id: string;
   label: string;
   code: string;
+  seats?: number;
   active: boolean;
 }
 
@@ -141,6 +142,19 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
   protected readonly tenderedCash = signal<number | null>(null);
   protected readonly printPromptOrder = signal<AdminOrder | null>(null);
 
+  // Table Batch Settlement
+  protected readonly selectedTableOccupancy = signal<TableOccupancy | null>(null);
+  protected readonly tableTenderedCash = signal<number | null>(null);
+  protected readonly payingTable = signal(false);
+
+  protected readonly tableChangeDue = computed(() => {
+    const occ = this.selectedTableOccupancy();
+    const tendered = this.tableTenderedCash();
+    if (!occ || tendered == null || tendered <= 0) return 0;
+    const totalDt = occ.totalCents / 100;
+    return Math.max(0, tendered - totalDt);
+  });
+
   // Thermal Printing
   protected readonly receipt = signal<AdminOrder | null>(null);
   protected readonly receiptQr = signal<string>('');
@@ -224,6 +238,11 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
     });
   });
 
+  getTableOccupancyForOrder(order: AdminOrder): TableOccupancy | undefined {
+    if (!order.table?.code) return undefined;
+    return this.tableOccupancies().find((o) => o.table.code === order.table?.code && o.activeOrders.length > 1);
+  }
+
   protected readonly changeDue = computed(() => {
     const order = this.selectedOrder();
     const tendered = this.tenderedCash();
@@ -262,15 +281,83 @@ export class AdminOrdersPage implements OnInit, OnDestroy {
     this.printPromptOrder.set(null);
   }
 
+  openTableModal(occupancy: TableOccupancy): void {
+    this.selectedTableOccupancy.set(occupancy);
+    this.tableTenderedCash.set(null);
+  }
+
+  closeTableModal(): void {
+    this.selectedTableOccupancy.set(null);
+    this.tableTenderedCash.set(null);
+  }
+
+  setTableTenderedSuggestion(amount: number): void {
+    this.tableTenderedCash.set(amount);
+  }
+
   selectOrderForTable(occupancy: TableOccupancy): void {
-    if (occupancy.activeOrders.length === 1) {
-      this.openOrderModal(occupancy.activeOrders[0]);
-    } else if (occupancy.activeOrders.length > 1) {
-      this.setTableFilter(occupancy.table.id);
-      this.setViewMode('feed');
+    if (occupancy.activeOrders.length > 0) {
+      this.openTableModal(occupancy);
     } else {
       this.openFormForTable(occupancy.table.id);
     }
+  }
+
+  payEntireTable(occupancy: TableOccupancy, paymentMethod: PaymentMethod): void {
+    if (this.payingTable()) return;
+    this.payingTable.set(true);
+
+    this.http
+      .patch<AdminOrder[]>(`${API_BASE_URL}/orders/table/${occupancy.table.id}/payment`, {
+        paymentMethod,
+      })
+      .subscribe({
+        next: (updatedOrders) => {
+          this.payingTable.set(false);
+          const updatedIds = new Set(updatedOrders.map((o) => o.id));
+          this.orders.update((list) =>
+            list.map((o) => {
+              const matched = updatedOrders.find((u) => u.id === o.id);
+              return matched || o;
+            }),
+          );
+
+          // Build a combined order snapshot for printing the grand total table addition
+          const allItems: OrderItem[] = updatedOrders.flatMap((o) => o.items);
+          const totalCents = updatedOrders.reduce((sum, o) => sum + o.totalCents, 0);
+          const firstOrder = updatedOrders[0];
+
+          const combinedOrder: AdminOrder = {
+            id: firstOrder ? firstOrder.id : occupancy.table.id,
+            reference: `TBL-${occupancy.table.code}`,
+            table: { code: occupancy.table.code, label: occupancy.table.label },
+            takeaway: false,
+            channel: 'COUNTER',
+            createdBy: firstOrder?.createdBy || 'staff',
+            validatedBy: this.auth.user()?.name || null,
+            paidBy: this.auth.user()?.name || null,
+            paidAt: new Date().toISOString(),
+            paymentMethod,
+            status: 'SERVED',
+            totalCents,
+            note: `Addition totale — Table ${occupancy.table.label} (${updatedOrders.length} commande(s))`,
+            items: allItems,
+            createdAt: firstOrder?.createdAt || new Date().toISOString(),
+          };
+
+          this.load();
+          this.closeTableModal();
+          this.printPromptOrder.set(combinedOrder);
+          this.toast.success(
+            `Table ${occupancy.table.label} réglée avec succès (${this.formatPrice(totalCents)}) !`,
+          );
+          if (this.isAdmin()) this.loadSummary();
+        },
+        error: (err) => {
+          this.payingTable.set(false);
+          this.toast.error(err?.error?.message || this.i18n.t('order.error.generic'));
+        },
+      });
   }
 
   /* ------------------- Printing System ------------------- */

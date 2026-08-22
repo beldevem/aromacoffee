@@ -106,19 +106,21 @@
                             (click)="openOrderModal(ord)"
                             title="Ouvrir cette commande"
                           >
-                            <span class="subchip-ref">{{ ord.reference }}</span>
+                            <span class="subchip-ref">#{{ ord.reference }}</span>
                             <span class="subchip-amt">{{ formatPrice(ord.totalCents) }}</span>
                           </button>
                         }
                       </div>
-                      @if (occ.latestCreatedAt) {
-                        <p class="order-time">⏱ {{ timeAgo(occ.latestCreatedAt) }}</p>
-                      }
-                      <p class="items-count">{{ occ.itemCount }} articles au total</p>
+                      <div class="table-meta-row">
+                        @if (occ.latestCreatedAt) {
+                          <span class="order-time">⏱ {{ timeAgo(occ.latestCreatedAt) }}</span>
+                        }
+                        <span class="items-count">• {{ occ.itemCount }} article(s)</span>
+                      </div>
                     </div>
-                    <div class="table-total">
-                      <span class="total-label">Total Table:</span>
-                      <strong>{{ formatPrice(occ.totalCents) }}</strong>
+                    <div class="table-total-row">
+                      <span class="total-label">Total Table</span>
+                      <strong class="total-value">{{ formatPrice(occ.totalCents) }}</strong>
                     </div>
                   } @else {
                     <div class="table-empty-prompt">
@@ -130,24 +132,26 @@
 
                 @if (occ.activeOrders.length > 0) {
                   <footer class="table-pos-footer">
-                    <div class="table-actions-dual">
-                      <button
-                        type="button"
-                        class="btn-table-inspect"
-                        (click)="$event.stopPropagation(); selectOrderForTable(occ)"
-                        title="Inspecter l'addition"
-                      >
-                        👁️ Voir
-                      </button>
-                      <button
-                        type="button"
-                        class="btn-table-add"
-                        (click)="$event.stopPropagation(); openFormForTable(occ.table.id)"
-                        title="Ajouter une nouvelle commande pour cette même table"
-                      >
-                        ＋ Commander
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      class="btn-table-pay"
+                      (click)="$event.stopPropagation(); selectOrderForTable(occ)"
+                      title="Encaisser toute la table"
+                    >
+                      <span class="pay-left">
+                        <span class="pay-icon">💵</span>
+                        <span class="pay-title">Encaisser la table</span>
+                      </span>
+                      <span class="pay-pill">{{ formatPrice(occ.totalCents) }}</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-table-add"
+                      (click)="$event.stopPropagation(); openFormForTable(occ.table.id)"
+                      title="Ajouter une autre commande pour cette table"
+                    >
+                      ＋ Ajouter une commande
+                    </button>
                   </footer>
                 }
               </article>
@@ -269,6 +273,150 @@
     </main>
   </div>
 </div>
+
+<!-- ========================================================================= -->
+<!-- 2.5 TABLE BATCH SETTLEMENT & ADDITION MODAL                               -->
+<!-- ========================================================================= -->
+@if (selectedTableOccupancy(); as occ) {
+  <div class="modal-backdrop" (click)="closeTableModal()">
+    <div class="table-settlement-modal" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <header class="table-settle-header">
+        <div class="header-left">
+          <div class="table-main-badge">
+            <span class="badge-title">Table {{ occ.table.label }}</span>
+            <span class="badge-seats">{{ occ.table.seats }} places</span>
+            <span class="badge-rounds">{{ occ.activeOrders.length }} commande(s)</span>
+          </div>
+          <p class="table-time-sub">
+            @if (occ.latestCreatedAt) { ⏱ Dernière activité il y a {{ timeAgo(occ.latestCreatedAt) }} }
+          </p>
+        </div>
+        <div class="header-actions">
+          <button
+            type="button"
+            class="btn-add-round"
+            (click)="closeTableModal(); openFormForTable(occ.table.id)"
+            title="Ajouter une nouvelle commande / tournée"
+          >
+            ＋ Ajouter à cette table
+          </button>
+          <button type="button" class="btn-close" (click)="closeTableModal()">✕</button>
+        </div>
+      </header>
+
+      <div class="table-settle-body">
+        <!-- List of active rounds / orders -->
+        <div class="rounds-stack">
+          <h3>Détail des commandes de la table ({{ occ.activeOrders.length }})</h3>
+          @for (ord of occ.activeOrders; track ord.id; let idx = $index) {
+            <div class="round-card">
+              <div class="round-card-header">
+                <div class="round-meta">
+                  <span class="round-num">Tournée #{{ idx + 1 }}</span>
+                  <span class="round-ref">{{ ord.reference }}</span>
+                  <span class="round-time">⏱ {{ ord.createdAt | date:'HH:mm' }}</span>
+                  <span class="round-status-pill" [attr.data-status]="ord.status">{{ i18n.t(statusKey(ord.status)) }}</span>
+                </div>
+                <div class="round-subtotal">
+                  <strong>{{ formatPrice(ord.totalCents) }}</strong>
+                  <button type="button" class="btn-inspect-sub" (click)="closeTableModal(); openOrderModal(ord)" title="Gérer cette commande individuellement">
+                    🔍 Détails
+                  </button>
+                </div>
+              </div>
+
+              <!-- Item Lines -->
+              <ul class="round-items-list">
+                @for (item of ord.items; track item.id) {
+                  <li>
+                    <span class="item-qty">{{ item.quantity }}×</span>
+                    <span class="item-name">{{ item.nameFr }}</span>
+                    <span class="item-dots"></span>
+                    <span class="item-price">{{ formatPrice(item.lineTotalCents) }}</span>
+                  </li>
+                }
+              </ul>
+              @if (ord.note) {
+                <p class="round-note">📝 {{ ord.note }}</p>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Grand Total Banner -->
+        <div class="table-grand-total-card">
+          <div class="total-info">
+            <span class="total-caption">TOTAL À PAYER POUR TOUTE LA TABLE</span>
+            <span class="total-summary-count">{{ occ.itemCount }} article(s) au total</span>
+          </div>
+          <strong class="grand-total-amount">{{ formatPrice(occ.totalCents) }}</strong>
+        </div>
+
+        <!-- Cash Calculator -->
+        <div class="table-change-calculator">
+          <div class="calc-row">
+            <label for="tableTendered">💵 Montant espèces reçu :</label>
+            <div class="tendered-input-wrap">
+              <input
+                id="tableTendered"
+                type="number"
+                step="1"
+                [ngModel]="tableTenderedCash()"
+                (ngModelChange)="tableTenderedCash.set($event)"
+                placeholder="Ex: 50"
+              />
+              <span class="curr-tag">DT</span>
+            </div>
+          </div>
+
+          <div class="quick-tender-suggestions">
+            <span class="suggestions-label">Suggestions :</span>
+            @for (sug of [5, 10, 20, 50, 100]; track sug) {
+              <button
+                type="button"
+                class="sug-btn"
+                [class.active]="tableTenderedCash() === sug"
+                (click)="setTableTenderedSuggestion(sug)"
+              >
+                {{ sug }} DT
+              </button>
+            }
+          </div>
+
+          @if (tableTenderedCash() && tableChangeDue() > 0) {
+            <div class="change-due-box">
+              <span>Monnaie à rendre au client :</span>
+              <strong>{{ (tableChangeDue()).toFixed(2) }} DT</strong>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Footer Payment Actions -->
+      <footer class="table-settle-footer">
+        <div class="settle-buttons-grid">
+          <button
+            type="button"
+            class="btn-pay-cash"
+            [disabled]="payingTable()"
+            (click)="payEntireTable(occ, 'CASH')"
+          >
+            💵 Payer TOUTE la Table en Espèces ({{ formatPrice(occ.totalCents) }})
+          </button>
+          <button
+            type="button"
+            class="btn-pay-card"
+            [disabled]="payingTable()"
+            (click)="payEntireTable(occ, 'CARD')"
+          >
+            💳 Payer TOUTE la Table par Carte ({{ formatPrice(occ.totalCents) }})
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+}
 
 <!-- ========================================================================= -->
 <!-- 3. CENTER MODAL ORDER INSPECTOR                                          -->
@@ -400,6 +548,22 @@
 
         <!-- Payment & Change Calculator Section -->
         @if (!isPaid(order) && order.status !== 'CANCELLED') {
+          @if (getTableOccupancyForOrder(order); as tableOcc) {
+            <div class="table-settle-callout">
+              <div class="callout-info">
+                <strong>👥 Table {{ tableOcc.table.label }} : {{ tableOcc.activeOrders.length }} commandes actives</strong>
+                <span>Total de toute la table : <strong>{{ formatPrice(tableOcc.totalCents) }}</strong></span>
+              </div>
+              <button
+                type="button"
+                class="btn-open-table-settle"
+                (click)="openTableModal(tableOcc)"
+              >
+                💵 Payer TOUTE la Table ({{ formatPrice(tableOcc.totalCents) }})
+              </button>
+            </div>
+          }
+
           <section class="checkout-section">
             <h3>Règlement & Encaissement</h3>
             
