@@ -1,6 +1,6 @@
 # ☕ Aroma Coffee & Dining Platform
 
-> A full-stack restaurant, specialty coffee, and dining management platform featuring modern guest experiences (trilingual menu, table QR ordering, reservations) and an operations management suite (live order fulfillment, POS/cashier register, table management, catalog administration, and analytics).
+> A full-stack restaurant, specialty coffee, and dining management platform featuring modern guest experiences (trilingual menu, table QR ordering, reservations) and an operations management suite (live order fulfillment, POS/cashier register, table floor plan with multi-orders, daily Z-report cash register closing, financial expenses tracking, catalog administration, and analytics).
 
 ---
 
@@ -28,7 +28,7 @@
 **Aroma** is an end-to-end digital ecosystem built for a specialty coffee shop and restaurant in Tunisia (operating in TND - Tunisian Dinars). It bridges the gap between customer-facing hospitality and internal operations by providing:
 
 1. **Guest-Facing Web App**: High-performance, mobile-first trilingual experience (Arabic, French, English) for exploring menus, booking tables, discovering events, and self-ordering directly from tables using QR codes.
-2. **Back-Office & Operations API**: Secure, role-gated backend for kitchen order management, POS cashier validation, reservation approvals, catalog publishing with cloud image hosting, and QR token lifecycle management.
+2. **Back-Office & Operations Suite**: Secure, role-gated backend for kitchen order management, POS cashier validation, table floor plans, daily cash closing Z-reports, expenses tracking, reservation approvals, catalog publishing with cloud image hosting, and QR token lifecycle management.
 
 ---
 
@@ -43,7 +43,7 @@ aroma/
 │       ├── public/              # Static assets, images, icons
 │       └── src/
 │           ├── app/
-│           │   ├── core/        # Singleton services: auth, api, i18n, orders, menu
+│           │   ├── core/        # Singleton services: auth, api, i18n, orders, network, utils
 │           │   ├── pages/       # Route-level components (home, menu, order, reserve, admin, etc.)
 │           │   └── shared/      # Reusable UI components (header, footer, cards, toasts)
 │           └── styles.scss      # Global styles & design token bindings
@@ -55,6 +55,7 @@ aroma/
 │           ├── auth/            # JWT authentication, password hashing, role guards
 │           ├── products/        # Product catalog & Supabase image uploads
 │           ├── orders/          # Table order sessions, POS orders, live events
+│           ├── expenses/        # Financial expenses module (Admin only)
 │           ├── reservations/    # Booking management & availability calculation
 │           ├── tables/          # Table management & QR token rotation
 │           ├── categories/      # Category taxonomy
@@ -90,12 +91,21 @@ aroma/
 
 ### Staff & Administration Suite
 - **Role-Based Access Control**: `ADMIN`, `MANAGER`, and `STAFF` permissions protecting sensitive business actions.
-- **Live Orders Kitchen Kanban (`/admin/orders`)**:
-  - Real-time order stream with audio/visual alerts for new incoming orders.
-  - Quick action controls to transition order status from pending to preparation and served.
-- **Cashier & POS Desk (`/admin/cash`)**:
-  - Fast counter-order creation for walk-in takeaway and dine-in customers.
-  - Split payment processing (`CASH`, `CARD`) and instant paid receipt marking.
+- **Live Orders Kitchen Kanban & Floor Plan (`/admin/orders`)**:
+  - Table Floor Plan with multi-order support per table and direct table ordering.
+  - Centered 80mm thermal receipt printing (Addition bill, Ticket de Caisse).
+  - Post-payment interactive print prompt.
+  - Single-source smart notifications for customer and agent orders with auto-dismiss (7s) and self-mute.
+- **Daily Cash Register Closing / Rapport Z (`/admin/cash`)**:
+  - End-of-day cash reconciliation formula ($$\text{Fond initial} + \text{Ventes Espèces} - \text{Dépenses Espèces} = \text{Total Théorique}$$).
+  - Counted drawer cash comparison with instant discrepancy tagging (Perfect, Surplus, Shortage).
+  - Printable 80mm Z-Report thermal closing slip.
+- **Financial Expenses Module (`/admin/expenses` - Admin Only)**:
+  - Categorized cost tracking (Ingredients, Rent, Utilities, Equipment, Salaries, Maintenance, Supplies, Marketing, Taxes, Other).
+  - Quick-add bar with `+` button and dynamic sub-items line builder.
+  - Net profit and financial KPIs calculation.
+- **One-Click Excel / CSV Exports**:
+  - Export filtered lists for Expenses, Sales Orders, and Daily Cash Takings in Excel-friendly UTF-8 CSV.
 - **Reservation Management (`/admin/reservations`)**:
   - Confirm, cancel, complete, or flag no-shows.
   - Blackout dates configuration for holidays and private events.
@@ -107,6 +117,8 @@ aroma/
   - One-click QR code generation, token rotation, and printable sticker link exports.
 - **Executive Analytics Dashboard (`/admin`)**:
   - Revenue summaries, order counts, popular items, and reservation volume.
+- **Network Health & Offline Indicator**:
+  - Real-time connectivity status pill in the topbar alerting staff if the local Wi-Fi connection drops.
 
 ---
 

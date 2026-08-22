@@ -10,7 +10,7 @@
 **Aroma** is a full-stack hospitality platform for a specialty coffee shop and restaurant based in Tunisia (currency: **TND** / Tunisian Dinar).
 
 The platform consists of two integrated applications:
-1. **`apps/web` (Frontend)**: Customer-facing web portal (trilingual menu, table reservations, self-ordering from tables via QR tokens) and a staff operational portal (live kitchen Kanban board, cashier POS, table management, catalog administration, analytics).
+1. **`apps/web` (Frontend)**: Customer-facing web portal (trilingual menu, table reservations, self-ordering from tables via QR tokens) and a staff operational portal (live kitchen Kanban board, cashier POS, table floor plan with multi-orders, daily Z-report cash register closing, financial expenses tracking, catalog administration, analytics).
 2. **`services/api` (Backend)**: NestJS REST API with PostgreSQL database managed via Prisma ORM, Supabase Storage integration for assets, and a dual-token authentication architecture.
 
 ---
@@ -28,11 +28,19 @@ aroma/
 │           │   │   ├── auth/              # Staff session state, JWT storage, guards
 │           │   │   ├── i18n/              # Translation service & fr/ar/en dictionary files
 │           │   │   ├── menu/              # Menu art, catalog caches, fallback data
+│           │   │   ├── network/           # Real-time online/offline connectivity detection
 │           │   │   ├── order/             # Table QR order session state service
-│           │   │   ├── orders/            # Kitchen notifications (audio/toast events)
-│           │   │   └── seo/               # Meta tags & page titles
+│           │   │   ├── orders/            # Order notifications (smart chime & deduplicated alerts)
+│           │   │   ├── seo/               # Meta tags & page titles
+│           │   │   └── utils/             # Excel/CSV UTF-8 export utilities
 │           │   ├── pages/
-│           │   │   ├── admin/             # Back-office (orders, cash, products, tables, etc.)
+│           │   │   ├── admin/             # Back-office
+│           │   │   │   ├── cash/          # Cash register & Daily Z-Report closing
+│           │   │   │   ├── expenses/      # Financial expenses module (Admin only)
+│           │   │   │   ├── orders/        # POS & Table floor plan (80mm thermal slip print)
+│           │   │   │   ├── products/      # Catalog manager & image uploader
+│           │   │   │   ├── reservations/  # Guest bookings manager
+│           │   │   │   └── tables/        # Floor plan tables & QR tokens
 │           │   │   ├── home/              # Landing page
 │           │   │   ├── menu/              # Public catalog with dietary filters
 │           │   │   ├── order/             # Table QR self-ordering page
@@ -44,7 +52,7 @@ aroma/
 │   └── api/                               # NestJS 11+ REST API
 │       ├── prisma/
 │       │   ├── schema.prisma              # Database schema definitions & Prisma client
-│       │   ├── migrations/                # PostgreSQL migration history
+│       │   ├── migrations/                # PostgreSQL migration history (12 migrations)
 │       │   └── seed.ts                    # Database seeds (categories, products, tables, staff)
 │       ├── scripts/                       # Maintenance scripts (image upload, QR link printer)
 │       └── src/
@@ -54,6 +62,7 @@ aroma/
 │           ├── badges/                    # Dietary / promotional flags
 │           ├── tables/                    # Table CRUD & QR secret rotation
 │           ├── orders/                    # Order fulfillment, POS desk, QR sessions, events
+│           ├── expenses/                  # Expenses management CRUD & financial summaries
 │           ├── reservations/              # Bookings, opening hours, blackout dates
 │           ├── dashboard/                 # Sales and operational KPIs
 │           ├── users/                     # Staff accounts & roles (ADMIN, MANAGER, STAFF)
@@ -67,9 +76,9 @@ aroma/
 ## 3. 🛡️ Critical Architectural Invariants
 
 ### 1. Money and Prices Are Stored in CENTS (Integers)
-- All monetary amounts in the database, API DTOs, and frontend computations are **integer cents** (e.g. `priceCents`, `promoPrice`, `unitPriceCents`, `lineTotalCents`, `totalCents`).
+- All monetary amounts in the database, API DTOs, and frontend computations are **integer cents** (e.g. `priceCents`, `amountCents`, `unitPriceCents`, `lineTotalCents`, `totalCents`).
 - *Never store currency as floating-point numbers.*
-- In Tunisian Dinars (TND), 1 TND = 1000 millimes. The codebase models prices in standard cent increments (e.g. `1200` = `12.000 DT` or `12.00 TND`). Always format prices using the dedicated formatting utilities.
+- In Tunisian Dinars (TND), 1 TND = 1000 millimes. The codebase models prices in standard cent increments (e.g. `1200` = `12.000 DT` or `12.00 TND`). Always format prices using the dedicated formatting utilities (`formatPrice()`).
 
 ### 2. Trilingual Localization Is Mandatory (FR, AR, EN)
 - Every product, category, and flag in the database includes localized columns:
@@ -85,6 +94,7 @@ The API has two completely distinct authorization mechanisms:
 1. **Staff / Admin Auth**:
    - Standard JWT Bearer token passed in the `Authorization: Bearer <token>` header.
    - Roles: `ADMIN`, `MANAGER`, `STAFF`.
+   - `ADMIN` role is strictly required for financial modules like **Expenses (`/admin/expenses`)** and User Account provisioning.
    - Regulated by `@Roles('ADMIN')`, `@Roles('STAFF')`, and the global `AuthGuard`.
    - Public endpoints must be explicitly decorated with `@Public()`.
 2. **Customer Table QR Ordering Sessions**:
@@ -99,36 +109,23 @@ The API has two completely distinct authorization mechanisms:
 ### 4. Order Lifecycle: Decoupling Fulfillment from Payment
 - **Fulfilment Status (`OrderStatus`)**: `PENDING` ➔ `PREPARING` ➔ `SERVED` (or `CANCELLED`).
 - **Payment Status**: Tracked independently by `paidAt` (timestamp), `paidBy` (staff user ID), and `paymentMethod` (`CASH` | `CARD`).
-- **Why?** A counter/takeaway order (`channel: COUNTER`) is paid *before* preparation, while a dine-in table order (`channel: QR`) is typically paid *after* dining.
+- **Post-Payment UX**: Cashier is prompted with a clear modal to print the receipt ticket or complete without printing.
 
-### 5. Snapshot Integrity on `OrderItem`
-- When an order is created, `OrderItem` **snapshots** the product's `nameFr`, `unitPriceCents`, and `lineTotalCents`.
-- Past orders must never change if a manager edits product names or updates menu prices later.
+### 5. Smart Multi-Device Notification Invariants
+- `OrderNotificationsService` is the **single source of truth** for audio chimes and top alert banners.
+- Audio and alerts trigger for **Customer QR orders** and **Floor Agent orders**.
+- **Self-Mute**: The device that physically submitted a manual order does not play an audio chime to itself, while notifying all other kitchen/bar screens.
+- Deduplication cache (`recentOrderIds`) and a 7-second auto-dismiss prevent alert stacking.
 
-### 6. Product Image Storage via Supabase
-- Uploaded product photos are stored in Supabase Storage (`product-images` bucket).
-- The secret service key `SUPABASE_SECRET_KEY` is **strictly server-side** in `services/api`.
-- Client applications only receive the public CDN URL (`imageUrl`).
-
----
-
-## 4. 💻 Technology Stack Best Practices
-
-### Frontend (`apps/web`)
-- **Angular 22+ Standalone Components**: Do not use legacy NgModules.
-- **Signals**: Use reactive signals (`signal()`, `computed()`, `input()`, `output()`) for component state rather than legacy `BehaviorSubject` where possible.
-- **Modern Control Flow**: Use `@if`, `@else`, `@for`, `@switch` syntax instead of `*ngIf` and `*ngFor`.
-- **Styling**: Vanilla SCSS using CSS variables defined from `docs/brand/_design-tokens.scss`. Do not introduce Tailwind CSS or utility-first frameworks.
-
-### Backend (`services/api`)
-- **NestJS 11+ Modules**: Maintain clean separation across `controller`, `service`, and `dto`.
-- **Validation**: Every incoming body must have a DTO decorated with `class-validator` and `class-transformer`.
-- **Prisma ORM**: The generated Prisma client outputs to `src/generated/prisma`. Run `npx prisma generate` after modifying `prisma/schema.prisma`.
-- **Audit Logging**: Sensitive changes (staff creations, table modifications, cancellations) record entries in the `AuditLog` table.
+### 6. Daily Cash Register Closing ("Rapport Z")
+- The cash reconciliation formula is:
+  $$\text{Fond Initial} + \text{Recettes Espèces (Ventes)} - \text{Dépenses Espèces Caisse} = \text{Total Espèces Théorique}$$
+- Variance is categorized into Perfect ($$0$$ DT), Surplus ($$+$$), or Shortage ($$-$$).
+- Output is rendered onto a standard 80mm thermal receipt template.
 
 ---
 
-## 5. 🗄️ Database Schema Reference (Prisma)
+## 4. 🗄️ Database Schema Reference (Prisma)
 
 Key entities and their roles:
 
@@ -141,6 +138,7 @@ Key entities and their roles:
 | `RestaurantTable` | `restaurant_tables` | Physical tables (`label`, `code`, `qrToken`, `seats`, `active`) |
 | `Order` | `orders` | Orders (`reference`, `channel`, `status`, `tableId`, `paidAt`, `paymentMethod`) |
 | `OrderItem` | `order_items` | Snapshotted line items (`unitPriceCents`, `quantity`, `lineTotalCents`) |
+| `Expense` | `expenses` | Shop expenses (`title`, `category`, `amountCents`, `date`, `paymentMethod`, `invoiceNumber`) |
 | `Reservation` | `reservations` | Guest bookings (`customerName`, `contactPhone`, `dateTime`, `partySize`, `status`) |
 | `OpeningHour` | `opening_hours` | Operating schedule per day of week (0 = Sunday ... 6 = Saturday) |
 | `BlockedDate` | `blocked_dates` | Blackout dates for holidays and private bookings |
@@ -148,7 +146,7 @@ Key entities and their roles:
 
 ---
 
-## 6. 🎨 Brand Identity & Style Tokens
+## 5. 🎨 Brand Identity & Style Tokens
 
 When adding UI features, always adhere to the brand tokens:
 
@@ -163,11 +161,11 @@ When adding UI features, always adhere to the brand tokens:
 - **Typography**:
   - Display: `Cormorant Garamond, Georgia, serif`
   - Body: `Source Sans 3, system-ui, sans-serif`
-- **Aesthetic**: Warm, artisanal, premium, editorial coffeehouse atmosphere.
+- **Thermal Slip Printing**: 80mm centered thermal format for client receipts, addition bills, and daily Z-reports.
 
 ---
 
-## 7. 🚀 Common Commands & Workflows
+## 6. 🚀 Common Commands & Workflows
 
 ```bash
 # Backend (services/api)
@@ -187,7 +185,7 @@ npm test                   # Run Vitest test suite
 
 ---
 
-## 8. ⚠️ Common Traps & Rules for AI Agents
+## 7. ⚠️ Common Traps & Rules for AI Agents
 
 1. ❌ **Do NOT introduce Tailwind CSS** — the project uses custom SCSS design tokens.
 2. ❌ **Do NOT hardcode prices in floating numbers** — always work in integer cents.
@@ -195,3 +193,4 @@ npm test                   # Run Vitest test suite
 4. ❌ **Do NOT delete multi-language fields** (`nameFr`, `nameAr`, `descriptionFr`, `descriptionAr`) when modifying DTOs or schemas.
 5. ❌ **Do NOT bypass `OrderSessionGuard`** for table QR endpoints or mix it with staff JWT auth.
 6. ❌ **Do NOT mutate past `OrderItem` historical prices** when updating catalog products.
+7. ❌ **Do NOT allow non-admin staff into `/admin/expenses`** or expense API routes.
